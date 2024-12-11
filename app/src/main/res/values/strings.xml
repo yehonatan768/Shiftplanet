@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Shiftplanet</string>
+    <string name="username">Username</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create account</string>
+    <string name="password">Password</string>
+    <string name="OrLine">OR</string>
+</resources>
