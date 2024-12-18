@@ -3,6 +3,7 @@
     <style name="Base.Theme.ShiftPlanet" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:logo">@drawable/logo</item>
     </style>
 
     <style name="Theme.ShiftPlanet" parent="Base.Theme.ShiftPlanet" />
