@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "107116464080",
+    "project_id": "shiftplannet-97dcd",
+    "storage_bucket": "shiftplannet-97dcd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107116464080:android:daac847139fafe37bb5bd5",
+        "android_client_info": {
+          "package_name": "com.example.shiftplanet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgKE_pl-_rcKNwgZAdSmkrZOjXK808bb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
