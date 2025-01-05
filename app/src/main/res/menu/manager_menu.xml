@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        app:showAsAction="always"
+        android:title="Menu"
+        android:icon="@drawable/menu">
+
+        <menu>
+            <item
+                android:id="@+id/constraints"
+                android:title= "אילוצי עובדים"
+                android:icon="@android:drawable/ic_menu_preferences"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/day_off"
+                android:title="בקשות חופשה/מחלה "
+                android:icon="@android:drawable/ic_menu_search"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/notification"
+                android:title="שליחת הודעות ועדכונים"
+                android:icon="@android:drawable/ic_menu_search"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/workarrangment"
+                android:title="פרסום סידור עבודה"
+                android:icon="@android:drawable/ic_menu_search"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/settings"
+                android:title="הגדרות"
+                android:icon="@android:drawable/ic_menu_preferences"
+                app:showAsAction="ifRoom"/>
+
+        </menu>
+    </item>
+
+</menu>

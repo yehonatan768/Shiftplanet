@@ -9,9 +9,6 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseUser;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class regActivity extends AppCompatActivity {
+public class Registration extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private  FirebaseFirestore usersdb;
@@ -30,12 +27,12 @@ public class regActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up_screen);
+        setContentView(R.layout.registration);
         EdgeToEdge.enable(this);
 
         Button back = findViewById(R.id.back_btn);
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(regActivity.this, MainActivity.class);
+            Intent intent = new Intent(Registration.this, Login.class);
             startActivity(intent);
         });
 
@@ -62,7 +59,7 @@ public class regActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || username.isEmpty() || fullname.isEmpty() ) {
-            Toast.makeText(regActivity.this, "אנא מלא את כל השדות", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Registration.this, "אנא מלא את כל השדות", Toast.LENGTH_SHORT).show();
             return;
         }
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
@@ -70,11 +67,11 @@ public class regActivity extends AppCompatActivity {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
                     saveUserInfo(username, password, fullname, phone, email, currentUser);}
-                Toast.makeText(regActivity.this, "ההרשמה בוצעה בהצלחה!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(regActivity.this, homepageActivity.class);
+                Toast.makeText(Registration.this, "ההרשמה בוצעה בהצלחה!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Registration.this, EmployeeHomePage.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(regActivity.this, "הרישום נכשל: " , Toast.LENGTH_SHORT).show();
+                Toast.makeText(Registration.this, "הרישום נכשל: " , Toast.LENGTH_SHORT).show();
                 Log.e("FirebaseAuth", "Error: " + task.getException().getMessage());
             }
         });
