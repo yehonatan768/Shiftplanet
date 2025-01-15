@@ -37,7 +37,7 @@ public class ForgotPassword extends AppCompatActivity {
                     return;
                 }
 
-                // שלח את בקשת איפוס הסיסמה
+                // Send the reset password request
                 sendPasswordResetEmail(email);
             }
         });
@@ -57,7 +57,7 @@ public class ForgotPassword extends AppCompatActivity {
     }
     public void back (View v){
 
-            Intent intent = new Intent(ForgotPassword.this, Login.class);
+            Intent intent = new Intent(ForgotPassword.this, EmployeesLogin.class);
             startActivity(intent);
 
         }

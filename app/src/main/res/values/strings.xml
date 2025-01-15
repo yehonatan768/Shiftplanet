@@ -9,4 +9,7 @@
     <string name="create_account">Create account</string>
     <string name="password">Password</string>
     <string name="OrLine">OR</string>
+    <string name="Employees_login">כניסת עובדים</string>
+    <string name="Managers_login">כניסת מנהלים</string>
+
 </resources>

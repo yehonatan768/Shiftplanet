@@ -10,32 +10,53 @@
 
         <menu>
             <item
-                android:id="@+id/constraints"
-                android:title= "אילוצי עובדים"
+                android:id="@+id/my_profile"
+                android:title= "הפרופיל שלי"
                 android:icon="@android:drawable/ic_menu_preferences"
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/day_off"
-                android:title="בקשות חופשה/מחלה "
+                android:id="@+id/employees_requests"
+                android:title="בקשות עובדים "
                 android:icon="@android:drawable/ic_menu_search"
                 app:showAsAction="ifRoom"/>
 
+            <item
+                android:id="@+id/work_arrangement"
+                android:title="סידור עבודה"
+                android:icon="@android:drawable/ic_menu_search"
+                app:showAsAction="ifRoom">
+            <menu>
+                <item
+                    android:id="@+id/build_work_arrangement"
+                    android:title="בניית סידור עבודה "
+                    android:icon="@android:drawable/ic_menu_edit"
+                    app:showAsAction="ifRoom"/>
+                <item
+                    android:id="@+id/published_work_arrangement"
+                    android:title=" סידור העבודה שפורסם לעובדים"
+                    android:icon="@android:drawable/ic_menu_info_details"
+                    app:showAsAction="ifRoom"/>
+            </menu>
+            </item>
             <item
                 android:id="@+id/notification"
-                android:title="שליחת הודעות ועדכונים"
+                android:title="עדכונים לעובדים"
                 android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/workarrangment"
-                android:title="פרסום סידור עבודה"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/settings"
-                android:title="הגדרות"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
+                app:showAsAction="ifRoom">
+                <menu>
+                    <item
+                        android:id="@+id/send_notification"
+                        android:title="שליחת עדכון"
+                        android:icon="@android:drawable/ic_menu_edit"
+                        app:showAsAction="ifRoom"/>
+                    <item
+                        android:id="@+id/sent_notifications"
+                        android:title="עדכונים שנשלחו"
+                        android:icon="@android:drawable/ic_menu_info_details"
+                        app:showAsAction="ifRoom"/>
+                </menu>
+            </item>
 
         </menu>
     </item>

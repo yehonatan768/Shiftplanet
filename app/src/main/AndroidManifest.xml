@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,26 +14,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShiftPlanet"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+
         <activity
-            android:name=".ForgotPassword"
-            android:exported="false" />
-        <!-- Main Entry Point for the App -->
-        <activity
-            android:name=".Login"
-            android:exported="true" >
+            android:name=".UserType"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Manager Home Page -->
+        </activity>
+
+
+
+        <activity
+            android:name=".ManagersLogin"
+            android:exported="false" />
+
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false" /> <!-- Main Entry Point for the App -->
+        <activity
+            android:name=".EmployeesLogin"
+            android:exported="false"/>
+
         <activity
             android:name=".ManagerHomePage"
-            android:exported="false" /> <!-- Employee Home Page -->
+            android:exported="false"/>
+
+            <!-- Employee Home Page -->
         <activity
             android:name=".EmployeeHomePage"
-            android:exported="false" /> <!-- Registration Page -->
+            android:exported="false"/>
+
+
+          <!-- Registration Page -->
         <activity
             android:name=".Registration"
             android:exported="false" />

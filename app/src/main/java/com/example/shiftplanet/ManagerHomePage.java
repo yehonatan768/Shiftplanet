@@ -5,58 +5,44 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class ManagerHomePage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.manager_home_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.manager_home_page), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflating the menu from the XML file
         getMenuInflater().inflate(R.menu.manager_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handling item clicks
-        if (item.getItemId() == R.id.constraints) {
-            Toast.makeText(this, "Constraints clicked", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.my_profile) {
+            Toast.makeText(this, "my_profile clicked", Toast.LENGTH_SHORT).show();
             return true;
-        } else if (item.getItemId() == R.id.day_off) {
-            Toast.makeText(this, "Days off clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.employees_requests) {
+            Toast.makeText(this, "employees_requests clicked", Toast.LENGTH_SHORT).show();
             return true;
-        } else if (item.getItemId() == R.id.notification) {
+        } else if (item.getItemId() == R.id.work_arrangement) {
             Toast.makeText(this, "Notification clicked", Toast.LENGTH_SHORT).show();
             return true;
-        } else if (item.getItemId() == R.id.workarrangment) {
-            Toast.makeText(this, "Work arrangment clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.notification) {
+            Toast.makeText(this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
             return true;
-        }
-        else if (item.getItemId() == R.id.settings) {
+        } else if (item.getItemId() == R.id.my_profile) {
             Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
             return true;
-        }
-        else {
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }
-
 }

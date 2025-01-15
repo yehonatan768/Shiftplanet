@@ -10,19 +10,19 @@
 
         <menu>
             <item
-                android:id="@+id/settings"
-                android:title="הגדרות"
+                android:id="@+id/e_my_profile"
+                android:title="הפרופיל שלי"
                 android:icon="@android:drawable/ic_menu_preferences"
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/e_workarrangment"
+                android:id="@+id/e_work_arrangement"
                 android:title="סידור עבודה"
                 android:icon="@android:drawable/ic_menu_preferences"
                 app:showAsAction="ifRoom"/>
             <item
                 android:id="@+id/constraints"
-                android:title="שליחת אילוצים"
+                android:title="הגשת אילוצים"
                 android:icon="@android:drawable/ic_menu_preferences"
                 app:showAsAction="ifRoom"/>
 
@@ -33,8 +33,13 @@
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/shiftchange"
+                android:id="@+id/shift_change"
                 android:title="בקשת החלפת משמרת"
+                android:icon="@android:drawable/ic_menu_search"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/requests_status"
+                android:title="סטטוס בקשות"
                 android:icon="@android:drawable/ic_menu_search"
                 app:showAsAction="ifRoom"/>
             <item

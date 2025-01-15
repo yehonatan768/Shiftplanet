@@ -32,7 +32,7 @@ public class Registration extends AppCompatActivity {
 
         Button back = findViewById(R.id.back_btn);
         back.setOnClickListener(v -> {
-            Intent intent = new Intent(Registration.this, Login.class);
+            Intent intent = new Intent(Registration.this, EmployeesLogin.class);
             startActivity(intent);
         });
 
@@ -40,10 +40,10 @@ public class Registration extends AppCompatActivity {
         usersdb = FirebaseFirestore.getInstance();
 
         usernameEditText = findViewById(R.id.username_input);
-        passwordEditText = findViewById(R.id.password_input);
+        passwordEditText = findViewById(R.id.password_input1);
         fullnameEditText = findViewById(R.id.fullname_input);
         phoneEditText = findViewById(R.id.phone_input);
-        emailEditText = findViewById(R.id.email_input);
+        emailEditText = findViewById(R.id.email_input1);
 
 
         Button buttonRegister = findViewById(R.id.register_btn);
