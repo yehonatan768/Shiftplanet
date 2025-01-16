@@ -11,5 +11,7 @@
     <string name="OrLine">OR</string>
     <string name="Employees_login">כניסת עובדים</string>
     <string name="Managers_login">כניסת מנהלים</string>
+    <string name="open"> open</string>
+    <string name="close"> close</string>
 
 </resources>

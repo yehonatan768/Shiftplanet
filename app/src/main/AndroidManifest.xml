@@ -18,13 +18,7 @@
 
         <activity
             android:name=".UserType"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"/>
 
 
 
@@ -46,7 +40,13 @@
             <!-- Employee Home Page -->
         <activity
             android:name=".EmployeeHomePage"
-            android:exported="false"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
 
           <!-- Registration Page -->

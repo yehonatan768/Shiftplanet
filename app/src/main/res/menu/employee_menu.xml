@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
 
 
-    <item
-        app:showAsAction="always"
-        android:title="Menu"
-        android:icon="@drawable/menu">
+        <item
+            android:id="@+id/e_my_profile"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:textColor="@color/white"
+            android:title="הפרופיל שלי" />
 
-        <menu>
-            <item
-                android:id="@+id/e_my_profile"
-                android:title="הפרופיל שלי"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
+        <item
+            android:id="@+id/e_work_arrangement"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:textColor="@color/white"
 
-            <item
-                android:id="@+id/e_work_arrangement"
-                android:title="סידור עבודה"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/constraints"
-                android:title="הגשת אילוצים"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
+            android:title="סידור עבודה" />
+        <item
+            android:id="@+id/constraints"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:textColor="@color/white"
 
-            <item
-                android:id="@+id/day_off"
-                android:title="בקשת יום חופש/מחלה"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
+            android:title="הגשת אילוצים" />
 
-            <item
-                android:id="@+id/shift_change"
-                android:title="בקשת החלפת משמרת"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/requests_status"
-                android:title="סטטוס בקשות"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/notification"
-                android:title="הודעות ועדכונים"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
+        <item
+            android:id="@+id/day_off"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
 
-        </menu>
-    </item>
+            android:title="בקשת יום חופש/מחלה" />
 
+        <item
+            android:id="@+id/shift_change"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
+
+            android:title="בקשת החלפת משמרת" />
+        <item
+            android:id="@+id/requests_status"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
+
+            android:title="סטטוס בקשות" />
+        <item
+            android:id="@+id/notification"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
+
+            android:title="הודעות ועדכונים" />
+
+
+    </group>
 </menu>
