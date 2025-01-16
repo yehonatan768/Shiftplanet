@@ -1,17 +1,48 @@
 <resources>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="availability">Availability</string>
+    <string name="employees">Employees</string>
+    <string name="settings">Settings</string>
+    <string name="work_arrangement">Work Arrangement</string>
     <string name="app_name">ShiftPlannet</string>
     <string name="username">Username</string>
-    <string name="email">email</string>
-    <string name="phone">phone number</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone number</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="login">Login</string>
     <string name="register">Register here!</string>
     <string name="create_account">Create account</string>
     <string name="password">Password</string>
     <string name="OrLine">OR</string>
-    <string name="Employees_login">כניסת עובדים</string>
-    <string name="Managers_login">כניסת מנהלים</string>
-    <string name="open"> open</string>
-    <string name="close"> close</string>
+    <string name="register_text">Register to continue the amazing experience!</string>
+    <string name="sign_up">Sign-up</string>
+    <string name="full_name">Full Name\n</string>
+    <string name="back">back</string>
+    <string name="alreadyHaveAnAccount">already have an account?\n</string>
+    <string name="confirmPassword">confirm password\n</string>
+    <string name="id">ID\n</string>
+    <string name="please_provide_your_account_email_address_for_which_you_want_to_reset_your_password">please provide your account email address for which you want to reset your password</string>
+    <string name="reset_your_password">Reset your password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="forgot_password_no_qm">Forgot Password</string>
+    <string name="employee_request_page">Employee Request Page</string>
+    <string name="shiftplanet">ShiftPlanet</string>
+    <string name="business_code">Business Code</string>
+    <string name="request_type">Request Type</string>
+    <string name="start_date">start date</string>
+    <string name="finish_date">finish date</string>
+    <string name="message">Message</string>
+    <string name="attach_document">Attach Document</string>
+    <string name="user_type">User Type</string>
+    <string name="menu">menu</string>
 
 </resources>

@@ -2,19 +2,22 @@ package com.example.shiftplanet;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+
 public class ForgotPassword extends AppCompatActivity {
 
     private EditText emailEditText;
     private Button resetPasswordButton;
+
+    private ImageView backButton;
     private FirebaseAuth mAuth;
 
     @Override
@@ -24,21 +27,28 @@ public class ForgotPassword extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        emailEditText = findViewById(R.id.emailEditText);
-        resetPasswordButton = findViewById(R.id.resetPasswordButton);
+        emailEditText = findViewById(R.id.forgotPasswordEmail);
+        resetPasswordButton = findViewById(R.id.btnResetPassword);
+        backButton = findViewById(R.id.btnBackForgotPassword);
 
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = emailEditText.getText().toString().trim();
-
                 if (email.isEmpty()) {
                     emailEditText.setError("Please enter your email");
                     return;
                 }
 
-                // Send the reset password request
+                // Send the password reset request
                 sendPasswordResetEmail(email);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                back();
             }
         });
     }
@@ -55,10 +65,10 @@ public class ForgotPassword extends AppCompatActivity {
                     }
                 });
     }
-    public void back (View v){
 
-            Intent intent = new Intent(ForgotPassword.this, EmployeesLogin.class);
-            startActivity(intent);
-
-        }
+    public void back() {
+        Intent intent = new Intent(ForgotPassword.this, Login.class);
+        startActivity(intent);
+        finish(); // Optional: Call finish() to close the ForgotPassword activity
+    }
 }

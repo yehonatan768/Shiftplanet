@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
 }
@@ -18,9 +18,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
+        debug {
+            buildConfigField("int", "ANR_TIMEOUT", "30000")
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField("int", "ANR_TIMEOUT", "30000")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -45,7 +54,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation (libs.firebase.firestore)
     implementation (libs.firebase.database)
-    implementation(libs.firebase.analytics)
+    implementation(libs.google.firebase.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
