@@ -45,6 +45,7 @@
     <string name="user_type">User Type</string>
     <string name="menu">menu</string>
     <string name="open">open</string>
+    <string name="close">close</string>
     <string name="profile">Profile</string>
     <string name="submit_constraints">Submit constraints</string>
     <string name="submit_day_off">Submit day off</string>
