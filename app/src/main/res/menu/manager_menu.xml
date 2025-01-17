@@ -1,43 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
+    <group android:checkableBehavior="single">
 
-    <item
-        app:showAsAction="always"
-        android:title="Menu"
-        android:icon="@drawable/menu">
+        <item
+            android:id="@+id/m_my_profile"
+            android:title="@string/profile"
+            android:icon="@android:drawable/ic_menu_search" />
 
-        <menu>
-            <item
-                android:id="@+id/constraints"
-                android:title= "אילוצי עובדים"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
+        <item
+            android:id="@+id/employees_requests"
+            android:title="@string/employees_requests"
+            android:icon="@android:drawable/ic_menu_search" />
 
-            <item
-                android:id="@+id/day_off"
-                android:title="בקשות חופשה/מחלה "
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-
-            <item
-                android:id="@+id/notification"
-                android:title="שליחת הודעות ועדכונים"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/workarrangment"
-                android:title="פרסום סידור עבודה"
-                android:icon="@android:drawable/ic_menu_search"
-                app:showAsAction="ifRoom"/>
-            <item
-                android:id="@+id/settings"
-                android:title="הגדרות"
-                android:icon="@android:drawable/ic_menu_preferences"
-                app:showAsAction="ifRoom"/>
-
-        </menu>
-    </item>
+        <item
+            android:id="@+id/m_work_arrangement"
+            android:title="@string/work_arrangement"
+            android:icon="@android:drawable/ic_menu_search">
+            android:textColor="@color/white"
+            <!-- תת-תפריט, יופיע כאשר תלחץ על "סידור עבודה" -->
+            <menu>
+                <item
+                    android:id="@+id/build_work_arrangement"
+                    android:title="@string/build_work_arrangement"
+                    android:icon="@android:drawable/ic_menu_edit" />
+                <item
+                    android:id="@+id/published_work_arrangement"
+                    android:title="@string/published_work_arrangement"
+                    android:icon="@android:drawable/ic_menu_info_details" />
+            </menu>
+        </item>
+        <item
+            android:id="@+id/m_notification"
+            android:title="@string/notifications"
+            android:icon="@android:drawable/ic_menu_search">
+            <!-- תת-תפריט, יופיע כאשר תלחץ על "סידור עבודה" -->
+            <menu>
+                <item
+                    android:id="@+id/send_notifications"
+                    android:title="@string/send_notifications"
+                    android:icon="@android:drawable/ic_menu_edit" />
+                <item
+                    android:id="@+id/sent_notifications"
+                    android:title="@string/sent_notifications"
+                    android:icon="@android:drawable/ic_menu_info_details" />
+            </menu>
+        </item>
+    </group>
 
 </menu>

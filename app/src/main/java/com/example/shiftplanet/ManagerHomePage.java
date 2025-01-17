@@ -1,62 +1,87 @@
 package com.example.shiftplanet;
-
 import android.os.Bundle;
-import android.view.Menu;
+
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-public class ManagerHomePage extends AppCompatActivity {
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class ManagerHomePage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // אפשרות לתמיכה בתצוגה בקצוות
         setContentView(R.layout.manager_home_page);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.manager_home_page), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        drawerLayout = findViewById(R.id.manager_home_page);
+        navigationView = findViewById(R.id.nav_view1);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
     }
+
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflating the menu from the XML file
-        getMenuInflater().inflate(R.menu.manager_menu, menu);
-        return true;
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // טיפול בפריטי התפריט הראשיים
+        if (item.getItemId() == R.id.m_my_profile) {
+            // פעולה עבור "הפרופיל שלי"
+            Toast.makeText(ManagerHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.employees_requests) {
+            // פעולה עבור "בקשות עובדים"
+            Toast.makeText(ManagerHomePage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.m_work_arrangement) {
+            // פעולה עבור "סידור עבודה" (תת-תפריט ייפתח אוטומטית)
+            Toast.makeText(ManagerHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.build_work_arrangement) {
+            // פעולה עבור "בניית סידור עבודה"
+            Toast.makeText(ManagerHomePage.this, "Building work arrangement clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.published_work_arrangement) {
+            // פעולה עבור "סידור עבודה שפורסם"
+            Toast.makeText(ManagerHomePage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.m_notification) {
+            // פעולה עבור "עדכונים לעובדים"
+            Toast.makeText(ManagerHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.send_notifications) {
+            // פעולה עבור "שליחת עדכון"
+            Toast.makeText(ManagerHomePage.this, "Send notification clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.sent_notifications) {
+            // פעולה עבור "עדכונים שנשלחו"
+            Toast.makeText(ManagerHomePage.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
+        }
+
+        // סוגר את ה-Drawer
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true; // מחזיר true כי הטיפול ב-item הושלם
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handling item clicks
-        if (item.getItemId() == R.id.constraints) {
-            Toast.makeText(this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.day_off) {
-            Toast.makeText(this, "Days off clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.notification) {
-            Toast.makeText(this, "Notification clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.workarrangment) {
-            Toast.makeText(this, "Work arrangment clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        else if (item.getItemId() == R.id.settings) {
-            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
-
 }

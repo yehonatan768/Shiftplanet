@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:padding="20dp"
+    android:orientation="vertical"
+    android:gravity="bottom">
+
+
+    <ImageView
+        android:layout_width="280dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/logo"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:layout_width="38dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        android:text="@string/name"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+</LinearLayout>

@@ -1,62 +1,67 @@
 package com.example.shiftplanet;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
+
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class EmployeeHomePage extends AppCompatActivity {
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class EmployeeHomePage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.employee_home_page);
 
-        // Set up the toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        drawerLayout = findViewById(R.id.employee_home_page);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu from the XML file
-        getMenuInflater().inflate(R.menu.employee_menu, menu);
-        return true;
-    }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Handling item clicks
-        if (item.getItemId() == R.id.constraints) {
-            Toast.makeText(this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.day_off) {
-            Toast.makeText(this, "Days off clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.notification) {
-            Toast.makeText(this, "Notification clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.shift_change) {
-            Toast.makeText(this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-            return true;
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.e_my_profile) {
+            Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.e_work_arrangement) {
-            Toast.makeText(this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.requests_status) {
-            Toast.makeText(this, "requests_status clicked", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (item.getItemId() == R.id.e_my_profile) {
-            Toast.makeText(this, "my profile clicked", Toast.LENGTH_SHORT).show();
-            return true;
+            Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.constraints) {
+            Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.day_off) {
+            Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true; // מחזיר true כי הטיפול ב-item הושלם
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            return super.onOptionsItemSelected(item);
+            super.onBackPressed();
         }
     }
-
 }

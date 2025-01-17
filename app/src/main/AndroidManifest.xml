@@ -29,13 +29,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Manager Home Page -->
+        </activity>
+             <!-- Manager Home Page -->
         <activity
             android:name=".ManagerHomePage"
-            android:exported="false" /> <!-- Employee Home Page -->
+            android:exported="false" />
+            <!-- Employee Home Page -->
         <activity
             android:name=".EmployeeHomePage"
-            android:exported="false" /> <!-- Registration Page -->
+            android:exported="false"/>
+            <!-- Registration Page -->
         <activity
             android:name=".Registration"
             android:exported="false" />

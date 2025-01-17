@@ -44,5 +44,21 @@
     <string name="attach_document">Attach Document</string>
     <string name="user_type">User Type</string>
     <string name="menu">menu</string>
+    <string name="open">open</string>
+    <string name="profile">Profile</string>
+    <string name="submit_constraints">Submit constraints</string>
+    <string name="submit_day_off">Submit day off</string>
+    <string name="shift_change_request">Shift change request</string>
+    <string name="requests_status">Requests status</string>
+    <string name="notifications">Notifications</string>
+    <string name="employees_requests">Employees requests</string>
+    <string name="build_work_arrangement">Build work arrangement</string>
+    <string name="published_work_arrangement">Published work arrangement</string>
+    <string name="send_notifications">Send notifications</string>
+    <string name="sent_notifications">Send notifications</string>
+    <string name="logo">App logo</string>
+    <string name="name">name</string>
+
+
 
 </resources>
