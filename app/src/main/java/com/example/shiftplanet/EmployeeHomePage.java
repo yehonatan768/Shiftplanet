@@ -1,4 +1,5 @@
 package com.example.shiftplanet;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.MenuItem;
@@ -42,16 +43,23 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
+        startActivity(intent);
+        finish();
         return true; // מחזיר true כי הטיפול ב-item הושלם
 
     }

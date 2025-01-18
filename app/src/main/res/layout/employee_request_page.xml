@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/employee_request_page"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:openDrawer="start"
+    tools:context=".EmployeeRequestPage">
 
-    <!-- App Bar with Toolbar -->
+    <!-- התוכן של עמוד הבקשות -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <!-- Content with ScrollView -->
-        <com.google.android.material.appbar.AppBarLayout
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_background">
+            android:background="?attr/colorPrimary"
+            android:title="Request Form"/>
 
-            <ImageView
-                android:id="@+id/back_btn"
-                android:layout_width="65dp"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:src="@drawable/menu"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
+        <!-- ScrollView עבור שדות הקלט בעמוד הבקשות -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Request Reason Dropdown -->
+                <!-- Reason for Request Dropdown -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -153,4 +144,16 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
+
+    <!-- Navigation Drawer (תפריט) -->
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/employee_menu_header"
+        app:menu="@menu/employee_menu"
+        android:id="@+id/nav_view"
+        android:layout_gravity="start"
+        android:background="@drawable/login_background"
+        app:itemIconPadding="30dp"
+        app:itemTextColor="@color/white"/>
 </androidx.drawerlayout.widget.DrawerLayout>
