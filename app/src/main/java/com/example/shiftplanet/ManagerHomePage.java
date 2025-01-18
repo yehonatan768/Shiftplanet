@@ -64,6 +64,9 @@ public class ManagerHomePage extends AppCompatActivity implements  NavigationVie
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerHomePage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+        }else if (item.getItemId() == R.id.m_log_out) {
+            Toast.makeText(ManagerHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, Login.class);
         }
         // הוספת שאר האפשרויות בתפריט
         drawerLayout.closeDrawer(Gravity.LEFT);

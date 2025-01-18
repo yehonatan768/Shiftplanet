@@ -29,26 +29,30 @@
             android:exported="false" /> <!-- Main Entry Point for the App -->
         <activity
             android:name=".Login"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity><!-- Manager Home Page -->
+
+           <!-- Manager Home Page -->
         <activity
             android:name=".ManagerHomePage"
             android:exported="false" />
             <!-- Employee Home Page -->
         <activity
             android:name=".EmployeeHomePage"
-            android:exported="false" /> <!-- Registration Page -->
+            android:exported="false"/>
+            <!-- Registration Page -->
         <activity
             android:name=".Registration"
             android:exported="false" />
         <activity
             android:name=".EmployeeRequestPage"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

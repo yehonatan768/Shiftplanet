@@ -48,6 +48,11 @@
                     android:icon="@android:drawable/ic_menu_info_details" />
             </menu>
         </item>
+        <item
+            android:id="@+id/m_log_out"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
+            android:title="@string/log_out" />
     </group>
 
 </menu>

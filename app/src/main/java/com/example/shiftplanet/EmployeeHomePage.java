@@ -65,6 +65,9 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         }else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+        }else if (item.getItemId() == R.id.e_log_out) {
+            Toast.makeText(EmployeeHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, Login.class);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);

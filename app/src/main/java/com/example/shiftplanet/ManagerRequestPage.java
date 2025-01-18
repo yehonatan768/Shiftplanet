@@ -66,6 +66,9 @@ public class ManagerRequestPage extends AppCompatActivity {
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerRequestPage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
+        }else if (item.getItemId() == R.id.m_log_out) {
+            Toast.makeText(ManagerRequestPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerRequestPage.this, Login.class);
         }
         // הוספת שאר האפשרויות בתפריט
         drawerLayout.closeDrawer(Gravity.LEFT);

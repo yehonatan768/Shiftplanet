@@ -45,6 +45,11 @@
             android:textColor="@color/white"
             android:title="@string/notifications" />
 
+        <item
+            android:id="@+id/e_log_out"
+            android:icon="@android:drawable/ic_menu_search"
+            android:textColor="@color/white"
+            android:title="@string/log_out" />
 
     </group>
 </menu>
