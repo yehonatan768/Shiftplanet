@@ -11,6 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,8 +44,15 @@ public class Registration extends AppCompatActivity {
         back.setOnClickListener(v -> {
             Intent intent = new Intent(Registration.this, Login.class);
             startActivity(intent);
-        });
 
+        });
+        // TextView for already have account
+        TextView alreadyHaveAccount = findViewById(R.id.alreadyHaveAccount);
+        alreadyHaveAccount.setOnClickListener(v -> {
+            //Back to login page
+            Intent intent = new Intent(Registration.this, Login.class);
+            startActivity(intent);
+        });
         // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         usersdb = FirebaseFirestore.getInstance();
@@ -91,6 +99,7 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match", LENGTH_SHORT).show();
             return;
         }
+
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

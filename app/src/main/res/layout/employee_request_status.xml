@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout">
+    android:id="@+id/drawer_layout1">
 
     <!-- התוכן של העמוד -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,8 +111,8 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        app:headerLayout="@layout/manager_menu_header"
-        app:menu="@menu/manager_menu"
+        app:headerLayout="@layout/employee_menu_header"
+        app:menu="@menu/employee_menu"
         android:id="@+id/nav_view1"
         android:layout_gravity="start"
         android:background="@drawable/login_background"

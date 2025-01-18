@@ -1,6 +1,8 @@
 package com.example.shiftplanet;
+import android.content.Intent;
 import android.os.Bundle;
 
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -43,39 +45,31 @@ public class ManagerHomePage extends AppCompatActivity implements  NavigationVie
     @Override
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // טיפול בפריטי התפריט הראשיים
+        Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
-            // פעולה עבור "הפרופיל שלי"
             Toast.makeText(ManagerHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.employees_requests) {
-            // פעולה עבור "בקשות עובדים"
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+        }else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerHomePage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.m_work_arrangement) {
-            // פעולה עבור "סידור עבודה" (תת-תפריט ייפתח אוטומטית)
-            Toast.makeText(ManagerHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
-            // פעולה עבור "בניית סידור עבודה"
-            Toast.makeText(ManagerHomePage.this, "Building work arrangement clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ManagerHomePage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.published_work_arrangement) {
-            // פעולה עבור "סידור עבודה שפורסם"
             Toast.makeText(ManagerHomePage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.m_notification) {
-            // פעולה עבור "עדכונים לעובדים"
-            Toast.makeText(ManagerHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.send_notifications) {
-            // פעולה עבור "שליחת עדכון"
-            Toast.makeText(ManagerHomePage.this, "Send notification clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ManagerHomePage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
-            // פעולה עבור "עדכונים שנשלחו"
-            Toast.makeText(ManagerHomePage.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ManagerHomePage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
         }
-
-        // סוגר את ה-Drawer
-        drawerLayout.closeDrawer(GravityCompat.START);
-
-        return true; // מחזיר true כי הטיפול ב-item הושלם
+        // הוספת שאר האפשרויות בתפריט
+        drawerLayout.closeDrawer(Gravity.LEFT);
+        startActivity(intent);
+        return true;
     }
-
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {

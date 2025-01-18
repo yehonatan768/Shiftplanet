@@ -81,6 +81,15 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeRequestPage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeRequestPage.this, EmployeeRequestPage.class);
+        }else if (item.getItemId() == R.id.shift_change) {
+            Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+        }else if (item.getItemId() == R.id.requests_status) {
+            Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeRequestPage.this, EmployeeRequestStatus.class);
+        }else if (item.getItemId() == R.id.notification) {
+            Toast.makeText(EmployeeRequestPage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
         }
         drawerLayout.closeDrawer(GravityCompat.START);

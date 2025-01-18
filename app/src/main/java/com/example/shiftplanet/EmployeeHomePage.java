@@ -46,16 +46,25 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
+        }else if (item.getItemId() == R.id.shift_change) {
+            Toast.makeText(EmployeeHomePage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+        }else if (item.getItemId() == R.id.requests_status) {
+            Toast.makeText(EmployeeHomePage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeRequestStatus.class);
+        }else if (item.getItemId() == R.id.notification) {
+            Toast.makeText(EmployeeHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
