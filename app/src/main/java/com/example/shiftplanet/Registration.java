@@ -1,25 +1,18 @@
 package com.example.shiftplanet;
 
 import static android.widget.Toast.LENGTH_SHORT;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,42 +23,35 @@ public class Registration extends AppCompatActivity {
     AutoCompleteTextView autoCompleteTextView;
     ArrayAdapter<String> adapterItems;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore usersdb;
+    private FirebaseFirestore db;
 
-    EditText confirmPassword, passwordEditText, emailEditText, phoneEditText, fullnameEditText, businessCodeEditText, idEditText;
+    EditText managerEmailEditText, confirmPassword, passwordEditText, emailEditText, phoneEditText, fullnameEditText, businessCodeEditText, idEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
+        initializeUI();
+        initializeFirebase();
+        setButtonListeners();
 
-        // Back button
-        ImageView back = findViewById(R.id.back_btn);
-        back.setOnClickListener(v -> {
-            Intent intent = new Intent(Registration.this, Login.class);
-            startActivity(intent);
+    }
 
-        });
-        // TextView for already have account
-        TextView alreadyHaveAccount = findViewById(R.id.alreadyHaveAccount);
-        alreadyHaveAccount.setOnClickListener(v -> {
-            //Back to login page
-            Intent intent = new Intent(Registration.this, Login.class);
-            startActivity(intent);
-        });
-        // Initialize Firebase
+    private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        usersdb = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
+    }
 
-        // Find views
+    private void initializeUI() {
         emailEditText = findViewById(R.id.inputEmail);
         passwordEditText = findViewById(R.id.inputPassword);
+        confirmPassword = findViewById(R.id.inputConfirmPassword);
         fullnameEditText = findViewById(R.id.input_full_name);
         phoneEditText = findViewById(R.id.inputPhoneNumber);
-        confirmPassword = findViewById(R.id.inputConfirmPassword);
         autoCompleteTextView = findViewById(R.id.autoCompleteUserType);
         businessCodeEditText = findViewById(R.id.inputBusinessCode);
         idEditText = findViewById(R.id.input_id);
+        managerEmailEditText=findViewById(R.id.input_manager_email);
 
         // Setup dropdown
         adapterItems = new ArrayAdapter<>(this, R.layout.user_type_list, userTypes);
@@ -75,11 +61,29 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(Registration.this, "Selected: " + item, LENGTH_SHORT).show();
         });
 
-        // Register button
-        Button buttonRegister = findViewById(R.id.btnRegister);
-        buttonRegister.setOnClickListener(v -> registerUser());
+        //Setup employee visibility of manager email
+        managerEmailEditText = findViewById(R.id.input_manager_email);
+        autoCompleteTextView = findViewById(R.id.autoCompleteUserType);
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedUserType = parent.getItemAtPosition(position).toString();
+            if (selectedUserType.equals("Employee")) {
+                managerEmailEditText.setVisibility(View.VISIBLE);
+            } else {
+                managerEmailEditText.setVisibility(View.GONE);
+            }
+        });
     }
-
+    private void setButtonListeners() {
+        findViewById(R.id.btnRegister).setOnClickListener(v -> registerUser());
+        findViewById(R.id.back_btn).setOnClickListener(v -> {
+            Intent intent = new Intent(Registration.this, Login.class);
+            startActivity(intent);
+        });
+        findViewById(R.id.alreadyHaveAccount).setOnClickListener(v -> {
+            Intent intent = new Intent(Registration.this, Login.class);
+            startActivity(intent);
+        });
+    }
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -89,6 +93,13 @@ public class Registration extends AppCompatActivity {
         String userType = autoCompleteTextView.getText().toString().trim();
         String businessCode = businessCodeEditText.getText().toString().trim();
         String id = idEditText.getText().toString().trim();
+        String managerEmail;
+
+        if ("Employee".equalsIgnoreCase(userType)) {
+            managerEmail = managerEmailEditText.getText().toString().trim();
+        } else {
+            managerEmail = "";
+        }
 
         if (email.isEmpty() || password.isEmpty() || confirmPasswordText.isEmpty() || fullname.isEmpty() || phone.isEmpty() || userType.isEmpty() || businessCode.isEmpty() || id.isEmpty()) {
             Toast.makeText(this, "Please fill all the fields", LENGTH_SHORT).show();
@@ -108,7 +119,7 @@ public class Registration extends AppCompatActivity {
                     // Send email verification
                     currentUser.sendEmailVerification().addOnCompleteListener(verificationTask -> {
                         if (verificationTask.isSuccessful()) {
-                            saveUserInfo(fullname, phone, email, userType, businessCode, id, currentUser);
+                            saveUserInfo(fullname, phone, email, userType, businessCode, id, managerEmail, currentUser);
                             Toast.makeText(this, "Registration Completed. Please verify your email!", LENGTH_SHORT).show();
                             Intent intent = new Intent(Registration.this, Login.class); // Redirect to login
                             startActivity(intent);
@@ -121,6 +132,7 @@ public class Registration extends AppCompatActivity {
                         }
                     });
                 }
+
             } else {
                 String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error";
                 Toast.makeText(this, "Registration failed: " + errorMessage, LENGTH_SHORT).show();
@@ -130,16 +142,20 @@ public class Registration extends AppCompatActivity {
     }
 
 
-    private void saveUserInfo(String fullname, String phone, String email, String userType, String businessCode, String id, FirebaseUser currentUser) {
+    private void saveUserInfo(String fullname, String phone, String email, String userType, String businessCode, String id, String managerEmail, FirebaseUser currentUser) {
         Map<String, Object> user = new HashMap<>();
         user.put("fullname", fullname);
         user.put("phone", phone);
         user.put("email", email);
-        user.put("userType", userType);
-        user.put("businessCode", businessCode);
         user.put("id", id);
+        user.put("businessCode", businessCode);
+        user.put("userType", userType);
 
-        usersdb.collection("users").document(currentUser.getUid())
+        if ("Employee".equalsIgnoreCase(userType)) {
+            user.put("managerEmail", managerEmail);
+        }
+
+        db.collection("users").document(currentUser.getUid())
                 .set(user)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User data saved successfully!"))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error saving user data", e));

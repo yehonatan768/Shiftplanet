@@ -24,6 +24,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.shiftplanet.databinding.EmployeeRequestPageBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 
@@ -43,20 +45,18 @@ public class EmployeeRequestPage extends AppCompatActivity {
     ArrayAdapter<String> adapterItems;
     private EditText startDateEditText, endDateEditText, detailsEditText;
     private AutoCompleteTextView reasonDropdown;
+    private String managerEmail;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private FirebaseUser current=  FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.employee_request_page);
-
-        // Initialize views
-        startDateEditText = findViewById(R.id.start_date);
-        endDateEditText = findViewById(R.id.end_date);
-        detailsEditText = findViewById(R.id.details);
-        autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
+        initializeUI();
 
         // Setup date pickers
         startDateEditText.setOnClickListener(v -> showDatePicker((date) -> startDateEditText.setText(date)));
@@ -94,41 +94,35 @@ public class EmployeeRequestPage extends AppCompatActivity {
         // Setup Submit Request button
         Button submitRequestButton = findViewById(R.id.submit_request_button);
         submitRequestButton.setOnClickListener(v -> {
-            // Get values from inputs
             String reason = autoCompleteTextView.getText().toString().trim();
             String startDate = startDateEditText.getText().toString();
             String endDate = endDateEditText.getText().toString();
             String details = detailsEditText.getText().toString();
-
-            // Get current user's email
-            String employeeEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-
-            // Get the manager's email dynamically from Firestore based on employee email
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("users")
-                    .whereEqualTo("email", employeeEmail)
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // Assume only one document for the current employee
-                            String managerEmail = queryDocumentSnapshots.getDocuments().get(0).getString("manager's email");
-
-                            // Now you can submit the request
-                            submitRequest(reason, startDate, endDate, details, managerEmail);
-                        } else {
-                            Toast.makeText(EmployeeRequestPage.this, "Employee not found", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle error
-                        Toast.makeText(EmployeeRequestPage.this, "Error fetching manager's email", Toast.LENGTH_SHORT).show();
-                    });
+            String employeeEmail = current.getEmail();
+            // Get the manager's email from Firestore based on employee email
+            db.collection("users").document(current.getUid()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        managerEmail = document.getString("managerEmail");
+                    }
+                    else{
+                        Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
+                    }
+                    if (managerEmail != null) {
+                        submitRequest(reason, startDate, endDate, details, employeeEmail, managerEmail);
+                    }
+                    else {
+                        Log.e("ManagerEmailError", "Manager email is null.");
+                        Toast.makeText(EmployeeRequestPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
+                    }
+            };
         });
-    }
-
+        });
+        }
 
     // Function to submit request to Firebase Firestore
-    public void submitRequest(String reason, String startDate, String endDate, String details, String managerEmail) {
+    public void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (reason.isEmpty()) {
             Toast.makeText(EmployeeRequestPage.this, "Please fill Request Type", Toast.LENGTH_SHORT).show();
@@ -152,8 +146,8 @@ public class EmployeeRequestPage extends AppCompatActivity {
         request.put("endDate", endDate);
         request.put("details", details);
         request.put("status", "pending"); // Initial status is pending
-        request.put("employeeEmail", FirebaseAuth.getInstance().getCurrentUser().getEmail()); // Employee's email
-        request.put("managerEmail", managerEmail); // Manager's email
+        request.put("employeeEmail", employeeEmail); // Employee's email
+        request.put("managerEmail", managerEmail);
         request.put("timestamp", FieldValue.serverTimestamp()); // Timestamp
 
         // Add request to Firestore
@@ -172,6 +166,14 @@ public class EmployeeRequestPage extends AppCompatActivity {
     }
 
     // Function to send notification to manager
+
+    private void initializeUI() {
+        startDateEditText = findViewById(R.id.start_date);
+        endDateEditText = findViewById(R.id.end_date);
+        detailsEditText = findViewById(R.id.details);
+        autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
+    }
+
     private void sendNotificationToManager(String managerEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

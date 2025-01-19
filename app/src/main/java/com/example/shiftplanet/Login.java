@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -17,7 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Login extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-
     private EditText emailEditText, passwordEditText;
     private String userType;
     private FirebaseAuth mAuth;
@@ -57,7 +53,6 @@ public class Login extends AppCompatActivity {
                 showToast("An error occurred while logging in. Please try again.");
             }
         });
-
         findViewById(R.id.forgotPasswordLogin).setOnClickListener(view -> navigateTo(ForgotPassword.class));
         findViewById(R.id.createNewAccount).setOnClickListener(view -> navigateTo(Registration.class));
     }
