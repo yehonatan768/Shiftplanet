@@ -1,11 +1,14 @@
 package com.example.shiftplanet;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -18,6 +21,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.shiftplanet.databinding.EmployeeRequestPageBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +37,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EmployeeRequestPage extends AppCompatActivity {
+    String[] requestTypes = {"Sick Day", "Vacation"};
 
+    AutoCompleteTextView autoCompleteTextView;
+    ArrayAdapter<String> adapterItems;
     private EditText startDateEditText, endDateEditText, detailsEditText;
     private AutoCompleteTextView reasonDropdown;
     private DrawerLayout drawerLayout;
@@ -48,13 +55,8 @@ public class EmployeeRequestPage extends AppCompatActivity {
         // Initialize views
         startDateEditText = findViewById(R.id.start_date);
         endDateEditText = findViewById(R.id.end_date);
-        reasonDropdown = findViewById(R.id.reason_dropdown);
         detailsEditText = findViewById(R.id.details);
-
-        // Setup dropdown menu
-        String[] reasons = {"Vacation", "Sick Leave"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, reasons);
-        reasonDropdown.setAdapter(adapter);
+        autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
 
         // Setup date pickers
         startDateEditText.setOnClickListener(v -> showDatePicker((date) -> startDateEditText.setText(date)));
@@ -81,11 +83,19 @@ public class EmployeeRequestPage extends AppCompatActivity {
             return true;
         });
 
+        // Setup dropdown
+        adapterItems = new ArrayAdapter<>(this, R.layout.request_type_list, requestTypes);
+        autoCompleteTextView.setAdapter(adapterItems);
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            String item = parent.getItemAtPosition(position).toString();
+            Toast.makeText(EmployeeRequestPage.this, "Selected: " + item, LENGTH_SHORT).show();
+        });
+
         // Setup Submit Request button
         Button submitRequestButton = findViewById(R.id.submit_request_button);
         submitRequestButton.setOnClickListener(v -> {
             // Get values from inputs
-            String reason = reasonDropdown.getText().toString();
+            String reason = autoCompleteTextView.getText().toString().trim();
             String startDate = startDateEditText.getText().toString();
             String endDate = endDateEditText.getText().toString();
             String details = detailsEditText.getText().toString();
@@ -116,9 +126,24 @@ public class EmployeeRequestPage extends AppCompatActivity {
         });
     }
 
+
     // Function to submit request to Firebase Firestore
     public void submitRequest(String reason, String startDate, String endDate, String details, String managerEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (reason.isEmpty()) {
+            Toast.makeText(EmployeeRequestPage.this, "Please fill Request Type", Toast.LENGTH_SHORT).show();
+        }
+        if (startDate.isEmpty()|| reason.isEmpty()) {
+            Toast.makeText(EmployeeRequestPage.this, "Please fill Start Date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (endDate.isEmpty()) {
+            Toast.makeText(EmployeeRequestPage.this, "Please fill End Date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (reason.equals("Vacation") && details.isEmpty()) {
+            Toast.makeText(EmployeeRequestPage.this, "Please fill Details about the request", Toast.LENGTH_SHORT).show();
+        }
 
         // Create request object
         Map<String, Object> request = new HashMap<>();

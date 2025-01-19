@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -26,10 +27,10 @@
 
         <activity
             android:name=".ForgotPassword"
-            android:exported="false" /> <!-- Main Entry Point for the App -->
+            android:exported="false" />
         <activity
-            android:name=".Login"
-            android:exported="false"/>
+            android:name=".EmployeeRequestPage"
+            android:exported="true"/> <!-- Main Entry Point for the App -->
 
 
            <!-- Manager Home Page -->
@@ -45,7 +46,7 @@
             android:name=".Registration"
             android:exported="false" />
         <activity
-            android:name=".EmployeeRequestPage"
+            android:name=".Login"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

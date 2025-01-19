@@ -37,24 +37,34 @@
 
                 <!-- Reason for Request Dropdown -->
                 <TextView
+                    android:id="@+id/requestTypeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Reason for Request"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:paddingBottom="8dp" />
-
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputRequestType"
+                    android:background="@drawable/input_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:hint="Select Reason">
+                    android:layout_margin="16dp"
+                    android:textColorHint="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/requestTypeText"
+                    app:layout_constraintHorizontal_bias="0.3"
+                    app:layout_constraintStart_toStartOf="@+id/requestTypeText"
+                    app:layout_constraintTop_toBottomOf="@+id/requestTypeText"
+                    android:hint="@string/user_type"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                     <AutoCompleteTextView
-                        android:id="@+id/reason_dropdown"
+                        android:id="@+id/autoCompleteRequestType"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:padding="2dp"
-                        android:inputType="none" />
+                        android:layout_height="match_parent"
+                        android:hint="@string/user_type"
+                        android:inputType="none"
+                        android:padding="2dp"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Start Date -->
