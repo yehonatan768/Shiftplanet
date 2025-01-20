@@ -1,7 +1,10 @@
 package com.example.shiftplanet;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -23,12 +26,23 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
+    String employeeEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.employee_home_page);
+
+        // Retrieve the email
+        String email = getIntent().getStringExtra("LOGIN_EMAIL");
+
+        if (email != null) {
+            Log.d(TAG, "Received email: " + email);
+            employeeEmail = email;
+        } else {
+            Log.e(TAG, "No email received");
+        }
 
         // קביעת Toolbar כ-ActionBar
         toolbar = findViewById(R.id.toolbar);
@@ -87,27 +101,35 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeHomePage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeHomePage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeRequestStatus.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, Login.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);

@@ -84,7 +84,7 @@ public class Login extends AppCompatActivity {
                                 mAuth.signOut();
                                 return;
                             }
-                            fetchUserData(user.getUid());
+                            fetchUserData(user.getUid(), email);
                         }
                     } else {
                         String errorMessage = task.getException() != null
@@ -96,7 +96,7 @@ public class Login extends AppCompatActivity {
                 });
     }
 
-    private void fetchUserData(String userId) {
+    private void fetchUserData(String userId, String email) {
         Log.d(TAG, "Fetching user data for UID: " + userId);
         db.collection("users")
                 .document(userId)
@@ -107,7 +107,7 @@ public class Login extends AppCompatActivity {
                         if (document != null && document.exists()) {
                             userType = document.getString("userType"); // Ensure field name matches Firestore
                             if (userType != null) {
-                                navigateToHomePage();
+                                navigateToHomePage(email);
                             } else {
                                 Log.e(TAG, "User type is missing.");
                                 showToast("User type is missing in Firestore. Please contact support.");
@@ -126,7 +126,7 @@ public class Login extends AppCompatActivity {
                 });
     }
 
-    private void navigateToHomePage() {
+    private void navigateToHomePage(String email) {
         Intent intent;
         try {
             if ("Manager".equalsIgnoreCase(userType)) {
@@ -137,7 +137,10 @@ public class Login extends AppCompatActivity {
                 throw new IllegalArgumentException("Unknown user type: " + userType);
             }
 
-            Log.d(TAG, "Navigating to: " + userType + " Home Page");
+            // Attach the email as an extra
+            intent.putExtra("LOGIN_EMAIL", email);
+
+            Log.d(TAG, "Navigating to: " + userType + " Home Page with email: " + email);
             startActivity(intent);
             finish();
         } catch (Exception e) {
@@ -150,6 +153,7 @@ public class Login extends AppCompatActivity {
         Intent intent = new Intent(Login.this, targetActivity);
         startActivity(intent);
     }
+
 
     private void showToast(String message) {
         Toast.makeText(Login.this, message, Toast.LENGTH_SHORT).show();

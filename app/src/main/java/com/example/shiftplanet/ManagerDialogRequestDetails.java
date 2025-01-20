@@ -24,6 +24,8 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
     private Button denyButton;
     private Button downloadDocument;
 
+    private String managerEmail, employeeEmail;
+    private int requsetNumber;
     // Firestore instance and request document
     private FirebaseFirestore db;
     private DocumentSnapshot requestDocument;
@@ -32,6 +34,13 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_request_details);
+
+        /*
+            create a fetch function for the data requestNumber, managerEmail and employeeEmail
+
+
+         */
+
 
         // Initialize UI elements
         backButton = findViewById(R.id.back_btn);
@@ -44,10 +53,15 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Fetch and save request document
-        fetchRequestDocument(3, "orgoren3146@gmail.com", "orcallbiz1@gmail.com");
+        fetchRequestDocument(requsetNumber, managerEmail, employeeEmail);
 
         // Set up back button functionality
-        backButton.setOnClickListener(v -> finish());
+        backButton.findViewById(R.id.back_btn).setOnClickListener(v -> {
+            Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class);
+            startActivity(intent);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
+        });
 
         // Approve button click listener
         approveButton.setOnClickListener(v -> {
