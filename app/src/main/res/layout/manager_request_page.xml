@@ -97,7 +97,7 @@
                     android:fillViewport="true">
 
                     <LinearLayout
-                        android:id="@+id/layout_close_requests"
+                        android:id="@+id/layout_closed_requests"
                         android:layout_width="380dp"
                         android:layout_height="265dp"
                         android:orientation="vertical"
