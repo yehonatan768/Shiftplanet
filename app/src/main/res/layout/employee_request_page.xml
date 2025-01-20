@@ -54,14 +54,13 @@
                     app:layout_constraintHorizontal_bias="0.3"
                     app:layout_constraintStart_toStartOf="@+id/requestTypeText"
                     app:layout_constraintTop_toBottomOf="@+id/requestTypeText"
-                    android:hint="@string/user_type"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                     <AutoCompleteTextView
                         android:id="@+id/autoCompleteRequestType"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/user_type"
+                        android:hint="@string/day_off_reason"
                         android:inputType="none"
                         android:padding="2dp"/>
 
@@ -159,7 +158,7 @@
 
     <!-- Navigation Drawer (תפריט) -->
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="240dp"
+        android:layout_width="290dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/employee_menu_header"
         app:menu="@menu/employee_menu"

@@ -1,23 +1,25 @@
 package com.example.shiftplanet;
+
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.appcompat.widget.Toolbar;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ManagerHomePage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+public class ManagerHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -39,17 +41,52 @@ public class ManagerHomePage extends AppCompatActivity implements  NavigationVie
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        // קרא לפונקציה להוציא את ה-FCM Token
+        getFCMToken();
     }
 
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(this, token -> {
+                    // ה-token שהתקבל מ-FCM
+                    saveFCMTokenToFirestore(token);
+                })
+                .addOnFailureListener(this, e -> {
+                    Toast.makeText(ManagerHomePage.this, "Error getting FCM Token", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void saveFCMTokenToFirestore(String token) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // יצירת HashMap עם ה-token
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("fcmToken", token);
+
+            // עדכון המסמך של המשתמש ב-Firestore עם ה-token החדש
+            db.collection("users")
+                    .document(user.getUid())
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        // הודעה במקרה של הצלחה
+                        // Toast.makeText(ManagerHomePage.this, "FCM Token updated successfully.", Toast.LENGTH_SHORT).show();
+
+                    })
+                    .addOnFailureListener(e -> {
+                        // הודעה במקרה של כישלון
+                        Toast.makeText(ManagerHomePage.this, "Error updating FCM Token", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
 
     @Override
-
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
-        }else if (item.getItemId() == R.id.employees_requests) {
+        } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerHomePage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
@@ -64,15 +101,15 @@ public class ManagerHomePage extends AppCompatActivity implements  NavigationVie
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerHomePage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
-        }else if (item.getItemId() == R.id.m_log_out) {
+        } else if (item.getItemId() == R.id.m_log_out) {
             Toast.makeText(ManagerHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, Login.class);
         }
-        // הוספת שאר האפשרויות בתפריט
-        drawerLayout.closeDrawer(Gravity.LEFT);
+        drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
         return true;
     }
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
