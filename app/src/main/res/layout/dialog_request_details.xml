@@ -3,121 +3,153 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
-    <!-- App Bar with Toolbar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/background_primary"
+        android:padding="16dp">
 
-        <!-- Toolbar Section -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/btnBackDialog"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="14dp"
+            android:src="@drawable/arrow_back_icon" />
+
+        <!-- Profile Picture -->
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/profile"
+            android:contentDescription="Profile Picture" />
+
+        <!-- Employee Name -->
+        <TextView
+            android:id="@+id/employee_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_background">
+            android:text="Loading..."
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/white" />
 
-            <ImageView
-                android:id="@+id/back_btn"
-                android:layout_width="65dp"
+        <!-- Start Date, End Date -->
+        <TextView
+            android:id="@+id/dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading..."
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_background"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/white" />
+
+        <!-- Request Type -->
+        <LinearLayout
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/arrow_back_icon"
-                android:padding="16dp"
+                android:layout_gravity="start"
+                android:paddingLeft="24dp"
+                android:paddingBottom="5dp"
+                android:text="Request Type"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                android:contentDescription="Back Button" />
-            <!--  android:src="@drawable/ic_back_arrow" -->
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <!-- Main Content with ScrollView -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/requestTypeText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:text="Loading..."
+                android:paddingRight="24dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="end"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
 
-                <!-- Request Title -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Request Details"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:textStyle="bold"
-                    android:textSize="32sp"
-                    android:paddingBottom="8dp"
-                    android:textColor="@android:color/black" />
+        <!-- Details Section -->
+        <LinearLayout
+            android:layout_width="360dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_background"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-                <!-- Details Section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Details"
-                    android:textSize="20sp"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:paddingBottom="8dp" />
+            <TextView
+                android:id="@+id/details_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:text="Loading..."
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:hintEnabled="false">
+        <!-- Download Document Button -->
+        <Button
+            android:id="@+id/add_document_button"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Download Document"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_button"
+            android:gravity="center" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/request_details_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Add any additional details here"
-                        android:inputType="textMultiLine"
-                        android:minHeight="100dp"
-                        android:textSize="16sp"
-                        android:gravity="top" />
-                </com.google.android.material.textfield.TextInputLayout>
+        <!-- Approve/Deny Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
 
-                <!-- Approve/Deny Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp">
+            <Button
+                android:id="@+id/approve_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Approve"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:backgroundTint="@color/green"
+                android:background="@drawable/rounded_button"
+                android:layout_marginEnd="8dp" />
 
-                    <Button
-                        android:id="@+id/approve_button"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:backgroundTint="@color/green"
-                        android:text="Approve"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/deny_button"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:backgroundTint="@color/red"
-                        android:text="Deny"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <!-- Add Document Button -->
-                <Button
-                    android:id="@+id/add_document_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/purple"
-                    android:text="Download Document"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </ScrollView>
+            <Button
+                android:id="@+id/deny_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Deny"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:backgroundTint="@color/red"
+                android:background="@drawable/rounded_button"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

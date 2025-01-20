@@ -23,7 +23,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
     // UI Elements
     private ImageView backButton;
-    private TextInputEditText requestDetailsContent;
+    private TextView requestDetailsContent;
     private Button approveButton;
     private Button denyButton;
     private Button downloadDocument;
@@ -55,8 +55,8 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         Log.d(TAG, "Request Number: " + requestNumber);
 
         // Initialize UI elements
-        backButton = findViewById(R.id.back_btn);
-        requestDetailsContent = findViewById(R.id.request_details_content);
+        backButton = findViewById(R.id.btnBackDialog);
+        requestDetailsContent = findViewById(R.id.details_text);
         approveButton = findViewById(R.id.approve_button);
         denyButton = findViewById(R.id.deny_button);
         downloadDocument = findViewById(R.id.add_document_button);
@@ -99,40 +99,38 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                     .whereEqualTo("employeeEmail", employeeEmail)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        try {
-                            if (!queryDocumentSnapshots.isEmpty()) {
-                                requestDocument = queryDocumentSnapshots.getDocuments().get(0); // Save the first matching document
-
-                                try {
-                                    String reason = requestDocument.getString("reason");
-                                    String startDate = requestDocument.getString("startDate");
-                                    String endDate = requestDocument.getString("endDate");
-                                    String additionalDetails = requestDocument.getString("details");
-
-                                    try {
-                                        String formattedDetails = String.format(
-                                                "Reason: %s\nStart Date: %s\nEnd Date: %s\nDetails: %s",
-                                                reason != null ? reason : "N/A",
-                                                startDate != null ? startDate : "N/A",
-                                                endDate != null ? endDate : "N/A",
-                                                additionalDetails != null ? additionalDetails : "N/A"
-                                        );
-
-                                        requestDetailsContent.setText(formattedDetails);
-                                    } catch (Exception e) {
-                                        Toast.makeText(this, "Error formatting details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        // Fetch employee name from user collection
+                        db.collection("Users")
+                                .whereEqualTo("email", employeeEmail)
+                                .get()
+                                .addOnSuccessListener(querySnapshots -> {
+                                    if (!querySnapshots.isEmpty()) {
+                                        String fullname = querySnapshots.getDocuments().get(0).getString("fullname");
+                                        TextView employeeNameView = findViewById(R.id.employee_name);
+                                        employeeNameView.setText(fullname != null ? fullname : "N/A");
+                                    } else {
+                                        Log.d(TAG, "Employee not found");
                                     }
+                                })
+                                .addOnFailureListener(e -> Log.e(TAG, "Error fetching employee name: " + e.getMessage()));
 
-                                } catch (Exception e) {
-                                    Toast.makeText(this, "Error retrieving fields from document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
+                        // Populate request data
+                        if (requestDocument != null) {
+                            String reason = requestDocument.getString("reason");
+                            String startDate = requestDocument.getString("startDate");
+                            String endDate = requestDocument.getString("endDate");
+                            String additionalDetails = requestDocument.getString("details");
 
-                            } else {
-                                Toast.makeText(this, "No matching request found.", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(this, "Error processing query results: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            TextView datesView = findViewById(R.id.dates);
+                            datesView.setText(String.format("%s - %s", startDate, endDate));
+
+                            TextView requestTypeView = findViewById(R.id.requestTypeText);
+                            requestTypeView.setText(reason);
+
+                            TextView detailsView = findViewById(R.id.details_text);
+                            detailsView.setText(additionalDetails);
                         }
+
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to fetch request details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
