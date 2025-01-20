@@ -8,47 +8,54 @@
 
         <item
             android:id="@+id/e_my_profile"
-            android:icon="@android:drawable/ic_menu_preferences"
+            android:icon="@drawable/profile"
             android:textColor="@color/white"
             android:title="@string/profile" />
 
         <item
             android:id="@+id/e_work_arrangement"
-            android:icon="@android:drawable/ic_menu_preferences"
+            android:icon="@drawable/work_arrangement"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/work_arrangement" />
         <item
             android:id="@+id/constraints"
-            android:icon="@android:drawable/ic_menu_preferences"
+            android:icon="@drawable/build_workarrangement"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/submit_constraints" />
 
         <item
             android:id="@+id/day_off"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/submit_request"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/submit_day_off" />
 
         <item
             android:id="@+id/shift_change"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/submit_request"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/shift_change_request" />
         <item
             android:id="@+id/requests_status"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/requests_status"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/requests_status" />
         <item
             android:id="@+id/notification"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/notifications"
             android:textColor="@color/white"
+            android:iconTint="@color/black"
             android:title="@string/notifications" />
 
         <item
             android:id="@+id/e_log_out"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/logout"
             android:textColor="@color/white"
+            android:iconTint="@color/white"
             android:title="@string/log_out" />
 
     </group>

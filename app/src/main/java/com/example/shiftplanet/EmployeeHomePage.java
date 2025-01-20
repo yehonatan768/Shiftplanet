@@ -1,4 +1,5 @@
 package com.example.shiftplanet;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,8 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+import java.util.HashMap;
+import java.util.Map;
 
-public class EmployeeHomePage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+public class EmployeeHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -23,9 +30,11 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         EdgeToEdge.enable(this);
         setContentView(R.layout.employee_home_page);
 
+        // קביעת Toolbar כ-ActionBar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // קביעת Navigation Drawer
         drawerLayout = findViewById(R.id.employee_home_page);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -34,8 +43,43 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        // קבלת ה-FCM Token ושמירתו ב-Firestore
+        getFCMToken();
     }
 
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(this, token -> {
+                    // ה-token שהתקבל מ-FCM
+                    saveFCMTokenToFirestore(token);
+                })
+                .addOnFailureListener(this, e -> {
+                    Toast.makeText(EmployeeHomePage.this, "Error getting FCM Token", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void saveFCMTokenToFirestore(String token) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // יצירת HashMap עם ה-token
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("fcmToken", token);
+
+            // עדכון המסמך של המשתמש ב-Firestore עם ה-token החדש
+            db.collection("users")
+                    .document(user.getUid())
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        // הודעה במקרה של הצלחה
+                        //Toast.makeText(EmployeeHomePage.this, "FCM Token updated successfully.", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        // הודעה במקרה של כישלון
+                        Toast.makeText(EmployeeHomePage.this, "Error updating FCM Token", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -52,16 +96,16 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeRequestPage.class);
-        }else if (item.getItemId() == R.id.shift_change) {
+        } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeHomePage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
-        }else if (item.getItemId() == R.id.requests_status) {
+        } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeHomePage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeRequestStatus.class);
-        }else if (item.getItemId() == R.id.notification) {
+        } else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
-        }else if (item.getItemId() == R.id.e_log_out) {
+        } else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, Login.class);
         }
@@ -69,7 +113,6 @@ public class EmployeeHomePage extends AppCompatActivity implements  NavigationVi
         startActivity(intent);
         finish();
         return true; // מחזיר true כי הטיפול ב-item הושלם
-
     }
 
     @Override

@@ -8,49 +8,59 @@
         <item
             android:id="@+id/m_my_profile"
             android:title="@string/profile"
-            android:icon="@android:drawable/ic_menu_search" />
+            android:icon="@drawable/profile"
+            android:textColor="@color/white"
+            android:iconTint="@color/white"/>
 
         <item
             android:id="@+id/employees_requests"
             android:title="@string/employees_requests"
-            android:icon="@android:drawable/ic_menu_search" />
+            android:icon="@drawable/requests_status"
+            android:textColor="@color/white"
+            android:iconTint="@color/white" />
 
         <item
             android:id="@+id/m_work_arrangement"
             android:title="@string/work_arrangement"
-            android:icon="@android:drawable/ic_menu_search">
-            android:textColor="@color/white"
-            <!-- תת-תפריט, יופיע כאשר תלחץ על "סידור עבודה" -->
+            android:textColor="@color/white">
+
+
+            <!--Work arrangement sub menu-->
             <menu>
                 <item
                     android:id="@+id/build_work_arrangement"
                     android:title="@string/build_work_arrangement"
-                    android:icon="@android:drawable/ic_menu_edit" />
+                    android:icon="@drawable/build_workarrangement"
+                    android:textColor="@color/white"/>
                 <item
                     android:id="@+id/published_work_arrangement"
                     android:title="@string/published_work_arrangement"
-                    android:icon="@android:drawable/ic_menu_info_details" />
+                    android:icon="@drawable/work_arrangement"
+                    android:textColor="@color/white"/>
             </menu>
         </item>
         <item
             android:id="@+id/m_notification"
             android:title="@string/notifications"
-            android:icon="@android:drawable/ic_menu_search">
-            <!-- תת-תפריט, יופיע כאשר תלחץ על "סידור עבודה" -->
+            android:textColor="@color/white"
+            >
+            <!-- Notification sub menu -->
             <menu>
                 <item
                     android:id="@+id/send_notifications"
                     android:title="@string/send_notifications"
-                    android:icon="@android:drawable/ic_menu_edit" />
+                    android:icon="@drawable/send_notification"
+                    android:textColor="@color/white"/>
                 <item
                     android:id="@+id/sent_notifications"
                     android:title="@string/sent_notifications"
-                    android:icon="@android:drawable/ic_menu_info_details" />
+                    android:icon="@drawable/notifications"
+                    android:textColor="@color/white"/>
             </menu>
         </item>
         <item
             android:id="@+id/m_log_out"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/logout"
             android:textColor="@color/white"
             android:title="@string/log_out" />
     </group>

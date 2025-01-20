@@ -31,9 +31,6 @@ import com.google.firebase.firestore.FieldValue;
 
 import org.json.JSONObject;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,11 +43,12 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private EditText startDateEditText, endDateEditText, detailsEditText;
     private AutoCompleteTextView reasonDropdown;
     private String managerEmail;
+    private int businessCode;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private FirebaseUser current=  FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,49 +93,53 @@ public class EmployeeRequestPage extends AppCompatActivity {
         Button submitRequestButton = findViewById(R.id.submit_request_button);
         submitRequestButton.setOnClickListener(v -> {
             String reason = autoCompleteTextView.getText().toString().trim();
-            String startDate = startDateEditText.getText().toString();
-            String endDate = endDateEditText.getText().toString();
-            String details = detailsEditText.getText().toString();
+            String startDate = startDateEditText.getText().toString().trim();
+            String endDate = endDateEditText.getText().toString().trim();
+            String details = detailsEditText.getText().toString().trim();
             String employeeEmail = current.getEmail();
-            // Get the manager's email from Firestore based on employee email
+
+            if (reason.isEmpty()) {
+                Toast.makeText(EmployeeRequestPage.this, "Please fill Request Type", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (startDate.isEmpty()) {
+                Toast.makeText(EmployeeRequestPage.this, "Please fill Start Date", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (endDate.isEmpty()) {
+                Toast.makeText(EmployeeRequestPage.this, "Please fill End Date", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (reason.equals("Vacation") && details.isEmpty()) {
+                Toast.makeText(EmployeeRequestPage.this, "Please fill Details about the request", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Get the manager's email and business code from Firestore
             db.collection("users").document(current.getUid()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         managerEmail = document.getString("managerEmail");
-                    }
-                    else{
-                        Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
-                    }
-                    if (managerEmail != null) {
+                        businessCode = Integer.parseInt(document.getString("businessCode"));
                         submitRequest(reason, startDate, endDate, details, employeeEmail, managerEmail);
-                    }
-                    else {
-                        Log.e("ManagerEmailError", "Manager email is null.");
+                    } else {
+                        Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
                         Toast.makeText(EmployeeRequestPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
                     }
-            };
+                } else {
+                    Log.e("FirestoreError", "Error getting user document", task.getException());
+                }
+            });
         });
-        });
-        }
+    }
 
     // Function to submit request to Firebase Firestore
     public void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if (reason.isEmpty()) {
-            Toast.makeText(EmployeeRequestPage.this, "Please fill Request Type", Toast.LENGTH_SHORT).show();
-        }
-        if (startDate.isEmpty()|| reason.isEmpty()) {
-            Toast.makeText(EmployeeRequestPage.this, "Please fill Start Date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (endDate.isEmpty()) {
-            Toast.makeText(EmployeeRequestPage.this, "Please fill End Date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (reason.equals("Vacation") && details.isEmpty()) {
-            Toast.makeText(EmployeeRequestPage.this, "Please fill Details about the request", Toast.LENGTH_SHORT).show();
-        }
 
         // Create request object
         Map<String, Object> request = new HashMap<>();
@@ -148,6 +150,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         request.put("status", "pending"); // Initial status is pending
         request.put("employeeEmail", employeeEmail); // Employee's email
         request.put("managerEmail", managerEmail);
+        request.put("businessCode", businessCode);
         request.put("timestamp", FieldValue.serverTimestamp()); // Timestamp
 
         // Add request to Firestore
@@ -157,7 +160,6 @@ public class EmployeeRequestPage extends AppCompatActivity {
                     // Request successfully added
                     Toast.makeText(EmployeeRequestPage.this, "Request submitted", Toast.LENGTH_SHORT).show();
                     // Optionally send notification to manager
-                    sendNotificationToManager(managerEmail);
                 })
                 .addOnFailureListener(e -> {
                     // Handle error
@@ -165,78 +167,11 @@ public class EmployeeRequestPage extends AppCompatActivity {
                 });
     }
 
-    // Function to send notification to manager
-
     private void initializeUI() {
         startDateEditText = findViewById(R.id.start_date);
         endDateEditText = findViewById(R.id.end_date);
         detailsEditText = findViewById(R.id.details);
         autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
-    }
-
-    private void sendNotificationToManager(String managerEmail) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Find the manager by email
-        db.collection("users")
-                .whereEqualTo("email", managerEmail)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Found manager, now send notification
-                        String managerFCMToken = queryDocumentSnapshots.getDocuments().get(0).getString("fcmToken");
-                        if (managerFCMToken != null) {
-                            sendPushNotification(managerFCMToken, "New leave request", "You have a new leave request to approve.");
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle error
-                    Toast.makeText(EmployeeRequestPage.this, "Error finding manager", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    // Function to send push notification (this can be customized based on your notification method)
-    private void sendPushNotification(String fcmToken, String title, String message) {
-        // FCM Server Key
-        String serverKey = "BOSjbN8jTCk5nrgWdcQhBBcxwO5RTHa9oGK7N9-bkfaqCuCuL23BQ6BEtYvSXnGj7z-EfZwGBxAmjz3Uiaw8cSE"; // הוסף את ה-Server Key שלך כאן
-
-        // URL של FCM
-        String url = "https://fcm.googleapis.com/fcm/send";
-
-        // JSON body של הבקשה
-        JSONObject json = new JSONObject();
-        try {
-            json.put("to", fcmToken);
-            JSONObject notification = new JSONObject();
-            notification.put("title", title);
-            notification.put("body", message);
-            json.put("notification", notification);
-
-            // יצירת קשר עם ה-HTTP Server של FCM
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Authorization", "key=" + serverKey);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-
-            // לשלוח את הבקשה
-            OutputStream os = connection.getOutputStream();
-            os.write(json.toString().getBytes());
-            os.flush();
-
-            // קבלת תוצאה
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                // הודעה נשלחה בהצלחה
-                Log.d("FCM", "Notification sent successfully.");
-            } else {
-                // שגיאה בשליחת ההודעה
-                Log.e("FCM", "Error sending notification: " + responseCode);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // Function to handle navigation item clicks
@@ -254,23 +189,23 @@ public class EmployeeRequestPage extends AppCompatActivity {
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeRequestPage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeRequestPage.class);
-        }else if (item.getItemId() == R.id.shift_change) {
+        } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
-        }else if (item.getItemId() == R.id.requests_status) {
+        } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeRequestStatus.class);
-        }else if (item.getItemId() == R.id.notification) {
+        } else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeRequestPage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
-        }else if (item.getItemId() == R.id.e_log_out) {
+        } else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeRequestPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, Login.class);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
         finish();
-        return true; // Return true to indicate that the item has been handled
+        return true;
     }
 
     // Function to show date picker

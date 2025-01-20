@@ -109,7 +109,7 @@
 
     <!-- תפריט ניווט (Navigation Drawer) -->
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="240dp"
+        android:layout_width="290dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/employee_menu_header"
         app:menu="@menu/employee_menu"

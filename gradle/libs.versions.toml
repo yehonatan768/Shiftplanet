@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.3"
 firebaseBomVersion = "33.7.0"
+firebase_messaging = "23.0.0"
 firebaseDatabase = "21.0.0"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
@@ -17,6 +18,7 @@ playServicesAuth = "21.3.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase_messaging" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
