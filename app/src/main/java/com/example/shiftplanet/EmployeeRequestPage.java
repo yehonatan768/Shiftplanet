@@ -1,5 +1,6 @@
 package com.example.shiftplanet;
 
+import static android.content.ContentValues.TAG;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.app.DatePickerDialog;
@@ -49,10 +50,20 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private Toolbar toolbar;
     private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String employeeEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Retrieve the email
+        String email = getIntent().getStringExtra("LOGIN_EMAIL");
+
+        if (email != null) {
+            Log.d(TAG, "Received email: " + email);
+            employeeEmail = email;
+        } else {
+            Log.e(TAG, "No email received");
+        }
         setContentView(R.layout.employee_request_page);
         initializeUI();
 
@@ -139,32 +150,37 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
     // Function to submit request to Firebase Firestore
     public void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        getNextRequestNumber(requestNumber -> {
+            if (requestNumber == -1) {
+                Toast.makeText(EmployeeRequestPage.this, "Error generating request number", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        // Create request object
-        Map<String, Object> request = new HashMap<>();
-        request.put("reason", reason);
-        request.put("startDate", startDate);
-        request.put("endDate", endDate);
-        request.put("details", details);
-        request.put("status", "pending"); // Initial status is pending
-        request.put("employeeEmail", employeeEmail); // Employee's email
-        request.put("managerEmail", managerEmail);
-        request.put("businessCode", businessCode);
-        request.put("timestamp", FieldValue.serverTimestamp()); // Timestamp
+            // Create request object
+            Map<String, Object> request = new HashMap<>();
+            request.put("reason", reason);
+            request.put("startDate", startDate);
+            request.put("endDate", endDate);
+            request.put("details", details);
+            request.put("status", "pending"); // Initial status is pending
+            request.put("employeeEmail", employeeEmail); // Employee's email
+            request.put("managerEmail", managerEmail);
+            request.put("businessCode", businessCode);
+            request.put("timestamp", FieldValue.serverTimestamp()); // Timestamp
+            request.put("requestNumber", requestNumber); // Request number
 
-        // Add request to Firestore
-        db.collection("Requests")
-                .add(request)
-                .addOnSuccessListener(documentReference -> {
-                    // Request successfully added
-                    Toast.makeText(EmployeeRequestPage.this, "Request submitted", Toast.LENGTH_SHORT).show();
-                    // Optionally send notification to manager
-                })
-                .addOnFailureListener(e -> {
-                    // Handle error
-                    Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show();
-                });
+            // Add request to Firestore
+            db.collection("Requests")
+                    .add(request)
+                    .addOnSuccessListener(documentReference -> {
+                        // Request successfully added
+                        Toast.makeText(EmployeeRequestPage.this, "Request submitted with number: " + requestNumber, Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle error
+                        Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show();
+                    });
+        });
     }
 
     private void initializeUI() {
@@ -174,39 +190,72 @@ public class EmployeeRequestPage extends AppCompatActivity {
         autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
     }
 
-    // Function to handle navigation item clicks
-    private boolean handleNavigationItemSelected(MenuItem item) {
+    private void getNextRequestNumber(OnRequestNumberGeneratedListener listener) {
+        db.collection("RequestCounters").document("GlobalCounter")
+                .update("counter", FieldValue.increment(1))
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        db.collection("RequestCounters").document("GlobalCounter")
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    if (documentSnapshot.exists()) {
+                                        long counter = documentSnapshot.getLong("counter");
+                                        listener.onRequestNumberGenerated(counter);
+                                    } else {
+                                        listener.onRequestNumberGenerated(-1);
+                                    }
+                                });
+                    } else {
+                        listener.onRequestNumberGenerated(-1);
+                    }
+                });
+    }
+
+    interface OnRequestNumberGeneratedListener {
+        void onRequestNumberGenerated(long requestNumber);
+    }
+
+    private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeRequestPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeRequestPage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeRequestPage.class);
-        } else if (item.getItemId() == R.id.shift_change) {
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
-        } else if (item.getItemId() == R.id.requests_status) {
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeRequestStatus.class);
-        } else if (item.getItemId() == R.id.notification) {
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeRequestPage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
-        } else if (item.getItemId() == R.id.e_log_out) {
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeRequestPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, Login.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
         finish();
-        return true;
+
     }
+
 
     // Function to show date picker
     private void showDatePicker(OnDateSelectedListener listener) {
