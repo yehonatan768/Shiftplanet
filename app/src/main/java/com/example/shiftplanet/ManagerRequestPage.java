@@ -188,9 +188,9 @@ public class ManagerRequestPage extends AppCompatActivity {
             // Set background color based on status
             int backgroundColor = defaultBackgroundColor; // Default color for pending requests
             if ("approved".equalsIgnoreCase(status)) {
-                backgroundColor = getResources().getColor(android.R.color.holo_green_light); // Green for approved
+                backgroundColor = getResources().getColor(android.R.color.holo_green_dark); // Green for approved
             } else if ("denied".equalsIgnoreCase(status)) {
-                backgroundColor = getResources().getColor(android.R.color.holo_red_light); // Red for denied
+                backgroundColor = getResources().getColor(android.R.color.holo_red_dark); // Red for denied
             }
 
             LinearLayout requestLayout = createRequestLayout(
