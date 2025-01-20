@@ -1,7 +1,10 @@
 package com.example.shiftplanet;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,18 +17,19 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class ManagerDialogRequestDetails extends AppCompatActivity {
 
     // UI Elements
     private ImageView backButton;
-    private TextView requestDetailsTitle;
     private TextInputEditText requestDetailsContent;
     private Button approveButton;
     private Button denyButton;
     private Button downloadDocument;
 
-    private String managerEmail, employeeEmail;
-    private int requsetNumber;
+    private String managerEmail;
+    private String employeeEmail;
     // Firestore instance and request document
     private FirebaseFirestore db;
     private DocumentSnapshot requestDocument;
@@ -35,12 +39,20 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_request_details);
 
-        /*
-            create a fetch function for the data requestNumber, managerEmail and employeeEmail
+        managerEmail = Objects.requireNonNull(getIntent().getStringExtra("managerEmail")).trim();
+        employeeEmail = Objects.requireNonNull(getIntent().getStringExtra("employeeEmail")).trim();
+        int requestNumber = getIntent().getIntExtra("requestNumber", - 1);
 
+        if (requestNumber != -1) {
+            Log.d(TAG, "Request Number: " + requestNumber);
+        } else {
+            Toast.makeText(this, "Invalid request number: " + requestNumber, Toast.LENGTH_SHORT).show();
+            return; // Exit to avoid further issues
+        }
 
-         */
-
+        Log.d(TAG, "Manager Email: " + managerEmail);
+        Log.d(TAG, "Employee Email: " + employeeEmail);
+        Log.d(TAG, "Request Number: " + requestNumber);
 
         // Initialize UI elements
         backButton = findViewById(R.id.back_btn);
@@ -53,13 +65,13 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Fetch and save request document
-        fetchRequestDocument(requsetNumber, managerEmail, employeeEmail);
+        fetchRequestDocument(requestNumber, managerEmail, employeeEmail);
 
         // Set up back button functionality
         backButton.findViewById(R.id.back_btn).setOnClickListener(v -> {
             Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class);
-            startActivity(intent);
             intent.putExtra("LOGIN_EMAIL", managerEmail);
+            startActivity(intent);
             finish();
         });
 
@@ -82,7 +94,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
     private void fetchRequestDocument(int numberInput, String managerEmail, String employeeEmail) {
         try {
             db.collection("Requests")
-                    .whereEqualTo("number", numberInput)
+                    .whereEqualTo("requestNumber", numberInput)
                     .whereEqualTo("managerEmail", managerEmail)
                     .whereEqualTo("employeeEmail", employeeEmail)
                     .get()
@@ -139,7 +151,9 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Request Approved", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class); // Redirect to login
+                        intent.putExtra("LOGIN_EMAIL", managerEmail);
                         startActivity(intent);
+                        finish();
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to approve request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -157,7 +171,9 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Request Denied", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class); // Redirect to login
+                        intent.putExtra("LOGIN_EMAIL", managerEmail);
                         startActivity(intent);
+                        finish();
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to deny request: " + e.getMessage(), Toast.LENGTH_SHORT).show();

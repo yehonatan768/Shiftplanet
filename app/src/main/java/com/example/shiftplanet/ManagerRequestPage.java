@@ -101,6 +101,15 @@ public class ManagerRequestPage extends AppCompatActivity {
                         Map<String, String> request = new HashMap<>();
                         request.put("employeeName", document.getString("employeeEmail")); // Replace with actual name field if available
                         request.put("requestType", document.getString("reason")); // Replace "reason" with the actual field
+
+                        // Retrieve requestNumber and store as a string in the map
+                        Long requestNumberLong = document.getLong("requestNumber");
+                        if (requestNumberLong != null) {
+                            request.put("requestNumber", String.valueOf(requestNumberLong.intValue()));
+                        } else {
+                            request.put("requestNumber", "0"); // Default or error value
+                        }
+
                         pendingRequests.add(request);
                     }
 
@@ -113,10 +122,10 @@ public class ManagerRequestPage extends AppCompatActivity {
                 });
     }
 
+
     private void fetchClosedRequests(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Query for requests where the status is either "approved" or "denied"
         db.collection("Requests")
                 .whereIn("status", Arrays.asList("approved", "denied"))
                 .whereEqualTo("managerEmail", managerEmail)
@@ -127,7 +136,13 @@ public class ManagerRequestPage extends AppCompatActivity {
                         Map<String, String> request = new HashMap<>();
                         request.put("employeeName", document.getString("employeeEmail")); // Replace with actual name field if available
                         request.put("requestType", document.getString("reason"));
-                        request.put("status", document.getString("status")); // Save the status for display if needed
+                        request.put("status", document.getString("status")); // Include status
+                        Long requestNumberLong = document.getLong("requestNumber");
+                        if (requestNumberLong != null) {
+                            request.put("requestNumber", String.valueOf(requestNumberLong.intValue()));
+                        } else {
+                            request.put("requestNumber", "0"); // Default or error value
+                        }
                         closedRequests.add(request);
                     }
 
@@ -141,7 +156,8 @@ public class ManagerRequestPage extends AppCompatActivity {
     }
 
 
-    private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
+
+    private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int defaultBackgroundColor) {
         // Clear any previous views
         parentLayout.removeAllViews();
 
@@ -161,12 +177,28 @@ public class ManagerRequestPage extends AppCompatActivity {
         for (Map<String, String> request : requests) {
             String name = request.get("employeeName");
             String requestType = request.get("requestType");
+            String requestNumberStr = request.get("requestNumber");
+            String status = request.get("status"); // Get the status field
+
+            int requestNumber = 0;
+            if (requestNumberStr != null && requestNumberStr.matches("\\d+")) {
+                requestNumber = Integer.parseInt(requestNumberStr);
+            }
+
+            // Set background color based on status
+            int backgroundColor = defaultBackgroundColor; // Default color for pending requests
+            if ("approved".equalsIgnoreCase(status)) {
+                backgroundColor = getResources().getColor(android.R.color.holo_green_light); // Green for approved
+            } else if ("denied".equalsIgnoreCase(status)) {
+                backgroundColor = getResources().getColor(android.R.color.holo_red_light); // Red for denied
+            }
 
             LinearLayout requestLayout = createRequestLayout(
                     idCounter,
                     name,
                     requestType,
-                    backgroundColor
+                    backgroundColor,
+                    requestNumber
             );
             parentLayout.addView(requestLayout);
 
@@ -174,7 +206,8 @@ public class ManagerRequestPage extends AppCompatActivity {
         }
     }
 
-    private LinearLayout createRequestLayout(int id, String name, String requestType, int backgroundColor) {
+
+    private LinearLayout createRequestLayout(int id, String employeeEmail, String requestType, int backgroundColor, int number) {
         LinearLayout requestLayout = new LinearLayout(this);
         requestLayout.setId(id); // Set the unique ID
         requestLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -184,7 +217,7 @@ public class ManagerRequestPage extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 120 // Height in px (adjust as needed)
         );
-        layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 16px
+        layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin
         requestLayout.setLayoutParams(layoutParams);
 
         requestLayout.setPadding(12, 12, 12, 12);
@@ -197,7 +230,7 @@ public class ManagerRequestPage extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 1 // Weight
         ));
-        nameTextView.setText(name);
+        nameTextView.setText(employeeEmail);
         nameTextView.setTextColor(getResources().getColor(android.R.color.white));
         nameTextView.setTextSize(16);
         nameTextView.setGravity(Gravity.CENTER_VERTICAL);
@@ -217,9 +250,18 @@ public class ManagerRequestPage extends AppCompatActivity {
         requestLayout.addView(nameTextView);
         requestLayout.addView(requestTypeTextView);
 
+        // Set OnClickListener to navigate to ManagerDialogRequestDetails
+
+        requestLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(ManagerRequestPage.this, ManagerDialogRequestDetails.class);
+            intent.putExtra("managerEmail", managerEmail);
+            intent.putExtra("employeeEmail", employeeEmail);
+            intent.putExtra("requestNumber", number); // Pass the unique request ID
+            startActivity(intent);
+        });
+
         return requestLayout;
     }
-
 
     private boolean handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
