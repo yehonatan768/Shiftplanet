@@ -40,6 +40,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,23 +59,26 @@
                     android:layout_marginBottom="8dp" />
 
                 <!-- תצוגת הבקשות הממתינות -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/pending_request_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@android:color/holo_blue_light"
-                        android:text="Pending Request 1"
-                        android:textColor="@android:color/black"
-                        android:textStyle="bold" />
-                    <!-- הוספת שאר הבקשות -->
-                </LinearLayout>
+                <ScrollView
+                    android:layout_width="380dp"
+                    android:layout_height="265dp"
+                    android:fillViewport="true">
 
+                    <LinearLayout
+                        android:id="@+id/layout_pending_requests"
+                        android:layout_width="380dp"
+                        android:layout_height="265dp"
+                        android:orientation="vertical"
+                        android:background="@color/background_secondary"
+                        android:padding="8dp">
+
+                        <!-- Requests List -->
+
+
+                        <!-- Add more pending requests dynamically -->
+
+                    </LinearLayout>
+                </ScrollView>
                 <!-- בקשות סגורות -->
                 <TextView
                     android:id="@+id/closed_requests_title"
@@ -86,22 +90,26 @@
                     android:textSize="18sp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/closed_request_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/login_background"
-                        android:text="Closed Request 1"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-                    <!-- הוספת שאר הבקשות -->
-                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="380dp"
+                    android:layout_height="265dp"
+                    android:fillViewport="true">
+
+                    <LinearLayout
+                        android:id="@+id/layout_close_requests"
+                        android:layout_width="380dp"
+                        android:layout_height="265dp"
+                        android:orientation="vertical"
+                        android:background="@color/background_secondary"
+                        android:padding="8dp">
+
+                        <!-- Requests List -->
+
+
+                        <!-- Add more closed requests dynamically -->
+                    </LinearLayout>
+                </ScrollView>
             </LinearLayout>
         </ScrollView>
 

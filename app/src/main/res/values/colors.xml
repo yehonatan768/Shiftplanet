@@ -22,13 +22,13 @@
     <color name="accent_orange">#FF9800</color>
 
     <!-- Background Colors -->
-    <color name="background_primary">#FAFAFA</color>
-    <color name="background_secondary">#F5F5F5</color>
+    <color name="background_primary">#1e0c29</color>
+    <color name="background_secondary">#300c45</color>
     <color name="background_dark">#212121</color>
 
     <!-- Text Colors -->
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FF000000</color>
     <color name="text_disabled">#BDBDBD</color>
     <color name="text_white">#FFFFFF</color>
 
