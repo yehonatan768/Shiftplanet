@@ -175,12 +175,16 @@ public class EmployeeRequestPage extends AppCompatActivity {
                     .addOnSuccessListener(documentReference -> {
                         // Request successfully added
                         Toast.makeText(EmployeeRequestPage.this, "Request submitted with number: " + requestNumber, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+                        intent.putExtra("LOGIN_EMAIL", employeeEmail);
+                        startActivity(intent);
                     })
                     .addOnFailureListener(e -> {
                         // Handle error
                         Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show();
                     });
         });
+
     }
 
     private void initializeUI() {

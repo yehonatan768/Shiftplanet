@@ -49,7 +49,7 @@ android {
     }
 }
 dependencies {
-    implementation(platform(libs.google.firebase.bom)) // אם לא הוספת BOM
+    implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.firebase.firestore)
