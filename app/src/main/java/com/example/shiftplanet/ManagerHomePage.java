@@ -1,7 +1,10 @@
 package com.example.shiftplanet;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -23,12 +26,23 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
+    String managerEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this); // אפשרות לתמיכה בתצוגה בקצוות
         setContentView(R.layout.manager_home_page);
+
+        // Retrieve the email
+        String email = getIntent().getStringExtra("LOGIN_EMAIL");
+
+        if (email != null) {
+            Log.d(TAG, "Received email: " + email);
+            managerEmail = email;
+        } else {
+            Log.e(TAG, "No email received");
+        }
 
         toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
@@ -41,19 +55,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // קרא לפונקציה להוציא את ה-FCM Token
-        getFCMToken();
-    }
-
-    private void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnSuccessListener(this, token -> {
-                    // ה-token שהתקבל מ-FCM
-                    saveFCMTokenToFirestore(token);
-                })
-                .addOnFailureListener(this, e -> {
-                    Toast.makeText(ManagerHomePage.this, "Error getting FCM Token", Toast.LENGTH_SHORT).show();
-                });
     }
 
     private void saveFCMTokenToFirestore(String token) {
@@ -80,30 +81,54 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
         }
     }
 
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(this, token -> {
+                    // ה-token שהתקבל מ-FCM
+                    saveFCMTokenToFirestore(token);
+                })
+                .addOnFailureListener(this, e -> {
+                    Toast.makeText(ManagerHomePage.this, "Error getting FCM Token", Toast.LENGTH_SHORT).show();
+                });
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerHomePage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerRequestPage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerHomePage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.published_work_arrangement) {
             Toast.makeText(ManagerHomePage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerHomePage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerHomePage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
+            finish();
         } else if (item.getItemId() == R.id.m_log_out) {
             Toast.makeText(ManagerHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerHomePage.this, Login.class);
+            finish();
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
