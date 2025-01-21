@@ -21,7 +21,6 @@ import java.util.Objects;
 
 public class ManagerDialogRequestDetails extends AppCompatActivity {
 
-    // UI Elements
     private ImageView backButton;
     private TextView requestDetailsContent;
     private Button approveButton;
@@ -30,7 +29,6 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
     private String managerEmail;
     private String employeeEmail;
-    // Firestore instance and request document
     private FirebaseFirestore db;
     private DocumentSnapshot requestDocument;
 
@@ -41,56 +39,41 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
         managerEmail = Objects.requireNonNull(getIntent().getStringExtra("managerEmail")).trim();
         employeeEmail = Objects.requireNonNull(getIntent().getStringExtra("employeeEmail")).trim();
-        int requestNumber = getIntent().getIntExtra("requestNumber", - 1);
+        int requestNumber = getIntent().getIntExtra("requestNumber", -1);
 
         if (requestNumber != -1) {
             Log.d(TAG, "Request Number: " + requestNumber);
         } else {
             Toast.makeText(this, "Invalid request number: " + requestNumber, Toast.LENGTH_SHORT).show();
-            return; // Exit to avoid further issues
+            return;
         }
 
         Log.d(TAG, "Manager Email: " + managerEmail);
         Log.d(TAG, "Employee Email: " + employeeEmail);
         Log.d(TAG, "Request Number: " + requestNumber);
 
-        // Initialize UI elements
         backButton = findViewById(R.id.btnBackDialog);
         requestDetailsContent = findViewById(R.id.details_text);
         approveButton = findViewById(R.id.approve_button);
         denyButton = findViewById(R.id.deny_button);
         downloadDocument = findViewById(R.id.add_document_button);
 
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Fetch and save request document
         fetchRequestDocument(requestNumber, managerEmail, employeeEmail);
 
-        // Set up back button functionality
-        backButton.findViewById(R.id.back_btn).setOnClickListener(v -> {
+        backButton.setOnClickListener(v -> {
             Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class);
             intent.putExtra("LOGIN_EMAIL", managerEmail);
             startActivity(intent);
             finish();
         });
 
-        // Approve button click listener
-        approveButton.setOnClickListener(v -> {
-            handleApproveAction();
-        });
-
-        // Deny button click listener
-        denyButton.setOnClickListener(v -> {
-            handleDenyAction();
-        });
-
-        // Add document button click listener
-        downloadDocument.setOnClickListener(v -> {
-            handleAddDocumentAction();
-        });
+        approveButton.setOnClickListener(v -> handleApproveAction());
+        denyButton.setOnClickListener(v -> handleDenyAction());
+        downloadDocument.setOnClickListener(v -> handleAddDocumentAction());
     }
-    // Fetch request document from Firestore
+
     private void fetchRequestDocument(int numberInput, String managerEmail, String employeeEmail) {
         try {
             db.collection("Requests")
@@ -99,91 +82,125 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                     .whereEqualTo("employeeEmail", employeeEmail)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        // Fetch employee name from user collection
-                        db.collection("Users")
-                                .whereEqualTo("email", employeeEmail)
-                                .get()
-                                .addOnSuccessListener(querySnapshots -> {
-                                    if (!querySnapshots.isEmpty()) {
-                                        String fullname = querySnapshots.getDocuments().get(0).getString("fullname");
-                                        TextView employeeNameView = findViewById(R.id.employee_name);
-                                        employeeNameView.setText(fullname != null ? fullname : "N/A");
-                                    } else {
-                                        Log.d(TAG, "Employee not found");
-                                    }
-                                })
-                                .addOnFailureListener(e -> Log.e(TAG, "Error fetching employee name: " + e.getMessage()));
+                        try {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                requestDocument = queryDocumentSnapshots.getDocuments().get(0);
 
-                        // Populate request data
-                        if (requestDocument != null) {
-                            String reason = requestDocument.getString("reason");
-                            String startDate = requestDocument.getString("startDate");
-                            String endDate = requestDocument.getString("endDate");
-                            String additionalDetails = requestDocument.getString("details");
+                                // Fetch employee name
+                                db.collection("Users")
+                                        .whereEqualTo("email", employeeEmail.trim()) // Ensure sanitized email
+                                        .get()
+                                        .addOnSuccessListener(querySnapshots -> {
+                                            Log.d(TAG, "Query succeeded. Number of matching documents: " + querySnapshots.size());
+                                            if (!querySnapshots.isEmpty()) {
+                                                DocumentSnapshot document = querySnapshots.getDocuments().get(0);
+                                                String fullname = document.getString("fullname");
+                                                Log.d(TAG, "Retrieved fullname: " + fullname);
 
-                            TextView datesView = findViewById(R.id.dates);
-                            datesView.setText(String.format("%s - %s", startDate, endDate));
+                                                runOnUiThread(() -> {
+                                                    TextView employeeNameView = findViewById(R.id.employee_name);
+                                                    if (fullname != null && !fullname.isEmpty()) {
+                                                        employeeNameView.setText(fullname);
+                                                    } else {
+                                                        employeeNameView.setText("N/A");
+                                                        Log.d(TAG, "Fullname field is null or empty.");
+                                                    }
+                                                });
+                                            } else {
+                                                Log.d(TAG, "No documents found for email: " + employeeEmail);
+                                                runOnUiThread(() -> {
+                                                    TextView employeeNameView = findViewById(R.id.employee_name);
+                                                    employeeNameView.setText("N/A");
+                                                });
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> Log.e(TAG, "Firestore query failed: " + e.getMessage()));
 
-                            TextView requestTypeView = findViewById(R.id.requestTypeText);
-                            requestTypeView.setText(reason);
+                                // Populate request data
+                                String reason = requestDocument.getString("reason");
+                                String startDate = requestDocument.getString("startDate");
+                                String endDate = requestDocument.getString("endDate");
+                                String additionalDetails = requestDocument.getString("details");
 
-                            TextView detailsView = findViewById(R.id.details_text);
-                            detailsView.setText(additionalDetails);
+                                try {
+                                    TextView datesView = findViewById(R.id.dates);
+                                    datesView.setText(String.format("%s - %s", startDate, endDate));
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error updating dates view: " + e.getMessage());
+                                }
+
+                                try {
+                                    TextView requestTypeView = findViewById(R.id.requestTypeText);
+                                    requestTypeView.setText(reason);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error updating request type view: " + e.getMessage());
+                                }
+
+                                try {
+                                    TextView detailsView = findViewById(R.id.details_text);
+                                    detailsView.setText(additionalDetails);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error updating details view: " + e.getMessage());
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error processing request document: " + e.getMessage());
                         }
-
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to fetch request details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch request details: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } catch (Exception e) {
             Toast.makeText(this, "Error initiating Firestore query: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    // Handle approve action
     private void handleApproveAction() {
-        if (requestDocument != null) {
-            db.collection("Requests").document(requestDocument.getId())
-                    .update("status", "approved")
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Request Approved", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class); // Redirect to login
-                        intent.putExtra("LOGIN_EMAIL", managerEmail);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to approve request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(this, "Request document not loaded. Cannot approve.", Toast.LENGTH_SHORT).show();
+        try {
+            if (requestDocument != null) {
+                db.collection("Requests").document(requestDocument.getId())
+                        .update("status", "approved")
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Request Approved", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class);
+                            intent.putExtra("LOGIN_EMAIL", managerEmail);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to approve request: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(this, "Request document not loaded. Cannot approve.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error handling approve action: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Handle deny action
     private void handleDenyAction() {
-        if (requestDocument != null) {
-            db.collection("Requests").document(requestDocument.getId())
-                    .update("status", "denied")
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Request Denied", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class); // Redirect to login
-                        intent.putExtra("LOGIN_EMAIL", managerEmail);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to deny request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(this, "Request document not loaded. Cannot deny.", Toast.LENGTH_SHORT).show();
+        try {
+            if (requestDocument != null) {
+                db.collection("Requests").document(requestDocument.getId())
+                        .update("status", "denied")
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Request Denied", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ManagerDialogRequestDetails.this, ManagerRequestPage.class);
+                            intent.putExtra("LOGIN_EMAIL", managerEmail);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to deny request: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(this, "Request document not loaded. Cannot deny.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error handling deny action: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Handle add document action
     private void handleAddDocumentAction() {
-        Toast.makeText(this, "Downloading Document...", Toast.LENGTH_SHORT).show();
-        // TODO: Implement actual document download logic
+        try {
+            Toast.makeText(this, "Downloading Document...", Toast.LENGTH_SHORT).show();
+            // TODO: Implement actual document download logic
+        } catch (Exception e) {
+            Toast.makeText(this, "Error handling add document action: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
