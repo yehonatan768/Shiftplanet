@@ -36,5 +36,6 @@
         android:background="@drawable/login_background"
         android:layout_gravity="start"
         app:itemIconPadding="30dp"
+        app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"/>
 </androidx.drawerlayout.widget.DrawerLayout>

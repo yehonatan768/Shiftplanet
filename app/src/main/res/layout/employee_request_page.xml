@@ -5,6 +5,7 @@
     android:id="@+id/employee_request_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cardview_dark_background"
     tools:openDrawer="start"
     tools:context=".EmployeeRequestPage">
 
@@ -61,8 +62,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="@string/day_off_reason"
+                        android:background="@drawable/rounded_background"
                         android:inputType="none"
-                        android:padding="2dp"/>
+                        android:padding="2dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,6 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Select Start Date"
+                        android:background="@drawable/rounded_background"
                         android:focusable="false"
                         android:clickable="true" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -105,6 +108,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Select End Date"
+                        android:background="@drawable/rounded_background"
                         android:focusable="false"
                         android:clickable="true" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -121,6 +125,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_background"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -130,6 +135,7 @@
                         android:hint="Add additional details (optional)"
                         android:inputType="textMultiLine"
                         android:minHeight="100dp"
+                        android:background="@drawable/rounded_background"
                         android:gravity="top" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -164,6 +170,7 @@
         app:menu="@menu/employee_menu"
         android:id="@+id/nav_view"
         android:layout_gravity="start"
+        app:itemIconTint="@color/white"
         android:background="@drawable/login_background"
         app:itemIconPadding="30dp"
         app:itemTextColor="@color/white"/>

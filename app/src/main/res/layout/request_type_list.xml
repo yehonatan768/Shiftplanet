@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textColor="@color/white"
+    android:background="@drawable/login_background"
     android:padding="16dp"
     android:ellipsize="end"
     android:maxLines="1"
