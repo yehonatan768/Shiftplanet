@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -132,12 +131,12 @@
                 android:id="@+id/approve_button"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_button"
                 android:text="Approve"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="@drawable/rounded_button"
-                android:layout_marginEnd="8dp" />
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/deny_button"
@@ -148,6 +147,7 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:background="@drawable/rounded_button"
+                android:foregroundTint="@color/red"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
     </LinearLayout>
