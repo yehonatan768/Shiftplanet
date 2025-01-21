@@ -47,6 +47,60 @@
                 app:layout_constraintTop_toBottomOf="@+id/logoImage"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputUserType"
+                android:background="@drawable/rounded_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+
+                android:textColorHint="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/logoText"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="@+id/logoText"
+                app:layout_constraintTop_toBottomOf="@+id/logoText"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteUserType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/select_user_type"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <EditText
+                android:id="@+id/input_manager_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:autofillHints=""
+                android:background="@drawable/rounded_background"
+                android:drawableStart="@drawable/email_icon"
+                android:drawablePadding="10dp"
+
+                android:ems="10"
+                android:hint="@string/manager_email"
+                android:inputType="textEmailAddress"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/inputUserType"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="@+id/inputUserType"
+                app:layout_constraintTop_toBottomOf="@+id/inputUserType"
+                android:paddingLeft="20dp"
+                android:visibility="gone" />
+
             <EditText
                 android:id="@+id/inputEmail"
                 android:layout_width="0dp"
@@ -56,7 +110,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/email_icon"
                 android:drawablePadding="10dp"
 
@@ -72,7 +126,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/logoText" />
+                app:layout_constraintTop_toBottomOf="@+id/input_manager_email" />
 
             <EditText
                 android:id="@+id/inputPassword"
@@ -80,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
 
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
                 android:drawableStart="@drawable/security_icon"
                 android:drawablePadding="10dp"
 
@@ -108,7 +162,7 @@
                 android:layout_marginTop="16dp"
 
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
 
                 android:drawableStart="@drawable/security_icon"
                 android:drawablePadding="10dp"
@@ -134,7 +188,7 @@
                 android:layout_marginTop="16dp"
 
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
 
                 android:drawableStart="@drawable/name_icon"
                 android:drawablePadding="10dp"
@@ -160,7 +214,7 @@
                 android:layout_marginTop="16dp"
 
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
 
                 android:drawableStart="@drawable/phone_icon"
                 android:drawablePadding="10dp"
@@ -186,7 +240,7 @@
                 android:layout_marginTop="16dp"
 
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
 
                 android:drawableStart="@drawable/id_icon"
                 android:drawablePadding="10dp"
@@ -212,7 +266,7 @@
                 android:layout_marginTop="16dp"
 
                 android:autofillHints=""
-                android:background="@drawable/input_bg"
+                android:background="@drawable/rounded_background"
 
                 android:drawableStart="@drawable/business_icon"
                 android:drawablePadding="10dp"
@@ -230,57 +284,6 @@
                 app:layout_constraintStart_toStartOf="@+id/input_id"
                 app:layout_constraintTop_toBottomOf="@+id/input_id" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputUserType"
-                android:background="@drawable/input_bg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textColorHint="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/inputBusinessCode"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="@+id/inputBusinessCode"
-                app:layout_constraintTop_toBottomOf="@+id/inputBusinessCode"
-                android:hint="@string/user_type"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteUserType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/user_type"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <EditText
-                android:id="@+id/input_manager_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="16dp"
-
-                android:autofillHints=""
-                android:background="@drawable/input_bg"
-
-                android:drawableStart="@drawable/business_icon"
-                android:drawablePadding="10dp"
-                android:ems="10"
-                android:hint="@string/manager_email"
-                android:inputType="textEmailAddress"
-                android:paddingLeft="20dp"
-                android:paddingTop="13dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="13dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/inputUserType"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="@+id/inputUserType"
-                app:layout_constraintTop_toBottomOf="@+id/inputUserType"
-                android:visibility="gone" />
-
-
             <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="0dp"
@@ -295,11 +298,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.7"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_manager_email"
+                app:layout_constraintTop_toBottomOf="@+id/inputBusinessCode"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"/>
-
-
             <ImageView
                 android:id="@+id/back_btn"
                 android:layout_width="50dp"
@@ -317,7 +318,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="32dp"
                 android:text="@string/alreadyHaveAnAccount"
                 android:textColor="@color/white"
@@ -325,7 +326,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnRegister"
+                app:layout_constraintTop_toBottomOf="@id/btnRegister"
                 app:layout_constraintVertical_bias="1.0" />
 
 

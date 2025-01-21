@@ -38,6 +38,7 @@
     <string name="shiftplanet">ShiftPlanet</string>
     <string name="business_code">Business Code</string>
     <string name="request_type">Request Type</string>
+    <string name="select_user_type">Select User Type</string>
     <string name="start_date">start date</string>
     <string name="finish_date">finish date</string>
     <string name="message">Message</string>
