@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/e_work_arrangement"
-            android:icon="@drawable/work_arrangement"
+            android:icon="@drawable/work_arrangement_icon"
             android:textColor="@color/white"
             android:iconTint="@color/white"
             android:title="@string/work_arrangement" />
