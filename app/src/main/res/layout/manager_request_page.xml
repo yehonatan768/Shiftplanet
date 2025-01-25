@@ -19,16 +19,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-
-            <TextView
-                android:id="@+id/appname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ShiftPlanet"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:layout_gravity="left"
-                android:padding="16dp" />
         </androidx.appcompat.widget.Toolbar>
 
         <!-- Main ScrollView -->
