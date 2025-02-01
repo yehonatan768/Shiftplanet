@@ -28,12 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,8 +79,8 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
         // Setup DrawerLayout and Toolbar
         drawerLayout = findViewById(R.id.employee_request_page);
-        navigationView = findViewById(R.id.nav_view);
-        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.employee_request_nav_view);
+        toolbar = findViewById(R.id.employee_request_toolbar);
 
         // Set Toolbar as the ActionBar
         setSupportActionBar(toolbar);
@@ -276,7 +270,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
     }
 
     private void getNextRequestNumber(OnRequestNumberGeneratedListener listener) {
-        db.collection("RequestCounters").document("GlobalCounter")
+        db.collection("RequestCounters").document("RequestsCounter")
                 .update("counter", FieldValue.increment(1))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -312,7 +306,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeRequestPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeSubmitConstraintsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeRequestPage.this, "Day off clicked", Toast.LENGTH_SHORT).show();

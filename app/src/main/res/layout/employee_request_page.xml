@@ -17,7 +17,7 @@
 
         <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/employee_request_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background_primary"
@@ -162,16 +162,16 @@
         </ScrollView>
     </LinearLayout>
 
-    <!-- Navigation Drawer (תפריט) -->
     <com.google.android.material.navigation.NavigationView
         android:layout_width="290dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/employee_menu_header"
         app:menu="@menu/employee_menu"
-        android:id="@+id/nav_view"
+        android:id="@+id/employee_request_nav_view"
         android:layout_gravity="start"
         app:itemIconTint="@color/white"
         android:background="@drawable/login_background"
         app:itemIconPadding="30dp"
         app:itemTextColor="@color/white"/>
+
 </androidx.drawerlayout.widget.DrawerLayout>

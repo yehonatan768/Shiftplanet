@@ -4,9 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,50 +19,56 @@
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
         <activity
+            android:name=".ManagerSentNotificationsPage"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationDetailActivityPage"
+            android:exported="false" />
+        <activity
+            android:name=".EmployeeNotificationsPage"
+            android:exported="false" />
+        <activity
+            android:name=".ManagerSendNotificationPage"
+            android:exported="false" /> <!-- כל האקטיביטיז שאינם צריכים להיות נגישים מבחוץ (exported="false") -->
+        <activity
+            android:name=".EmployeeSubmitConstraintsPage"
+            android:exported="false" />
+        <activity
             android:name=".EmployeeRequestStatus"
             android:exported="false" />
-
         <activity
             android:name=".ManagerDialogRequestDetails"
             android:exported="false" />
-
         <activity
             android:name=".ManagerRequestPage"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />
         <activity
             android:name=".EmployeeRequestPage"
-            android:exported="true"/> <!-- Main Entry Point for the App -->
-
-
-        <!-- Manager Home Page -->
+            android:exported="true" /> <!-- דף הבית של המנהל -->
         <activity
             android:name=".ManagerHomePage"
-            android:exported="false" />
-        <!-- Employee Home Page -->
+            android:exported="false" /> <!-- דף הבית של העובד -->
         <activity
             android:name=".EmployeeHomePage"
-            android:exported="false"/>
-        <!-- Registration Page -->
+            android:exported="false" /> <!-- דף ההרשמה -->
         <activity
             android:name=".Registration"
-            android:exported="false" />
+            android:exported="false" /> <!-- דף הלוגין - נדרש להיות exported="true" כי זה הדף הראשון שנפתח באפליקציה -->
         <activity
             android:name=".Login"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Specify the test runner -->
-        <uses-library android:name="android.test.runner" android:required="false" />
-
+        </activity> <!-- אם יש צורך במבחנים של Android, אז משתמשים ב- Library -->
+        <uses-library
+            android:name="android.test.runner"
+            android:required="false" />
     </application>
 
 </manifest>

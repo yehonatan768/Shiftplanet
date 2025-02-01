@@ -108,7 +108,7 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeSubmitConstraintsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeHomePage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
@@ -124,7 +124,7 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeHomePage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeNotificationsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeHomePage.this, "Log out clicked", Toast.LENGTH_SHORT).show();

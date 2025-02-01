@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/submit_constraints"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cardview_dark_background"
+        tools:openDrawer="start"
+        tools:context=".EmployeeSubmitConstraintsPage">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/login_background" />
+
+        <!-- התוכן של עמוד הבקשות -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layoutDirection="ltr">
+
+            <!-- Toolbar -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/submit_constraints_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_primary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- כותרת "Day" ו-"Shift" -->
+
+
+
+            <!-- Table Layout -->
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginTop="40dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/day_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:text="Day"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/shift_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Shift"
+                    android:textSize="30sp"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:textColor="@android:color/white" />
+
+                </TableRow>
+
+                <!-- שורה עם יום ראשון -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sunday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/sundayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="01/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום ראשון -->
+                    <CheckBox
+                        android:id="@+id/sundayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/sundayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום שני -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Monday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/mondayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="02/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום שני -->
+                    <CheckBox
+                        android:id="@+id/mondayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/mondayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום שלישי -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tuesday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/tuesdayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="03/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום שלישי -->
+                    <CheckBox
+                        android:id="@+id/tuesdayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/tuesdayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום רביעי -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wednesday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/wednesdayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="04/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום רביעי -->
+                    <CheckBox
+                        android:id="@+id/wednesdayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/wednesdayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום חמישי -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thursday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/thursdayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="05/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום חמישי -->
+                    <CheckBox
+                        android:id="@+id/thursdayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/thursdayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום שישי -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Friday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/fridayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="06/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום שישי -->
+                    <CheckBox
+                        android:id="@+id/fridayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/fridayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+
+                <!-- שורה עם יום שבת -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Saturday"
+                            android:paddingEnd="8dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/white" />
+
+                        <TextView
+                            android:id="@+id/saturdayDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="07/01/2025"
+                            android:gravity="center"
+                            android:paddingTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                    <!-- CheckBox עבור יום שבת -->
+                    <CheckBox
+                        android:id="@+id/saturdayMorning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Morning"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+
+                    <CheckBox
+                        android:id="@+id/saturdayEvening"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evening"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white" />
+                </TableRow>
+            </TableLayout>
+
+            <!-- Text Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_background"
+                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="124dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@drawable/rounded_background"
+                    android:gravity="top"
+                    android:hint="Add notes (optional)"
+                    android:inputType="textMultiLine"
+                    android:minHeight="100dp"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- כפתור שלח -->
+            <Button
+                android:id="@+id/submit_constraints_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@color/purple"
+                android:text="Submit Constraints"
+                android:textSize="20sp"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <!-- Navigation Drawer-->
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="290dp"
+            android:layout_height="930dp"
+            app:headerLayout="@layout/employee_menu_header"
+            app:menu="@menu/employee_menu"
+            android:id="@+id/submit_constraints_nav_view"
+            android:background="@drawable/login_background"
+            android:layout_gravity="start"
+            app:itemIconTint="@color/white"
+            app:itemIconPadding="30dp"
+            app:itemTextColor="@color/white" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
