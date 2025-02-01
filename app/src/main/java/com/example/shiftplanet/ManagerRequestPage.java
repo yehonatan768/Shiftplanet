@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -263,46 +264,36 @@ public class ManagerRequestPage extends AppCompatActivity {
         return requestLayout;
     }
 
-    private boolean handleNavigationItemSelected(MenuItem item) {
+    private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
         } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerRequestPage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerRequestPage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerRequestPage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
         } else if (item.getItemId() == R.id.published_work_arrangement) {
             Toast.makeText(ManagerRequestPage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerRequestPage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
+            intent = new Intent(ManagerRequestPage.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerRequestPage.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-            intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
+            intent = new Intent(ManagerRequestPage.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
             Toast.makeText(ManagerRequestPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, Login.class);
+        }
+
+        if (intent != null) {
             intent.putExtra("LOGIN_EMAIL", managerEmail);
             finish();
+            startActivity(intent);
         }
-        drawerLayout.closeDrawer(Gravity.LEFT);
-        if (intent != null) startActivity(intent);
-        return true;
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 }

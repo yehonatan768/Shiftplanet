@@ -197,18 +197,25 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.employees_requests) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.published_work_arrangement) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.send_notifications) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, Login.class);
         }
 

@@ -176,7 +176,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
             intent = new Intent(ManagerSendNotificationPage.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerSendNotificationPage.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerSendNotificationPage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerSendNotificationPage.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
             Toast.makeText(ManagerSendNotificationPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSendNotificationPage.this, Login.class);

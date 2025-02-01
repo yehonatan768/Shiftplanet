@@ -231,7 +231,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeRequestStatus.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeSubmitConstraintsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
             Toast.makeText(EmployeeRequestStatus.this, "Day off clicked", Toast.LENGTH_SHORT).show();
@@ -247,7 +247,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeRequestStatus.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeNotificationsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeRequestStatus.this, "Log out clicked", Toast.LENGTH_SHORT).show();

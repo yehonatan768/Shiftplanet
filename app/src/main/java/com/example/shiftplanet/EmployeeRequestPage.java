@@ -322,7 +322,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.notification) {
             Toast.makeText(EmployeeRequestPage.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeNotificationsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_log_out) {
             Toast.makeText(EmployeeRequestPage.this, "Log out clicked", Toast.LENGTH_SHORT).show();

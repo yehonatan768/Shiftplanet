@@ -117,12 +117,12 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
             finish();
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerHomePage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerHomePage.this, ManagerSendNotificationPage.class);
             intent.putExtra("LOGIN_EMAIL", managerEmail);
             finish();
         } else if (item.getItemId() == R.id.sent_notifications) {
             Toast.makeText(ManagerHomePage.this, "\"Sent notifications clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerHomePage.this, ManagerSentNotificationsPage.class);
             intent.putExtra("LOGIN_EMAIL", managerEmail);
             finish();
         } else if (item.getItemId() == R.id.m_log_out) {

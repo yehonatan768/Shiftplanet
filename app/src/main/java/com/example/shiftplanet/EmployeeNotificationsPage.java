@@ -242,7 +242,7 @@
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             } else if (item.getItemId() == R.id.constraints) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
-                intent = new Intent(EmployeeNotificationsPage.this, EmployeeHomePage.class);
+                intent = new Intent(EmployeeNotificationsPage.this, EmployeeSubmitConstraintsPage.class);
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             } else if (item.getItemId() == R.id.day_off) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Day off clicked", Toast.LENGTH_SHORT).show();
