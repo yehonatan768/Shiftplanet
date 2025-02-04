@@ -2,9 +2,7 @@ package com.example.shiftplanet;
 
 import android.os.IBinder;
 import android.view.WindowManager;
-
 import androidx.test.espresso.Root;
-
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -12,7 +10,7 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("is a Toast");
+        description.appendText("is toast");
     }
 
     @Override

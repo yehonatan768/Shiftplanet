@@ -44,30 +44,43 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        viewBinding = true
-    }
 }
+
 dependencies {
-    implementation(platform(libs.google.firebase.bom))
-    implementation(libs.google.firebase.auth)
-    implementation(libs.play.services.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.messaging)
-    implementation(libs.google.firebase.analytics)
+    // Core Dependencies
+    implementation(libs.androidx.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.storage)
-    implementation(libs.androidx.espresso.intents)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.runner)
+    // Firebase BOM (Manages all Firebase dependencies)
+    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
+
+    // Firebase Services
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-storage")
+
+    // Fix Firestore & ProtoBuf Compatibility
+    implementation("com.google.protobuf:protobuf-javalite:3.21.12")
+
+    // UI Testing Dependencies
     androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.espresso.contrib)
     androidTestImplementation(libs.androidx.junit.v115)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.rules)
+    androidTestImplementation(libs.androidx.espresso.idling.resource)
+    androidTestImplementation(libs.androidx.espresso.intents.v351)
+
+    // Mockito for Firebase Mocking (Ensure correct version)
+    androidTestImplementation(libs.mockito.android)
+
+    // Unit Testing Dependencies
+    testImplementation(libs.junit)  // JUnit for unit tests
 }

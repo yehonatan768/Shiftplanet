@@ -47,6 +47,9 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
             Toast.makeText(this, "Invalid request number: " + requestNumber, Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d("TestDebug", "Manager Email: " + getIntent().getStringExtra("managerEmail"));
+        Log.d("TestDebug", "Employee Email: " + getIntent().getStringExtra("employeeEmail"));
+        Log.d("TestDebug", "Request Number: " + getIntent().getIntExtra("requestNumber", -1));
 
         Log.d(TAG, "Manager Email: " + managerEmail);
         Log.d(TAG, "Employee Email: " + employeeEmail);
@@ -155,6 +158,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
     private void handleApproveAction() {
         try {
+            Toast.makeText(this, "Approving request...", Toast.LENGTH_SHORT).show();
             if (requestDocument != null) {
                 db.collection("Requests").document(requestDocument.getId())
                         .update("status", "approved")
@@ -176,6 +180,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
     private void handleDenyAction() {
         try {
+            Toast.makeText(this, "Denying request...", Toast.LENGTH_SHORT).show();
             if (requestDocument != null) {
                 db.collection("Requests").document(requestDocument.getId())
                         .update("status", "denied")
