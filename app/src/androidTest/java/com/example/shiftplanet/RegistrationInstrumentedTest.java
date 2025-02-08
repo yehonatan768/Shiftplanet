@@ -1,6 +1,10 @@
 package com.example.shiftplanet;
 
 import android.view.View;
+
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.espresso.intent.Intents;
@@ -76,7 +80,7 @@ public class RegistrationInstrumentedTest {
     }
 
     @Test
-    public void test3SignUpWithExampleInfo() throws InterruptedException {
+    public void test3SignUpWithExampleInfo() {
         activityRule.launchActivity(null);
 
         onView(withId(R.id.autoCompleteUserType)).perform(click());
@@ -92,8 +96,17 @@ public class RegistrationInstrumentedTest {
         onView(withId(R.id.input_manager_email)).perform(typeText("yehonatan768@gmail.com"), closeSoftKeyboard());
 
         onView(withId(R.id.btnRegister)).perform(click());
-        Thread.sleep(2000);
+
+        // Wait up to 5 seconds for the transition
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(5000);
+        IdlingRegistry.getInstance().register(idlingResource);
+        Espresso.onIdle(); // Wait until the app becomes idle
+
         // Verify the Intent to Login activity is triggered
         intended(hasComponent(Login.class.getName()));
+
+        // Unregister IdlingResource
+        IdlingRegistry.getInstance().unregister(idlingResource);
     }
+
 }

@@ -56,20 +56,19 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Firebase BOM (Manages all Firebase dependencies)
-    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
+    implementation(platform(libs.firebase.bom.v3270))
+
 
     // Firebase Services
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-storage")
-
-    // Fix Firestore & ProtoBuf Compatibility
-    implementation("com.google.protobuf:protobuf-javalite:3.21.12")
+    implementation(libs.com.google.firebase.firebase.auth2)
+    implementation(libs.com.google.firebase.firebase.firestore2)
+    implementation(libs.google.firebase.database)
+    implementation(libs.google.firebase.messaging)
+    implementation(libs.com.google.firebase.firebase.analytics)
+    implementation(libs.google.firebase.storage)
 
     // UI Testing Dependencies
+    implementation(libs.protobuf.javalite.v3251)
     androidTestImplementation(libs.androidx.espresso.core.v351)
     androidTestImplementation(libs.espresso.contrib)
     androidTestImplementation(libs.androidx.junit.v115)
@@ -83,4 +82,11 @@ dependencies {
 
     // Unit Testing Dependencies
     testImplementation(libs.junit)  // JUnit for unit tests
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.protobuf:protobuf-javalite:3.21.12")  // Adjust if necessary
+        }
+    }
+
 }

@@ -14,7 +14,9 @@ firebaseFirestore = "25.1.1"
 firebaseFirestoreTesting = "24.9.0"
 firebaseFirestoreVersion = "24.8.1"
 googleFirebaseBom = "32.2.0"
+googleFirebaseBomVersion = "32.7.0"
 googleFirebaseFirestore = "24.7.1"
+googleProtobufJavalite = "3.25.1"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -42,11 +44,15 @@ androidx-espresso-idling-resource = { module = "androidx.test.espresso:espresso-
 androidx-espresso-intents-v351 = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoIntentsVersion" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+com-google-firebase-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
+com-google-firebase-firebase-auth2 = { module = "com.google.firebase:firebase-auth" }
 com-google-firebase-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+com-google-firebase-firebase-firestore2 = { module = "com.google.firebase:firebase-firestore" }
 espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoContrib" }
 firebase-bom-v3200 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3220 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBom" }
+firebase-bom-v3270 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBomVersion" }
 firebase-firestore-testing = { module = "com.google.firebase:firebase-firestore-testing", version.ref = "firebaseFirestoreTesting" }
 firebase-firestore-v2471 = { module = "com.google.firebase:firebase-firestore", version.ref = "googleFirebaseFirestore" }
 firebase-firestore-v2481 = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreVersion" }
@@ -57,7 +63,10 @@ firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+google-firebase-database = { module = "com.google.firebase:firebase-database" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
+google-firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+google-firebase-storage = { module = "com.google.firebase:firebase-storage" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -72,6 +81,7 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 protobuf-javalite-v32112 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavaliteVersion" }
+protobuf-javalite-v3251 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "googleProtobufJavalite" }
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 
 [plugins]
