@@ -47,7 +47,6 @@ android {
 }
 
 dependencies {
-    // Core Dependencies
     implementation(libs.androidx.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -66,6 +65,9 @@ dependencies {
     implementation(libs.google.firebase.messaging)
     implementation(libs.com.google.firebase.firebase.analytics)
     implementation(libs.google.firebase.storage)
+    implementation(libs.google.firebase.auth)
+    implementation(libs.firebase.firestore)
+
 
     // UI Testing Dependencies
     implementation(libs.protobuf.javalite.v3251)
@@ -76,12 +78,21 @@ dependencies {
     androidTestImplementation(libs.rules)
     androidTestImplementation(libs.androidx.espresso.idling.resource)
     androidTestImplementation(libs.androidx.espresso.intents.v351)
+    implementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    // Mockito for Firebase Mocking (Ensure correct version)
-    androidTestImplementation(libs.mockito.android)
 
     // Unit Testing Dependencies
-    testImplementation(libs.junit)  // JUnit for unit tests
+
+    androidTestImplementation(libs.mockito.android)
+    testImplementation (libs.junit.jupiter.api)
+    testImplementation (libs.mockito.core)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation (libs.junit.jupiter.engine)
+
 
     configurations.all {
         resolutionStrategy {
