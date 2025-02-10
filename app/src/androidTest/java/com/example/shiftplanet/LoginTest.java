@@ -80,20 +80,3 @@ public class LoginTest {
     }
 
 }
-/*
-
-    @Test
-    public void testLoginEmptyEmail() throws InterruptedException {
-        activityRule.launchActivity(null);
-        // Perform login with an empty email field
-        onView(withId(R.id.inputEmailLogin))
-                .perform(typeText("orgoren3146@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.btnLogin))
-                .perform(click());
-
-        // Check if the error toast is shown
-        onView(withText("Please enter both email and password."))
-                .inRoot(withDecorView(Matchers.not(activityRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-    }
- */
