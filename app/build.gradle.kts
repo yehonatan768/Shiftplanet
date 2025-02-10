@@ -63,13 +63,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage)
     implementation(libs.androidx.espresso.intents)
-    implementation(libs.androidx.junit)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.runner)
-
     androidTestImplementation(libs.androidx.espresso.core.v351)
     androidTestImplementation(libs.androidx.junit.v115)
 }

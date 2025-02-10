@@ -60,7 +60,7 @@ public class ManagerRequestPage extends AppCompatActivity {
 
     private void initializeUI() {
         // Setup DrawerLayout and Toolbar
-        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.manager_request_page);
         navigationView = findViewById(R.id.nav_view1);
         toolbar = findViewById(R.id.toolbar);
 

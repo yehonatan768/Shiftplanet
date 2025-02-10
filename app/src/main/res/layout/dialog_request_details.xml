@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/dialog_request_details">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -147,7 +148,7 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:background="@drawable/rounded_button"
-                android:foregroundTint="@color/red"
+                android:backgroundTint="@color/red"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
     </LinearLayout>

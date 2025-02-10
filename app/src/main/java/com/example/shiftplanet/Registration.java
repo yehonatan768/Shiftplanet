@@ -121,8 +121,6 @@ public class Registration extends AppCompatActivity {
                         if (verificationTask.isSuccessful()) {
                             saveUserInfo(fullname, phone, email, userType, businessCode, id, managerEmail, currentUser);
                             Toast.makeText(this, "Registration Completed. Please verify your email!", LENGTH_SHORT).show();
-                            Intent intent = new Intent(Registration.this, Login.class); // Redirect to login
-                            startActivity(intent);
                         } else {
                             String errorMessage = verificationTask.getException() != null
                                     ? verificationTask.getException().getMessage()
@@ -139,6 +137,8 @@ public class Registration extends AppCompatActivity {
                 Log.e("FirebaseAuth", "Error: " + errorMessage);
             }
         });
+        Intent intent = new Intent(Registration.this, Login.class); // Redirect to login
+        startActivity(intent);
     }
 
 
