@@ -27,10 +27,10 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
     private Button denyButton;
     private Button downloadDocument;
 
-    private String managerEmail;
+    protected String managerEmail;
     private String employeeEmail;
-    private FirebaseFirestore db;
-    private DocumentSnapshot requestDocument;
+    protected FirebaseFirestore db;
+    protected DocumentSnapshot requestDocument;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,7 +90,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                                 requestDocument = queryDocumentSnapshots.getDocuments().get(0);
 
                                 // Fetch employee name
-                                db.collection("Users")
+                                db.collection("users")
                                         .whereEqualTo("email", employeeEmail.trim()) // Ensure sanitized email
                                         .get()
                                         .addOnSuccessListener(querySnapshots -> {
@@ -156,7 +156,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         }
     }
 
-    private void handleApproveAction() {
+    void handleApproveAction() {
         try {
             Toast.makeText(this, "Approving request...", Toast.LENGTH_SHORT).show();
             if (requestDocument != null) {
@@ -178,7 +178,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
         }
     }
 
-    private void handleDenyAction() {
+    protected void handleDenyAction() {
         try {
             Toast.makeText(this, "Denying request...", Toast.LENGTH_SHORT).show();
             if (requestDocument != null) {
