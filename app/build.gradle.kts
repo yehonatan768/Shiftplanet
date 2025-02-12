@@ -44,49 +44,30 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
-
 dependencies {
-    // Core Dependencies
-    implementation(libs.androidx.core)
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.google.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.messaging)
+    implementation(libs.google.firebase.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.storage)
+    implementation(libs.androidx.espresso.intents)
 
-    // Firebase BOM (Manages all Firebase dependencies)
-    implementation(platform(libs.firebase.bom.v3270))
-
-
-    // Firebase Services
-    implementation(libs.com.google.firebase.firebase.auth2)
-    implementation(libs.com.google.firebase.firebase.firestore2)
-    implementation(libs.google.firebase.database)
-    implementation(libs.google.firebase.messaging)
-    implementation(libs.com.google.firebase.firebase.analytics)
-    implementation(libs.google.firebase.storage)
-
-    // UI Testing Dependencies
-    implementation(libs.protobuf.javalite.v3251)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
-    androidTestImplementation(libs.espresso.contrib)
-    androidTestImplementation(libs.androidx.junit.v115)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.rules)
-    androidTestImplementation(libs.androidx.espresso.idling.resource)
-    androidTestImplementation(libs.androidx.espresso.intents.v351)
-
-    // Mockito for Firebase Mocking (Ensure correct version)
-    androidTestImplementation(libs.mockito.android)
-
-    // Unit Testing Dependencies
-    testImplementation(libs.junit)  // JUnit for unit tests
-
-    configurations.all {
-        resolutionStrategy {
-            force("com.google.protobuf:protobuf-javalite:3.21.12")  // Adjust if necessary
-        }
-    }
-
+    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.androidx.junit.v115)
 }

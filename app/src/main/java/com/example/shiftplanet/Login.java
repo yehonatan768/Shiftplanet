@@ -57,7 +57,7 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.createNewAccount).setOnClickListener(view -> navigateTo(Registration.class));
     }
 
-    private void loginUser() {
+    public void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
