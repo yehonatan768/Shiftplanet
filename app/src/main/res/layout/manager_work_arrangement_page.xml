@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/manager_work_arrangement">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/manager_work_arrangement"
+    tools:openDrawer="start"
+    tools:context=".ManagerWorkArrangement">
 
     <!-- Main Layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,23 +134,23 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <!-- Evening Section -->
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:weightSum="3">
+                    android:padding="6dp"
+                    android:weightSum="3"
+                    android:id="@+id/morningRow1">
 
                     <!-- Employee Shifts -->
                     <include layout="@layout/empty_item_shift" />
 
-                    <include layout="@layout/item_shift_employee" />
+                    <include layout="@layout/empty_item_shift" />
 
-                    <include layout="@layout/item_shift_employee" />
+                    <include layout="@layout/empty_item_shift" />
                 </LinearLayout>
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,17 +161,19 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- Evening Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:weightSum="3">
+                    android:padding="6dp"
+                    android:weightSum="3"
+                    android:id="@+id/eveningRow1">
 
                     <!-- Employee Shifts -->
-                    <include layout="@layout/item_shift_employee" />
-                    <include layout="@layout/item_shift_employee" />
-                    <include layout="@layout/item_shift_employee" />
+                    <include layout="@layout/empty_item_shift" />
+                    <include layout="@layout/empty_item_shift" />
+                    <include layout="@layout/empty_item_shift" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
