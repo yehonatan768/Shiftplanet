@@ -18,12 +18,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ManagerHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ManagerWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
@@ -33,7 +32,7 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.manager_home_page);
+        setContentView(R.layout.manager_work_arrangement_page);
 
         // Retrieve the email
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
@@ -45,10 +44,10 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
             Log.e(TAG, "No email received");
         }
 
-        toolbar = findViewById(R.id.toolbar1);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawerLayout = findViewById(R.id.manager_home_page);
+        drawerLayout = findViewById(R.id.manager_work_arrangement);
         navigationView = findViewById(R.id.nav_view1);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -58,78 +57,36 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
     }
 
-    private void saveFCMTokenToFirestore(String token) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        // 🔥 Check if user is logged in
-        if (user == null) {
-            Log.e(TAG, "Error: User is not logged in. Cannot save FCM token.");
-            return;
-        }
-
-        String userId = user.getUid();
-        if (userId == null || userId.isEmpty()) {
-            Log.e(TAG, "Error: Invalid user ID. Cannot save FCM token.");
-            return;
-        }
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("fcmToken", token);
-
-        // 🔥 Use set() with merge = true to avoid overwriting existing user data
-        db.collection("users")
-                .document(userId)
-                .set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "✅ FCM Token updated successfully for user: " + userId))
-                .addOnFailureListener(e -> Log.e(TAG, "❌ Error updating FCM Token: " + e.getMessage(), e));
-    }
-
-
-    private void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnSuccessListener(this, token -> {
-                    Log.d(TAG, "🎯 Retrieved FCM Token: " + token);
-                    saveFCMTokenToFirestore(token);
-                })
-                .addOnFailureListener(this, e -> {
-                    Log.e(TAG, "❌ Error getting FCM Token: " + e.getMessage(), e);
-                });
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
         String message = "";
 
         if (item.getItemId() == R.id.m_my_profile) {
-            message = "Already on My Profile";
+            message = "My profile clicked";
+            intent = new Intent(ManagerWorkArrangement.this, ManagerHomePage.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             message = "Employees requests clicked";
-            intent = new Intent(this, ManagerRequestPage.class);
+            intent = new Intent(ManagerWorkArrangement.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             message = "Build work arrangement clicked";
-            intent = new Intent(this, ManagerWorkArrangement.class);
+            // Remove unnecessary navigation to the same activity
         } else if (item.getItemId() == R.id.published_work_arrangement) {
             message = "Published work arrangement clicked";
-            intent = new Intent(this, ManagerWorkArrangement.class);
+            // Remove unnecessary navigation to the same activity
         } else if (item.getItemId() == R.id.send_notifications) {
             message = "Send notifications clicked";
-            intent = new Intent(this, ManagerSendNotificationPage.class);
+            intent = new Intent(ManagerWorkArrangement.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
             message = "Sent notifications clicked";
-            intent = new Intent(this, ManagerSentNotificationsPage.class);
+            intent = new Intent(ManagerWorkArrangement.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
-            message = "Logging out...";
-            intent = new Intent(this, Login.class);
+            message = "Log out clicked";
+            intent = new Intent(ManagerWorkArrangement.this, Login.class);
+            startActivity(intent);
+            finish();  // Only finish the activity when logging out
+            return true;
         }
-
-        // Show the Toast and delay navigation
-        if (!message.isEmpty()) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
 
         if (intent != null) {
             showToastThenNavigate(message, intent);
@@ -139,15 +96,18 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
         return true;
     }
 
+    /**
+     * Displays a toast and navigates to a new activity after a short delay
+     */
     private void showToastThenNavigate(String message, Intent intent) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         intent.putExtra("LOGIN_EMAIL", managerEmail);
-
         new android.os.Handler().postDelayed(() -> {
             startActivity(intent);
             // Don't finish the current activity immediately
         }, 500);
     }
+
 
 
     @Override
