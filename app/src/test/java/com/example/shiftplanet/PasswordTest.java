@@ -1,6 +1,6 @@
 package com.example.shiftplanet;
 
-import static com.example.shiftplanet.Registration.validPassword;
+import static com.example.shiftplanet.Registration.validPasswordCheck;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -10,27 +10,27 @@ public class PasswordTest {
 
     @Test
     public void testValid () {
-        assertTrue(validPassword("Pass1234"));
+        assertTrue(validPasswordCheck("Pass1234"));
     }
 
     @Test
     public void testPasswordTooShort() {
-        assertFalse(validPassword("Pass1"));
+        assertFalse(validPasswordCheck("Pass1"));
     }
 
     @Test
     public void testPasswordNoUppercase() {
-        assertFalse(validPassword("pass123"));
+        assertFalse(validPasswordCheck("pass123"));
     }
 
     @Test
     public void testPasswordNoNumbers() {
-        assertFalse(validPassword("Password"));
+        assertFalse(validPasswordCheck("Password"));
 
     }
     @Test
     public void testPasswordNoLetters() {
-        assertFalse(validPassword("123456"));
+        assertFalse(validPasswordCheck("123456"));
     }
 
 }
