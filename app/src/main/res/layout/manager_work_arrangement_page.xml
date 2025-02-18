@@ -16,12 +16,13 @@
 
         <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background_primary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Calendar Navigation Layout -->
@@ -32,7 +33,7 @@
             android:background="@color/background_secondary"
             android:orientation="horizontal"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toBottomOf="@id/toolbar1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -92,9 +93,78 @@
                 android:orientation="horizontal"
                 android:weightSum="3">
 
-                <include layout="@layout/item_date_box" />
-                <include layout="@layout/item_date_box" />
-                <include layout="@layout/item_date_box" />
+                <!-- First Item Date Box-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/first_day_letter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Day"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/first_day_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Date"
+                        android:textSize="12sp" />
+                </LinearLayout>
+                <!-- Second Item Date Box-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/second_day_letter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Day"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/second_day_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Date"
+                        android:textSize="12sp" />
+                </LinearLayout>
+                <!-- Third Item Date Box-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/third_day_letter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Day"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/third_day_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Date"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <ImageButton
@@ -145,11 +215,7 @@
                     android:id="@+id/morningRow1">
 
                     <!-- Employee Shifts -->
-                    <include layout="@layout/empty_item_shift" />
 
-                    <include layout="@layout/empty_item_shift" />
-
-                    <include layout="@layout/empty_item_shift" />
                 </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"
@@ -171,9 +237,7 @@
                     android:id="@+id/eveningRow1">
 
                     <!-- Employee Shifts -->
-                    <include layout="@layout/empty_item_shift" />
-                    <include layout="@layout/empty_item_shift" />
-                    <include layout="@layout/empty_item_shift" />
+
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
