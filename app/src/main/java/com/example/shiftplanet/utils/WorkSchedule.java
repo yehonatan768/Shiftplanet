@@ -6,8 +6,8 @@ public class WorkSchedule {
     private String week;
     private Map<String, Map<String, List<Map<String, String>>>> schedule;
 
-    public WorkSchedule(String startDate, String endDate) {
-        this.week = startDate + " to " + endDate;
+    public WorkSchedule(String startDate) {
+        this.week = startDate;
         this.schedule = new LinkedHashMap<>();
 
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};

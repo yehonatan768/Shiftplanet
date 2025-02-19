@@ -1,6 +1,11 @@
 package com.example.shiftplanet;
 
+import com.example.shiftplanet.utils.WorkSchedule;
+import com.example.shiftplanet.utils.WorkScheduleGenerator;
+
 import static android.content.ContentValues.TAG;
+import static com.example.shiftplanet.utils.WorkScheduleGenerator.generateSchedule;
+
 import com.example.shiftplanet.dialogs.ShiftDialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,10 +26,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,6 +52,10 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     TextView firstDayLetter, firstDayNumber, secondDayLetter, secondDayNumber, thirdDayLetter, thirdDayNumber, calendarTitle;
     ImageButton btnPreviousWeek, btnNextWeek, btnPreviousDay, btnNextDay;
     Calendar currentWeek;
+    private String json_work_arrangement;
+
+    protected FirebaseFirestore db;
+    protected DocumentSnapshot requestDocument;
 
 
     private static final String TAG = "ShiftDialog";
@@ -55,6 +70,8 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
 
         toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
+
+        db = FirebaseFirestore.getInstance();
 
         drawerLayout = findViewById(R.id.manager_work_arrangement);
         navigationView = findViewById(R.id.nav_view1);
@@ -73,9 +90,6 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         secondDayNumber = findViewById(R.id.second_day_number);
         thirdDayLetter = findViewById(R.id.third_day_letter);
         thirdDayNumber = findViewById(R.id.third_day_number);
-
-        createDynamicShifts(morningShiftLayout, "Morning");
-        createDynamicShifts(eveningShiftLayout, "Evening");
 
         calendarTitle = findViewById(R.id.calendar_title);
 
@@ -108,7 +122,122 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             updateDateDisplay();
             checkAndUpdateWeek();
         });
+        // something in the function crash the app
+        getWorkArrangement();
+
+        createDynamicShifts(morningShiftLayout, "Morning");
+        createDynamicShifts(eveningShiftLayout, "Evening");
     }
+
+    private void getWorkArrangement() {
+        // something in the function crash the app
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
+            String formattedDate = dateFormat.format(currentWeek);
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+
+            db.collection("Work Arrangement")
+                    .whereEqualTo("Email", managerEmail)
+                    .whereEqualTo("Date", formattedDate)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        try {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                // ✅ Work arrangement found in Firestore
+                                requestDocument = queryDocumentSnapshots.getDocuments().get(0);
+                                String fileReference = requestDocument.getString("reference");
+
+                                if (fileReference != null) {
+                                    fetchWorkArrangement(fileReference);
+                                } else {
+                                    Toast.makeText(this, "No file reference found.", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                // ❌ No work arrangement found → Generate a new JSON schedule
+                                json_work_arrangement = generateSchedule(formattedDate);
+
+                                // ✅ Upload JSON to Firebase Storage
+                                uploadJsonToStorage(json_work_arrangement, formattedDate, managerEmail);
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(this, "Firestore query error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Error fetching work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void uploadJsonToStorage(String jsonContent, String date, String email) {
+        try {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child("work_arrangements/" + email + "_" + date + ".json");
+
+            byte[] jsonData = jsonContent.getBytes(StandardCharsets.UTF_8);
+            UploadTask uploadTask = storageRef.putBytes(jsonData);
+
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                // ✅ Get download URL
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String fileUrl = uri.toString();
+
+                    // ✅ Save reference in Firestore
+                    saveWorkArrangementToFirestore(email, date, fileUrl);
+                });
+            }).addOnFailureListener(e ->
+                    Toast.makeText(this, "JSON upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveWorkArrangementToFirestore(String email, String date, String fileUrl) {
+        try {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            Map<String, Object> workArrangement = new HashMap<>();
+            workArrangement.put("Email", email);
+            workArrangement.put("Date", date);
+            workArrangement.put("reference", fileUrl); // 🔗 Store the file reference URL
+
+            db.collection("Work Arrangement").add(workArrangement)
+                    .addOnSuccessListener(documentReference ->
+                            Toast.makeText(this, "Work arrangement saved!", Toast.LENGTH_SHORT).show()
+                    )
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Error saving work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void fetchWorkArrangement(String fileUrl) {
+        try {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference fileRef = storage.getReferenceFromUrl(fileUrl);
+
+            fileRef.getBytes(1024 * 1024) // Max 1MB
+                    .addOnSuccessListener(bytes -> {
+                        json_work_arrangement = new String(bytes, StandardCharsets.UTF_8);
+                        Toast.makeText(this, "Work arrangement loaded!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Error fetching JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     private void updateCalendarTitleAndDates() {
         SimpleDateFormat format = new SimpleDateFormat("d/M", Locale.getDefault());

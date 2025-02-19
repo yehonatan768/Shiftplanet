@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class WorkScheduleGenerator {
-    public static String generateSchedule(String startDate, String endDate) {
+    public static String generateSchedule(String startDate) {
         try {
-            WorkSchedule workSchedule = new WorkSchedule(startDate, endDate);
+            WorkSchedule workSchedule = new WorkSchedule(startDate);
 
             // Convert to JSON format
             ObjectMapper objectMapper = new ObjectMapper();
