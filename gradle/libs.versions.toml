@@ -18,6 +18,7 @@ googleFirebaseBom = "32.2.0"
 googleFirebaseBomVersion = "32.7.0"
 googleFirebaseFirestore = "24.7.1"
 googleProtobufJavalite = "3.25.1"
+jacksonDatabind = "2.13.4"
 junitJupiter = "5.9.2'testImplementation 'org.mockito"
 junitJupiterApi = "5.8.1"
 junitJupiterEngine = "5.8.1"
@@ -80,6 +81,7 @@ google-firebase-database = { module = "com.google.firebase:firebase-database" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 google-firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 google-firebase-storage = { module = "com.google.firebase:firebase-storage" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jacksonDatabind" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

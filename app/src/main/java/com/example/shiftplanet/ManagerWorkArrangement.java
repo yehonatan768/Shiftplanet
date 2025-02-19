@@ -1,7 +1,7 @@
 package com.example.shiftplanet;
 
 import static android.content.ContentValues.TAG;
-
+import com.example.shiftplanet.dialogs.ShiftDialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +41,11 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     TextView firstDayLetter, firstDayNumber, secondDayLetter, secondDayNumber, thirdDayLetter, thirdDayNumber, calendarTitle;
     ImageButton btnPreviousWeek, btnNextWeek, btnPreviousDay, btnNextDay;
     Calendar currentWeek;
+
+
+    private static final String TAG = "ShiftDialog";
+    private String selectedStartTime = "08:00";
+    private String selectedEndTime = "16:00";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,15 +168,30 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             addButton.setContentDescription("Add Shift");
 
             final int shiftIndex = i;
-            addButton.setOnClickListener(view -> onAddShiftClicked(shiftIndex, shiftType));
+            addButton.setOnClickListener(view -> {
+                Toast.makeText(this, "Adding shift " + (shiftIndex + 1) + " for " + shiftType, Toast.LENGTH_SHORT).show();
+                // shiftIndex, shiftType
+                ShiftDialogFragment shiftDialog = new ShiftDialogFragment("John Doe", selectedStartTime, selectedEndTime,
+                        new ShiftDialogFragment.ShiftDialogListener() {
+                            @Override
+                            public void onShiftTimeSelected(String updatedStartTime, String updatedEndTime) {
+                                // Update stored values
+                                selectedStartTime = updatedStartTime;
+                                selectedEndTime = updatedEndTime;
+
+                                // Log updated values
+                                Log.d(TAG, "Updated Start Time: " + selectedStartTime);
+                                Log.d(TAG, "Updated End Time: " + selectedEndTime);
+                            }
+                        }
+                );
+                shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
+            });
+
 
             shiftContainer.addView(addButton);
             parentLayout.addView(shiftContainer);
         }
-    }
-
-    private void onAddShiftClicked(int shiftIndex, String shiftType) {
-        Toast.makeText(this, "Adding shift " + (shiftIndex + 1) + " for " + shiftType, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -235,3 +255,4 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         }
     }
 }
+

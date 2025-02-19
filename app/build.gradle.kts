@@ -49,6 +49,7 @@ android {
     }
 }
 dependencies {
+    implementation(libs.jackson.databind)
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.auth)
     implementation(libs.play.services.auth)
