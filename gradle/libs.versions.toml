@@ -2,6 +2,7 @@
 agp = "8.8.0"
 androidxJunit = "1.1.5"
 core = "1.5.0"
+coreVersion = "1.6.1"
 espressoContrib = "3.5.1"
 espressoCoreVersion = "3.5.1"
 espressoIdlingResource = "3.5.1"
@@ -17,8 +18,11 @@ googleFirebaseBom = "32.2.0"
 googleFirebaseBomVersion = "32.7.0"
 googleFirebaseFirestore = "24.7.1"
 googleProtobufJavalite = "3.25.1"
+jacksonDatabind = "2.13.4"
+junitJupiter = "5.9.2'testImplementation 'org.mockito"
 junitJupiterApi = "5.8.1"
 junitJupiterEngine = "5.8.1"
+junitJupiterVersion = "5.9.2"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -30,18 +34,25 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 firebaseAuth = "23.1.0"
 mockitoAndroid = "4.5.1"
+mockitoAndroidVersion = "4.8.0"
 mockitoCore = "5.2.0"
+mockitoCoreVersion = "5.7.0"
+mockitoMockitoCore = "4.8.0"
 playServicesAuth = "21.3.0"
 firebaseStorage = "21.0.1"
 espressoIntents = "3.6.1"
 protobufJavalite = "3.24.0"
 protobufJavaliteVersion = "3.21.12"
+robolectric = "4.9"
 rules = "1.5.0"
 runner = "1.5.2"
+googleCore = "1.47.0"
+shadowsWebkitVersion = "4.10.3"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-v161 = { module = "androidx.test:core", version.ref = "coreVersion" }
 androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-espresso-idling-resource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espressoIdlingResource" }
 androidx-espresso-intents-v351 = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoIntentsVersion" }
@@ -70,25 +81,34 @@ google-firebase-database = { module = "com.google.firebase:firebase-database" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 google-firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 google-firebase-storage = { module = "com.google.firebase:firebase-storage" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jacksonDatabind" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterEngine" }
+junit-jupiter-v592 = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
+mockito-android-v480 = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroidVersion" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-core-v480 = { module = "org.mockito:mockito-core", version.ref = "mockitoMockitoCore" }
+mockito-core-v570 = { module = "org.mockito:mockito-core", version.ref = "mockitoCoreVersion" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 protobuf-javalite-v32112 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavaliteVersion" }
 protobuf-javalite-v3251 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "googleProtobufJavalite" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectric-shadows-webkit = { module = "org.robolectric:shadows-webkit", version.ref = "shadowsWebkitVersion" }
 rules = { module = "androidx.test:rules", version.ref = "rules" }
+core = { group = "com.google.ar", name = "core", version.ref = "googleCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

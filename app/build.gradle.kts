@@ -49,6 +49,7 @@ android {
     }
 }
 dependencies {
+    implementation(libs.jackson.databind)
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.auth)
     implementation(libs.play.services.auth)
@@ -63,11 +64,25 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage)
     implementation(libs.androidx.espresso.intents)
+    implementation(libs.core)
 
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.espresso.core.v351)
     androidTestImplementation(libs.androidx.junit.v115)
+
+
+    testImplementation (libs.mockito.core.v570)
+
+
+    testImplementation (libs.junit.jupiter)
+    testImplementation (libs.androidx.core.v161)
+    testImplementation (libs.junit)
+    testImplementation (libs.mockito.core.v480)
+    androidTestImplementation (libs.mockito.android.v480)
+    testImplementation (libs.junit.jupiter.v592)
 }

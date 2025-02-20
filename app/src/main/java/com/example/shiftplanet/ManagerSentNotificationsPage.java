@@ -204,10 +204,10 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerSentNotificationsPage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerSentNotificationsPage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.published_work_arrangement) {
             Toast.makeText(ManagerSentNotificationsPage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerSentNotificationsPage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerSentNotificationsPage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerSendNotificationPage.class);
@@ -221,7 +221,6 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
 
         if (intent != null) {
             intent.putExtra("LOGIN_EMAIL", managerEmail);
-            finish();
             startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);

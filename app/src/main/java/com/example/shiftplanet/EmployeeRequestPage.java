@@ -115,25 +115,12 @@ public class EmployeeRequestPage extends AppCompatActivity {
             String details = detailsEditText.getText().toString().trim();
             String employeeEmail = current.getEmail();
 
-            if (reason.isEmpty()) {
-                Toast.makeText(EmployeeRequestPage.this, "Please fill Request Type", Toast.LENGTH_SHORT).show();
+
+            if (!requestFieldsCheck(reason,startDate,endDate)) {
+                Toast.makeText(this, "please fill in all fields", LENGTH_SHORT).show();
                 return;
             }
 
-            if (startDate.isEmpty()) {
-                Toast.makeText(EmployeeRequestPage.this, "Please fill Start Date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (endDate.isEmpty()) {
-                Toast.makeText(EmployeeRequestPage.this, "Please fill End Date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (reason.equals("Vacation") && details.isEmpty()) {
-                Toast.makeText(EmployeeRequestPage.this, "Please fill Details about the request", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             // המרת התאריכים למבני Date להשוואה
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -349,4 +336,20 @@ public class EmployeeRequestPage extends AppCompatActivity {
     interface OnDateSelectedListener {
         void onDateSelected(String date);
     }
+
+    static boolean requestFieldsCheck(String reason, String startDate, String endDate ) {
+        if (reason.isEmpty()) {
+            return false;
+        }
+        if (startDate.isEmpty()) {
+            return false;
+        }
+        if (endDate.isEmpty()) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 }

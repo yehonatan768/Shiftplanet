@@ -106,6 +106,11 @@ public class Registration extends AppCompatActivity {
             return;
         }
 
+        if (!validPasswordCheck(password)){
+            Toast.makeText(this, "password must contain 6 chars, at least 1 uppercase letter and at least 1 number ", LENGTH_SHORT).show();
+            return;
+        }
+
         if (!password.equals(confirmPasswordText)) {
             Toast.makeText(this, "Passwords do not match", LENGTH_SHORT).show();
             return;
@@ -160,4 +165,21 @@ public class Registration extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "User data saved successfully!"))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error saving user data", e));
     }
+
+
+    static boolean validPasswordCheck(String password) {
+        if (password.length() < 6) {
+            return false;
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            return false;
+        }
+        if (!password.matches(".*\\d.*")) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 }
