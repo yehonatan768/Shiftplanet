@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class ManagerWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -68,65 +69,76 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         EdgeToEdge.enable(this);
         setContentView(R.layout.manager_work_arrangement_page);
 
-        toolbar = findViewById(R.id.toolbar1);
-        setSupportActionBar(toolbar);
+        // Retrieve the email
+        String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
-        db = FirebaseFirestore.getInstance();
+        if (email != null) {
+            Log.d(TAG, "Received email: " + email);
+            managerEmail = email;
+        } else {
+            Log.e(TAG, "No email received");
+            Toast.makeText(this, "Error: Manager email is not set.", Toast.LENGTH_SHORT).show();
+        }
 
-        drawerLayout = findViewById(R.id.manager_work_arrangement);
-        navigationView = findViewById(R.id.nav_view1);
-        navigationView.setNavigationItemSelectedListener(this);
+            toolbar = findViewById(R.id.toolbar1);
+            setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+            db = FirebaseFirestore.getInstance();
 
-        morningShiftLayout = findViewById(R.id.morningRow1);
-        eveningShiftLayout = findViewById(R.id.eveningRow1);
+            drawerLayout = findViewById(R.id.manager_work_arrangement);
+            navigationView = findViewById(R.id.nav_view1);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        firstDayLetter = findViewById(R.id.first_day_letter);
-        firstDayNumber = findViewById(R.id.first_day_number);
-        secondDayLetter = findViewById(R.id.second_day_letter);
-        secondDayNumber = findViewById(R.id.second_day_number);
-        thirdDayLetter = findViewById(R.id.third_day_letter);
-        thirdDayNumber = findViewById(R.id.third_day_number);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
 
-        calendarTitle = findViewById(R.id.calendar_title);
+            morningShiftLayout = findViewById(R.id.morningRow1);
+            eveningShiftLayout = findViewById(R.id.eveningRow1);
 
-        btnPreviousWeek = findViewById(R.id.btn_previous_week);
-        btnNextWeek = findViewById(R.id.btn_next_week);
-        btnPreviousDay = findViewById(R.id.btn_previous_day_set);
-        btnNextDay = findViewById(R.id.btn_next_day_set);
+            firstDayLetter = findViewById(R.id.first_day_letter);
+            firstDayNumber = findViewById(R.id.first_day_number);
+            secondDayLetter = findViewById(R.id.second_day_letter);
+            secondDayNumber = findViewById(R.id.second_day_number);
+            thirdDayLetter = findViewById(R.id.third_day_letter);
+            thirdDayNumber = findViewById(R.id.third_day_number);
 
-        currentWeek = Calendar.getInstance();
-        updateCalendarTitleAndDates();
+            calendarTitle = findViewById(R.id.calendar_title);
 
-        btnPreviousWeek.setOnClickListener(view -> {
-            currentWeek.add(Calendar.WEEK_OF_YEAR, -1);
+            btnPreviousWeek = findViewById(R.id.btn_previous_week);
+            btnNextWeek = findViewById(R.id.btn_next_week);
+            btnPreviousDay = findViewById(R.id.btn_previous_day_set);
+            btnNextDay = findViewById(R.id.btn_next_day_set);
+
+            currentWeek = Calendar.getInstance();
             updateCalendarTitleAndDates();
-        });
 
-        btnNextWeek.setOnClickListener(view -> {
-            currentWeek.add(Calendar.WEEK_OF_YEAR, 1);
-            updateCalendarTitleAndDates();
-        });
+            btnPreviousWeek.setOnClickListener(view -> {
+                currentWeek.add(Calendar.WEEK_OF_YEAR, -1);
+                updateCalendarTitleAndDates();
+            });
 
-        btnPreviousDay.setOnClickListener(view -> {
-            currentWeek.add(Calendar.DAY_OF_MONTH, -1);
-            updateDateDisplay();
-            checkAndUpdateWeek();
-        });
+            btnNextWeek.setOnClickListener(view -> {
+                currentWeek.add(Calendar.WEEK_OF_YEAR, 1);
+                updateCalendarTitleAndDates();
+            });
 
-        btnNextDay.setOnClickListener(view -> {
-            currentWeek.add(Calendar.DAY_OF_MONTH, 1);
-            updateDateDisplay();
-            checkAndUpdateWeek();
-        });
-        // something in the function crash the app
-        getWorkArrangement();
+            btnPreviousDay.setOnClickListener(view -> {
+                currentWeek.add(Calendar.DAY_OF_MONTH, -1);
+                updateDateDisplay();
+                checkAndUpdateWeek();
+            });
 
-        createDynamicShifts(morningShiftLayout, "Morning");
-        createDynamicShifts(eveningShiftLayout, "Evening");
+            btnNextDay.setOnClickListener(view -> {
+                currentWeek.add(Calendar.DAY_OF_MONTH, 1);
+                updateDateDisplay();
+                checkAndUpdateWeek();
+            });
+            // something in the function crash the app
+            getWorkArrangement();
+
+            createDynamicShifts(morningShiftLayout, "Morning");
+            createDynamicShifts(eveningShiftLayout, "Evening");
     }
 
     private void getWorkArrangement() {
@@ -160,7 +172,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                                 json_work_arrangement = generateSchedule(formattedDate);
 
                                 // ✅ Upload JSON to Firebase Storage
-                                uploadJsonToStorage(json_work_arrangement, formattedDate, managerEmail);
+                                uploadJsonToStorage(json_work_arrangement, formattedDate);
                             }
                         } catch (Exception e) {
                             Toast.makeText(this, "Firestore query error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -170,14 +182,14 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                             Toast.makeText(this, "Error fetching work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                     );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this, "Error getting work arrangement: ", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadJsonToStorage(String jsonContent, String date, String email) {
+    private void uploadJsonToStorage(String jsonContent, String date) {
         try {
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child("work_arrangements/" + email + "_" + date + ".json");
+            StorageReference storageRef = storage.getReference().child("work_arrangements/" + managerEmail + "_" + date + ".json");
 
             byte[] jsonData = jsonContent.getBytes(StandardCharsets.UTF_8);
             UploadTask uploadTask = storageRef.putBytes(jsonData);
@@ -188,22 +200,22 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                     String fileUrl = uri.toString();
 
                     // ✅ Save reference in Firestore
-                    saveWorkArrangementToFirestore(email, date, fileUrl);
+                    saveWorkArrangementToFirestore(date, fileUrl);
                 });
             }).addOnFailureListener(e ->
                     Toast.makeText(this, "JSON upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this, "JSON upload failed", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void saveWorkArrangementToFirestore(String email, String date, String fileUrl) {
+    private void saveWorkArrangementToFirestore(String date, String fileUrl) {
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             Map<String, Object> workArrangement = new HashMap<>();
-            workArrangement.put("Email", email);
+            workArrangement.put("Email", managerEmail);
             workArrangement.put("Date", date);
             workArrangement.put("reference", fileUrl); // 🔗 Store the file reference URL
 
@@ -215,7 +227,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                             Toast.makeText(this, "Error saving work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                     );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this, "JSON save failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -233,7 +245,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                             Toast.makeText(this, "Error fetching JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                     );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Toast.makeText(this, "fetch work arrangement failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -328,6 +340,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         Intent intent = null;
         String message = "";
 
+
         if (item.getItemId() == R.id.m_my_profile) {
             message = "Already on My Profile";
             intent = new Intent(this, ManagerHomePage.class);
@@ -348,6 +361,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             message = "Logging out...";
             intent = new Intent(this, Login.class);
         }
+
 
         // Show the Toast and delay navigation
         if (!message.isEmpty()) {
