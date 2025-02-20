@@ -19,6 +19,12 @@
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
         <activity
+            android:name=".EmployeeShiftChange"
+            android:exported="false" />
+        <activity
+            android:name=".shiftChangeRequest"
+            android:exported="false" />
+        <activity
             android:name=".ManagerSentNotificationsPage"
             android:exported="false" />
         <activity
