@@ -125,6 +125,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             // המרת התאריכים למבני Date להשוואה
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
+
                 Date start = sdf.parse(startDate);
                 Date end = sdf.parse(endDate);
 
@@ -176,6 +177,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         startActivityForResult(intent, PICK_DOCUMENT_REQUEST);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -216,6 +218,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         request.put("timestamp", FieldValue.serverTimestamp());
         request.put("documentUrl", documentUrl);
 
+
         db.collection("Requests")
                 .add(request)
                 .addOnSuccessListener(documentReference -> {
@@ -255,6 +258,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                     });
         });
     }
+
 
     private void getNextRequestNumber(OnRequestNumberGeneratedListener listener) {
         db.collection("RequestCounters").document("RequestsCounter")
