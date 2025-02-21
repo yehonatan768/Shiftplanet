@@ -41,6 +41,7 @@ mockitoMockitoCore = "4.8.0"
 playServicesAuth = "21.3.0"
 firebaseStorage = "21.0.1"
 espressoIntents = "3.6.1"
+playServicesAuthVersion = "20.7.0"
 protobufJavalite = "3.24.0"
 protobufJavaliteVersion = "3.21.12"
 robolectric = "4.9"
@@ -63,6 +64,7 @@ com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-aut
 com-google-firebase-firebase-auth2 = { module = "com.google.firebase:firebase-auth" }
 com-google-firebase-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 com-google-firebase-firebase-firestore2 = { module = "com.google.firebase:firebase-firestore" }
+com-google-firebase-firebase-storage = { module = "com.google.firebase:firebase-storage" }
 espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoContrib" }
 firebase-bom-v3200 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-bom-v3220 = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBom" }
@@ -102,6 +104,7 @@ mockito-core-v570 = { module = "org.mockito:mockito-core", version.ref = "mockit
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
+play-services-auth-v2070 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 protobuf-javalite-v32112 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavaliteVersion" }
 protobuf-javalite-v3251 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "googleProtobufJavalite" }

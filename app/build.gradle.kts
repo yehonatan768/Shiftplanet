@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.google.firebase.auth)
     implementation(libs.play.services.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.com.google.firebase.firebase.storage)
+    implementation(libs.play.services.auth.v2070)
     implementation(libs.firebase.database)
     implementation(libs.firebase.messaging)
     implementation(libs.google.firebase.analytics)

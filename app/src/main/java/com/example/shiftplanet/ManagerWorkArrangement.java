@@ -1,10 +1,6 @@
 package com.example.shiftplanet;
 
 import com.example.shiftplanet.utils.WorkSchedule;
-import com.example.shiftplanet.utils.WorkScheduleGenerator;
-
-import static android.content.ContentValues.TAG;
-import static com.example.shiftplanet.utils.WorkScheduleGenerator.generateSchedule;
 
 import com.example.shiftplanet.dialogs.ShiftDialogFragment;
 import android.content.Intent;
@@ -23,25 +19,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class ManagerWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -141,113 +129,77 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             createDynamicShifts(eveningShiftLayout, "Evening");
     }
 
+    public static String generateValidDocumentId(String managerEmail, String formattedDate) {
+        if (managerEmail == null || managerEmail.isEmpty() || formattedDate == null || formattedDate.isEmpty()) {
+            throw new IllegalArgumentException("Manager email or formatted date cannot be null or empty");
+        }
+
+        // Combine email and date to form document ID
+        String rawDocumentId = managerEmail + "_" + formattedDate;
+
+        // ✅ Replace all unwanted characters with `_` (Firestore does not allow `/ . # [ ]`)
+        return rawDocumentId.replaceAll("[^a-zA-Z0-9_-]", "_");
+    }
+
     private void getWorkArrangement() {
-        // something in the function crash the app
         try {
+            if (currentWeek == null) {
+                currentWeek = Calendar.getInstance();
+            }
+
+            // Ensure currentWeek is set to Sunday
+            Calendar currentWeek = Calendar.getInstance();
+            currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY); // ✅ Force Sunday
+
+            // Format the date as `d/M`
             SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
-            String formattedDate = dateFormat.format(currentWeek);
+            Date sundayDate = currentWeek.getTime(); // Get Date object for Sunday
+            String formattedDate = dateFormat.format(sundayDate); // Format it to `d/M`
+
+
+            // ✅ Generate a safe Firestore document ID
+            String documentId = generateValidDocumentId(managerEmail, formattedDate);
+
+            Log.e("Firestore", "Generated Document ID: " + documentId); // Debugging Log
+
+            if (managerEmail == null || managerEmail.isEmpty()) {
+                Log.e("Firestore", "Error: managerEmail is null or empty");
+                Toast.makeText(this, "Error: Manager email is null!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            FirebaseStorage storage = FirebaseStorage.getInstance();
 
-            db.collection("Work Arrangement")
-                    .whereEqualTo("Email", managerEmail)
-                    .whereEqualTo("Date", formattedDate)
+            db.collection("Work Arrangement").document(documentId)
                     .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        try {
-                            if (!queryDocumentSnapshots.isEmpty()) {
-                                // ✅ Work arrangement found in Firestore
-                                requestDocument = queryDocumentSnapshots.getDocuments().get(0);
-                                String fileReference = requestDocument.getString("reference");
-
-                                if (fileReference != null) {
-                                    fetchWorkArrangement(fileReference);
-                                } else {
-                                    Toast.makeText(this, "No file reference found.", Toast.LENGTH_SHORT).show();
-                                }
-
-                            } else {
-                                // ❌ No work arrangement found → Generate a new JSON schedule
-                                json_work_arrangement = generateSchedule(formattedDate);
-
-                                // ✅ Upload JSON to Firebase Storage
-                                uploadJsonToStorage(json_work_arrangement, formattedDate);
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            json_work_arrangement = documentSnapshot.getData().toString();
+                            Toast.makeText(ManagerWorkArrangement.this, "Work arrangement loaded!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                WorkSchedule newSchedule = new WorkSchedule(formattedDate);
+                                newSchedule.saveToFirestore(documentId);
+                                json_work_arrangement = newSchedule.toMap().toString();
+                            } catch (Exception e) {
+                                Log.e("Firestore", "Error generating schedule", e);
+                                Toast.makeText(this, "Error generating schedule: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        } catch (Exception e) {
-                            Toast.makeText(this, "Firestore query error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error fetching work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error fetching work arrangement", e);
+                        Toast.makeText(this, "Error fetching work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
         } catch (Exception e) {
-            Toast.makeText(this, "Error getting work arrangement: ", Toast.LENGTH_SHORT).show();
+            Log.e("Firestore", "Unexpected error in getWorkArrangement", e);
+            Toast.makeText(this, "Unexpected error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadJsonToStorage(String jsonContent, String date) {
-        try {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child("work_arrangements/" + managerEmail + "_" + date + ".json");
 
-            byte[] jsonData = jsonContent.getBytes(StandardCharsets.UTF_8);
-            UploadTask uploadTask = storageRef.putBytes(jsonData);
 
-            uploadTask.addOnSuccessListener(taskSnapshot -> {
-                // ✅ Get download URL
-                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String fileUrl = uri.toString();
-
-                    // ✅ Save reference in Firestore
-                    saveWorkArrangementToFirestore(date, fileUrl);
-                });
-            }).addOnFailureListener(e ->
-                    Toast.makeText(this, "JSON upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-            );
-        } catch (Exception e) {
-            Toast.makeText(this, "JSON upload failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveWorkArrangementToFirestore(String date, String fileUrl) {
-        try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            Map<String, Object> workArrangement = new HashMap<>();
-            workArrangement.put("Email", managerEmail);
-            workArrangement.put("Date", date);
-            workArrangement.put("reference", fileUrl); // 🔗 Store the file reference URL
-
-            db.collection("Work Arrangement").add(workArrangement)
-                    .addOnSuccessListener(documentReference ->
-                            Toast.makeText(this, "Work arrangement saved!", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error saving work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
-        } catch (Exception e) {
-            Toast.makeText(this, "JSON save failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void fetchWorkArrangement(String fileUrl) {
-        try {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference fileRef = storage.getReferenceFromUrl(fileUrl);
-
-            fileRef.getBytes(1024 * 1024) // Max 1MB
-                    .addOnSuccessListener(bytes -> {
-                        json_work_arrangement = new String(bytes, StandardCharsets.UTF_8);
-                        Toast.makeText(this, "Work arrangement loaded!", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error fetching JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
-        } catch (Exception e) {
-            Toast.makeText(this, "fetch work arrangement failed", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
 
