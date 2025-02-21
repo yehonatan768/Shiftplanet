@@ -80,4 +80,9 @@ public class WorkSchedule {
         // Update Firestore
         saveToFirestore(documentId);
     }
+
+    public Map<String, Map<String, List<Map<String, String>>>> getSchedule() {
+        return schedule;
+    }
+
 }
