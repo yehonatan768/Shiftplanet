@@ -125,6 +125,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             // המרת התאריכים למבני Date להשוואה
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
+
                 Date start = sdf.parse(startDate);
                 Date end = sdf.parse(endDate);
 
@@ -176,6 +177,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         startActivityForResult(intent, PICK_DOCUMENT_REQUEST);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -216,6 +218,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         request.put("timestamp", FieldValue.serverTimestamp());
         request.put("documentUrl", documentUrl);
 
+
         db.collection("Requests")
                 .add(request)
                 .addOnSuccessListener(documentReference -> {
@@ -255,6 +258,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                     });
         });
     }
+
 
     private void getNextRequestNumber(OnRequestNumberGeneratedListener listener) {
         db.collection("RequestCounters").document("RequestsCounter")
@@ -301,7 +305,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeShiftChange.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
