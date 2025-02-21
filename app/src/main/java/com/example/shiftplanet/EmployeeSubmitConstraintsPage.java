@@ -148,8 +148,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
                                    boolean thursdayMSelected, boolean thursdayESelected, boolean fridayMSelected, boolean fridayESelected,
                                    String managerEmail, int businessCode, String notes) {
 
-        // Create a unique ID for the new request (e.g., using UUID or timestamp)
-        String requestId = UUID.randomUUID().toString(); // Use UUID to generate a unique ID for each request
+        String requestId = UUID.randomUUID().toString();
 
         // Creating the object to send to Firestore
         Map<String, Object> userConstraints = new HashMap<>();
@@ -171,9 +170,9 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         userConstraints.put("notes", notes);
         userConstraints.put("timestamp", FieldValue.serverTimestamp());
 
-        // Send constraints to Firestore with a unique document ID (using the generated requestId)
-        db.collection("Availability") // Use a unique ID for each request
-                .add(userConstraints) // Add the constraints as a new document
+        // Send constraints to Firestore
+        db.collection("Availability")
+                .add(userConstraints)
                 .addOnSuccessListener(documentReference -> {
                     // Success
                     Toast.makeText(EmployeeSubmitConstraintsPage.this, "Constraints submitted successfully!", Toast.LENGTH_SHORT).show();
@@ -254,6 +253,6 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         drawerLayout.closeDrawer(GravityCompat.START);
         startActivity(intent);
         finish();
-        return true; // Return true as the item was handled
+        return true;
     }
 }
