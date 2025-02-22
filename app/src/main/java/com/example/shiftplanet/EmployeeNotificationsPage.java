@@ -125,6 +125,7 @@
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Map<String, String> notification = new HashMap<>();
                             notification.put("notificationId", document.getId());
+                            notification.put("title", document.getString("title"));  // Add the title field
                             notification.put("updateType", document.getString("updateType"));  // סוג העדכון
                             notification.put("message", document.getString("message"));  // תיאור קצר של העדכון
                             notifications.add(notification);
@@ -136,41 +137,26 @@
                         onComplete.run();
                     });
         }
-
         private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
             // Clear any previous views
             parentLayout.removeAllViews();
-
-            if (requests.isEmpty()) {
-                // Add a "No Requests" message if the list is empty
-                TextView noRequestsMessage = new TextView(this);
-                noRequestsMessage.setText("No notifications available.");
-                noRequestsMessage.setTextColor(getResources().getColor(android.R.color.white));
-                noRequestsMessage.setTextSize(16);
-                noRequestsMessage.setGravity(Gravity.CENTER);
-                parentLayout.addView(noRequestsMessage);
-                return;
-            }
 
             // Dynamically add each request to the layout
             int idCounter = 1; // Start the ID counter
             for (Map<String, String> request : requests) {
                 String notificationId = request.get("notificationId");
-                String updateType = "Update";
+                String updateType = request.get("updateType") != null ? request.get("updateType") : "Update";  // Default to "Update"
                 String message = request.get("message");
+                String title = request.get("title");  // הוצאת השם של הכותרת
 
-                LinearLayout requestLayout = createRequestLayout(
-                        idCounter,
-                        updateType,  // Type of update (e.g., "Vacation Approved", "Sick Leave")
-                        message,     // A brief message or description of the update
-                        backgroundColor
-                );
+                LinearLayout requestLayout = createRequestLayout(idCounter, updateType, message, title, backgroundColor);
 
                 // Set click listener to open detailed notification
                 requestLayout.setOnClickListener(v -> {
                     if (notificationId != null) {
                         Intent intent = new Intent(EmployeeNotificationsPage.this, NotificationDetailActivityPage.class);
                         intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                        intent.putExtra("LOGIN_EMAIL", employeeEmail);
                         startActivity(intent);
                     } else {
                         Toast.makeText(EmployeeNotificationsPage.this, "Notification ID is missing", Toast.LENGTH_SHORT).show();
@@ -178,27 +164,36 @@
                 });
 
                 parentLayout.addView(requestLayout);
-
                 idCounter++;
             }
         }
 
-
-        private LinearLayout createRequestLayout(int id, String updateType, String message, int backgroundColor) {
+        private LinearLayout createRequestLayout(int id, String updateType, String message, String title, int backgroundColor) {
             LinearLayout requestLayout = new LinearLayout(this);
             requestLayout.setId(id); // Set the unique ID
             requestLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-            // Set LayoutParams with a bottom margin
+            // Set LayoutParams with a bottom margin to ensure consistent height
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     120 // Height in px (adjust as needed)
             );
-            layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 16px
+            layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 8px
             requestLayout.setLayoutParams(layoutParams);
 
             requestLayout.setPadding(12, 12, 12, 12);
             requestLayout.setBackgroundColor(backgroundColor);
+
+            // Title TextView
+            TextView titleTextView = new TextView(this);
+            titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, // Take the remaining space
+                    LinearLayout.LayoutParams.MATCH_PARENT
+            ));
+            titleTextView.setText(title);
+            titleTextView.setTextColor(getResources().getColor(android.R.color.white));
+            titleTextView.setTextSize(16);
+            titleTextView.setGravity(Gravity.CENTER_VERTICAL);
 
             // Update Type TextView
             TextView updateTypeTextView = new TextView(this);
@@ -224,6 +219,7 @@
             messageTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
             // Add TextViews to the request layout
+            requestLayout.addView(titleTextView);  // Add the title view first
             requestLayout.addView(updateTypeTextView);
             requestLayout.addView(messageTextView);
 

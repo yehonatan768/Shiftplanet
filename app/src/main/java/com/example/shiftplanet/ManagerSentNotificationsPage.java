@@ -94,6 +94,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
                         notification.put("notificationId", document.getId());
                         notification.put("updateType", document.getString("updateType"));  // סוג העדכון
                         notification.put("message", document.getString("message"));  // תיאור קצר של העדכון
+                        notification.put("title", document.getString("title"));  // הוסף את ה-title
                         notifications.add(notification);
                     }
                     updateUI(); // Update the UI after fetching data
@@ -103,6 +104,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
                     updateUI(); // Still update the UI even if there's an error
                 });
     }
+
 
     private void updateUI() {
         LinearLayout pendingLayout = findViewById(R.id.layout_notifications);
@@ -129,14 +131,16 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
             String notificationId = request.get("notificationId");
             String updateType = request.get("updateType") != null ? request.get("updateType") : "Update";  // Default to "Update"
             String message = request.get("message");
+            String title = request.get("title");  // הוצאת השם של הכותרת
 
-            LinearLayout requestLayout = createRequestLayout(idCounter, updateType, message, backgroundColor);
+            LinearLayout requestLayout = createRequestLayout(idCounter, updateType, message, title, backgroundColor);
 
             // Set click listener to open detailed notification
             requestLayout.setOnClickListener(v -> {
                 if (notificationId != null) {
                     Intent intent = new Intent(ManagerSentNotificationsPage.this, NotificationDetailActivityPage.class);
                     intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                    intent.putExtra("LOGIN_EMAIL", managerEmail);
                     startActivity(intent);
                 } else {
                     Toast.makeText(ManagerSentNotificationsPage.this, "Notification ID is missing", Toast.LENGTH_SHORT).show();
@@ -147,8 +151,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
             idCounter++;
         }
     }
-
-    private LinearLayout createRequestLayout(int id, String updateType, String message, int backgroundColor) {
+    private LinearLayout createRequestLayout(int id, String updateType, String message, String title, int backgroundColor) {
         LinearLayout requestLayout = new LinearLayout(this);
         requestLayout.setId(id); // Set the unique ID
         requestLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -163,6 +166,17 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
 
         requestLayout.setPadding(12, 12, 12, 12);
         requestLayout.setBackgroundColor(backgroundColor);
+
+        // Title TextView
+        TextView titleTextView = new TextView(this);
+        titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, // Take the remaining space
+                LinearLayout.LayoutParams.MATCH_PARENT
+        ));
+        titleTextView.setText(title);
+        titleTextView.setTextColor(getResources().getColor(android.R.color.white));
+        titleTextView.setTextSize(16);
+        titleTextView.setGravity(Gravity.CENTER_VERTICAL);
 
         // Update Type TextView
         TextView updateTypeTextView = new TextView(this);
@@ -188,11 +202,13 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
         messageTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
         // Add TextViews to the request layout
+        requestLayout.addView(titleTextView);  // Add the title view first
         requestLayout.addView(updateTypeTextView);
         requestLayout.addView(messageTextView);
 
         return requestLayout;
     }
+
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;

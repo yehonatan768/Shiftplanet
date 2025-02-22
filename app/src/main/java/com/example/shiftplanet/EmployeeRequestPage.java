@@ -156,7 +156,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             }
 
 
-    });
+        });
 
         // Add document button click listener
         Button addDocumentButton = findViewById(R.id.add_document_button);
@@ -321,17 +321,17 @@ public class EmployeeRequestPage extends AppCompatActivity {
         finish();
     }
 
-        private void showDatePicker(OnDateSelectedListener listener) {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void showDatePicker(OnDateSelectedListener listener) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-                String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                listener.onDateSelected(date);
-            }, year, month, day).show();
-        }
+        new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+            listener.onDateSelected(date);
+        }, year, month, day).show();
+    }
 
     interface OnDateSelectedListener {
         void onDateSelected(String date);
