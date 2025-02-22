@@ -29,6 +29,7 @@ import java.util.Map;
 public class ShiftDialogFragment extends DialogFragment {
 
     private List<String> employees;
+    private List<String> employeesEmail;
     private String selectedEmployee;
     private String selectedEmployeeEmail;
     private String startTime;
@@ -56,6 +57,7 @@ public class ShiftDialogFragment extends DialogFragment {
         this.workSchedule = workSchedule;
         this.listener = listener;
         this.employees = new ArrayList<>();
+        this.employeesEmail = new ArrayList<>();
 
         try {
             if (isAdded() && getContext() != null) {
@@ -134,6 +136,7 @@ public class ShiftDialogFragment extends DialogFragment {
         }
 
         if (!shiftExists) {
+            Log.d("Firestore", selectedEmployeeEmail);
             workSchedule.addEmployeeToShift(workArrangementId, shiftDay, shiftType, startTime, endTime, selectedEmployeeEmail, selectedEmployee);
             Toast.makeText(getContext(), "Shift added successfully!", Toast.LENGTH_SHORT).show();
         } else {
@@ -239,16 +242,20 @@ public class ShiftDialogFragment extends DialogFragment {
                     .whereEqualTo("email", managerEmail)
                     .get()
                     .addOnSuccessListener(managerQuerySnapshot -> {
-                        Log.d("Firestore", "Manager query result size: " + managerQuerySnapshot.size());
+                        // Log.d("Firestore", "Manager query result size: " + managerQuerySnapshot.size());
 
                         if (!managerQuerySnapshot.isEmpty()) {
                             for (QueryDocumentSnapshot doc : managerQuerySnapshot) {
-                                Log.d("Firestore", "Document Data: " + doc.getData().toString()); // Print entire document
+                                // Log.d("Firestore", "Document Data: " + doc.getData().toString()); // Print entire document
 
                                 String managerName = doc.getString("fullname");
+
                                 if (managerName != null) {
+
                                     employees.add(managerName);
-                                    Log.d("Firestore", "✅ Manager found: " + managerName);
+                                    employeesEmail.add(managerEmail);
+
+                                    // Log.d("Firestore", "✅ Manager found: " + managerName);
                                 } else {
                                     Log.e("Firestore", "❌ 'name' field is missing in document: " + doc.getId());
                                 }
@@ -260,18 +267,20 @@ public class ShiftDialogFragment extends DialogFragment {
                                 .whereEqualTo("managerEmail", managerEmail)
                                 .get()
                                 .addOnSuccessListener(employeeQuerySnapshot -> {
-                                    Log.d("Firestore", "Employee query result size: " + employeeQuerySnapshot.size());
+                                    // Log.d("Firestore", "Employee query result size: " + employeeQuerySnapshot.size());
 
                                     if (!employeeQuerySnapshot.isEmpty()) {
                                         for (QueryDocumentSnapshot document : employeeQuerySnapshot) {
-                                            Log.d("Firestore", "Document Data: " + document.getData().toString()); // Print document
+                                            // Log.d("Firestore", "Document Data: " + document.getData().toString()); // Print document
 
                                             String name = document.getString("fullname");
+                                            String employeeEmail = document.getString("email");
                                             if (name != null) {
                                                 employees.add(name);
-                                                Log.d("Firestore", "✅ Employee found: " + name);
+                                                employeesEmail.add(employeeEmail);
+                                                // Log.d("Firestore", "✅ Employee found: " + name);
                                             } else {
-                                                Log.e("Firestore", "❌ 'name' field missing in employee document: " + document.getId());
+                                                // Log.e("Firestore", "❌ 'name' field missing in employee document: " + document.getId());
                                             }
                                         }
                                     }
@@ -315,7 +324,7 @@ public class ShiftDialogFragment extends DialogFragment {
 
             employeeDropdown.setOnItemClickListener((parent, view, position, id) -> {
                 selectedEmployee = employees.get(position);
-                selectedEmployeeEmail = selectedEmployee.equals(managerEmail) ? managerEmail : "";
+                selectedEmployeeEmail = employeesEmail.get(position);
             });
 
             Log.d("UI", "AutoCompleteTextView updated with " + employees.size() + " employees");

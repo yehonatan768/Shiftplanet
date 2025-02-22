@@ -278,7 +278,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         employeeNameView.setTextSize(16);
         shiftContainer.addView(employeeNameView);
 
-        shiftContainer.setOnClickListener(view -> openShiftDialog(day, shiftType, shift));
+        shiftContainer.setOnClickListener(view -> openShiftDialog(day, shiftType));
 
         if ("morning".equals(shiftType)) {
             morningShiftLayout.addView(shiftContainer);
@@ -287,7 +287,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         }
     }
 
-    private void openShiftDialog(String day, String shiftType, Map<String, String> shift) {
+    private void openShiftDialog(String day, String shiftType) {
         ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
                 managerEmail,
                 workArrangementId,
@@ -297,6 +297,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 this::getWorkArrangement
         );
         shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
+        getWorkArrangement();
     }
 
 
