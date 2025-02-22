@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest package="com.example.shiftplanet" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -18,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
+        <activity
+            android:name=".EmployeeShiftChange"
+            android:exported="false" />
+        <activity
+            android:name=".shiftChangeRequest"
+            android:exported="false" />
         <activity
             android:name=".ManagerSentNotificationsPage"
             android:exported="false" />

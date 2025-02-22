@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="30dp"
-    android:layout_height="120dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_weight="1"
     android:orientation="vertical"
     android:padding="8dp"
@@ -11,15 +12,27 @@
     android:gravity="center">
 
     <!-- Employee Name -->
-    <TextView
-        android:id="@+id/tv_employee_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Employee Name"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputEmployee"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColorHint="@color/white"
+        style="@style/CustomDropdownStyle">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteEmployeeName"
+            android:layout_width="match_parent"
+            android:background="@drawable/rounded_background"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:hint="Select Employee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            android:inputType="none"/>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Divider -->
     <View
@@ -70,4 +83,48 @@
             android:textSize="20sp"
             android:background="?attr/selectableItemBackground" />
     </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Update Button -->
+        <TextView
+            android:id="@+id/btn_update_shift"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Update"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@color/green"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Delete Button -->
+        <TextView
+            android:id="@+id/btn_delete_shift"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Delete"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@color/red"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
 </LinearLayout>

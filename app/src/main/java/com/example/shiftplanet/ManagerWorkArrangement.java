@@ -1,11 +1,6 @@
 package com.example.shiftplanet;
 
 import com.example.shiftplanet.utils.WorkSchedule;
-import com.example.shiftplanet.utils.WorkScheduleGenerator;
-
-import static android.content.ContentValues.TAG;
-import static com.example.shiftplanet.utils.WorkScheduleGenerator.generateSchedule;
-
 import com.example.shiftplanet.dialogs.ShiftDialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,24 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class ManagerWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -49,19 +34,13 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     Toolbar toolbar;
     String managerEmail;
     LinearLayout morningShiftLayout, eveningShiftLayout;
-    int numShifts = 3;
     TextView firstDayLetter, firstDayNumber, secondDayLetter, secondDayNumber, thirdDayLetter, thirdDayNumber, calendarTitle;
     ImageButton btnPreviousWeek, btnNextWeek, btnPreviousDay, btnNextDay;
     Calendar currentWeek;
-    private String json_work_arrangement;
-
+    private String workArrangementId;
+    private WorkSchedule workSchedule;
     protected FirebaseFirestore db;
-    protected DocumentSnapshot requestDocument;
-
-
     private static final String TAG = "ShiftDialog";
-    private String selectedStartTime = "08:00";
-    private String selectedEndTime = "16:00";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,196 +48,80 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         EdgeToEdge.enable(this);
         setContentView(R.layout.manager_work_arrangement_page);
 
-        // Retrieve the email
-        String email = getIntent().getStringExtra("LOGIN_EMAIL");
-
-        if (email != null) {
-            Log.d(TAG, "Received email: " + email);
-            managerEmail = email;
-        } else {
-            Log.e(TAG, "No email received");
+        managerEmail = getIntent().getStringExtra("LOGIN_EMAIL");
+        if (managerEmail == null) {
             Toast.makeText(this, "Error: Manager email is not set.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-            toolbar = findViewById(R.id.toolbar1);
-            setSupportActionBar(toolbar);
+        toolbar = findViewById(R.id.toolbar1);
+        setSupportActionBar(toolbar);
+        db = FirebaseFirestore.getInstance();
+        drawerLayout = findViewById(R.id.manager_work_arrangement);
+        navigationView = findViewById(R.id.nav_view1);
+        navigationView.setNavigationItemSelectedListener(this);
 
-            db = FirebaseFirestore.getInstance();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-            drawerLayout = findViewById(R.id.manager_work_arrangement);
-            navigationView = findViewById(R.id.nav_view1);
-            navigationView.setNavigationItemSelectedListener(this);
+        morningShiftLayout = findViewById(R.id.morningRow1);
+        eveningShiftLayout = findViewById(R.id.eveningRow1);
+        firstDayLetter = findViewById(R.id.first_day_letter);
+        firstDayNumber = findViewById(R.id.first_day_number);
+        secondDayLetter = findViewById(R.id.second_day_letter);
+        secondDayNumber = findViewById(R.id.second_day_number);
+        thirdDayLetter = findViewById(R.id.third_day_letter);
+        thirdDayNumber = findViewById(R.id.third_day_number);
+        calendarTitle = findViewById(R.id.calendar_title);
 
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
+        calendarTitle = findViewById(R.id.calendar_title);
 
-            morningShiftLayout = findViewById(R.id.morningRow1);
-            eveningShiftLayout = findViewById(R.id.eveningRow1);
+        btnPreviousWeek = findViewById(R.id.btn_previous_week);
+        btnNextWeek = findViewById(R.id.btn_next_week);
+        btnPreviousDay = findViewById(R.id.btn_previous_day_set);
+        btnNextDay = findViewById(R.id.btn_next_day_set);
 
-            firstDayLetter = findViewById(R.id.first_day_letter);
-            firstDayNumber = findViewById(R.id.first_day_number);
-            secondDayLetter = findViewById(R.id.second_day_letter);
-            secondDayNumber = findViewById(R.id.second_day_number);
-            thirdDayLetter = findViewById(R.id.third_day_letter);
-            thirdDayNumber = findViewById(R.id.third_day_number);
+        currentWeek = Calendar.getInstance();
+        updateCalendarTitleAndDates();
 
-            calendarTitle = findViewById(R.id.calendar_title);
-
-            btnPreviousWeek = findViewById(R.id.btn_previous_week);
-            btnNextWeek = findViewById(R.id.btn_next_week);
-            btnPreviousDay = findViewById(R.id.btn_previous_day_set);
-            btnNextDay = findViewById(R.id.btn_next_day_set);
-
-            currentWeek = Calendar.getInstance();
+        btnPreviousWeek.setOnClickListener(view -> {
+            currentWeek.add(Calendar.WEEK_OF_YEAR, -1);
             updateCalendarTitleAndDates();
+        });
 
-            btnPreviousWeek.setOnClickListener(view -> {
-                currentWeek.add(Calendar.WEEK_OF_YEAR, -1);
-                updateCalendarTitleAndDates();
-            });
+        btnNextWeek.setOnClickListener(view -> {
+            currentWeek.add(Calendar.WEEK_OF_YEAR, 1);
+            updateCalendarTitleAndDates();
+        });
 
-            btnNextWeek.setOnClickListener(view -> {
-                currentWeek.add(Calendar.WEEK_OF_YEAR, 1);
-                updateCalendarTitleAndDates();
-            });
+        btnPreviousDay.setOnClickListener(view -> {
+            currentWeek.add(Calendar.DAY_OF_MONTH, -1);
+            updateDateDisplay();
+            checkAndUpdateWeek();
+        });
 
-            btnPreviousDay.setOnClickListener(view -> {
-                currentWeek.add(Calendar.DAY_OF_MONTH, -1);
-                updateDateDisplay();
-                checkAndUpdateWeek();
-            });
-
-            btnNextDay.setOnClickListener(view -> {
-                currentWeek.add(Calendar.DAY_OF_MONTH, 1);
-                updateDateDisplay();
-                checkAndUpdateWeek();
-            });
-            // something in the function crash the app
-            getWorkArrangement();
-
-            createDynamicShifts(morningShiftLayout, "Morning");
-            createDynamicShifts(eveningShiftLayout, "Evening");
+        btnNextDay.setOnClickListener(view -> {
+            currentWeek.add(Calendar.DAY_OF_MONTH, 1);
+            updateDateDisplay();
+            checkAndUpdateWeek();
+        });
     }
-
-    private void getWorkArrangement() {
-        // something in the function crash the app
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
-            String formattedDate = dateFormat.format(currentWeek);
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-
-            db.collection("Work Arrangement")
-                    .whereEqualTo("Email", managerEmail)
-                    .whereEqualTo("Date", formattedDate)
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        try {
-                            if (!queryDocumentSnapshots.isEmpty()) {
-                                // ✅ Work arrangement found in Firestore
-                                requestDocument = queryDocumentSnapshots.getDocuments().get(0);
-                                String fileReference = requestDocument.getString("reference");
-
-                                if (fileReference != null) {
-                                    fetchWorkArrangement(fileReference);
-                                } else {
-                                    Toast.makeText(this, "No file reference found.", Toast.LENGTH_SHORT).show();
-                                }
-
-                            } else {
-                                // ❌ No work arrangement found → Generate a new JSON schedule
-                                json_work_arrangement = generateSchedule(formattedDate);
-
-                                // ✅ Upload JSON to Firebase Storage
-                                uploadJsonToStorage(json_work_arrangement, formattedDate);
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(this, "Firestore query error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error fetching work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
-        } catch (Exception e) {
-            Toast.makeText(this, "Error getting work arrangement: ", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void uploadJsonToStorage(String jsonContent, String date) {
-        try {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child("work_arrangements/" + managerEmail + "_" + date + ".json");
-
-            byte[] jsonData = jsonContent.getBytes(StandardCharsets.UTF_8);
-            UploadTask uploadTask = storageRef.putBytes(jsonData);
-
-            uploadTask.addOnSuccessListener(taskSnapshot -> {
-                // ✅ Get download URL
-                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String fileUrl = uri.toString();
-
-                    // ✅ Save reference in Firestore
-                    saveWorkArrangementToFirestore(date, fileUrl);
-                });
-            }).addOnFailureListener(e ->
-                    Toast.makeText(this, "JSON upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-            );
-        } catch (Exception e) {
-            Toast.makeText(this, "JSON upload failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveWorkArrangementToFirestore(String date, String fileUrl) {
-        try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            Map<String, Object> workArrangement = new HashMap<>();
-            workArrangement.put("Email", managerEmail);
-            workArrangement.put("Date", date);
-            workArrangement.put("reference", fileUrl); // 🔗 Store the file reference URL
-
-            db.collection("Work Arrangement").add(workArrangement)
-                    .addOnSuccessListener(documentReference ->
-                            Toast.makeText(this, "Work arrangement saved!", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error saving work arrangement: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
-        } catch (Exception e) {
-            Toast.makeText(this, "JSON save failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void fetchWorkArrangement(String fileUrl) {
-        try {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference fileRef = storage.getReferenceFromUrl(fileUrl);
-
-            fileRef.getBytes(1024 * 1024) // Max 1MB
-                    .addOnSuccessListener(bytes -> {
-                        json_work_arrangement = new String(bytes, StandardCharsets.UTF_8);
-                        Toast.makeText(this, "Work arrangement loaded!", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Error fetching JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
-        } catch (Exception e) {
-            Toast.makeText(this, "fetch work arrangement failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
 
     private void updateCalendarTitleAndDates() {
         SimpleDateFormat format = new SimpleDateFormat("d/M", Locale.getDefault());
+
+        // Always use Sunday of the current week
         Calendar sunday = (Calendar) currentWeek.clone();
         sunday.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendarTitle.setText("Work Arrangement - " + format.format(sunday.getTime()));
+        String formattedDate = format.format(sunday.getTime());
+
+        calendarTitle.setText("Work Arrangement - " + formattedDate);
 
         updateDateDisplay();
+        getWorkArrangement(); // 🔥 Ensure Firestore data is fetched and UI updates
     }
+
 
     private void updateDateDisplay() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
@@ -276,6 +139,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         thirdDayLetter.setText(dayFormat.format(calendar.getTime()));
         thirdDayNumber.setText(dateFormat.format(calendar.getTime()));
+        updateShiftsOnUI();
     }
 
     private void checkAndUpdateWeek() {
@@ -290,112 +154,186 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         }
     }
 
-    private void createDynamicShifts(LinearLayout parentLayout, String shiftType) {
-        parentLayout.removeAllViews();
-        parentLayout.setWeightSum(numShifts);
+    private void getWorkArrangement() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
 
-        for (int i = 0; i < numShifts; i++) {
-            LinearLayout shiftContainer = new LinearLayout(this);
-            shiftContainer.setLayoutParams(new LinearLayout.LayoutParams(0, 160, 1));
-            shiftContainer.setGravity(Gravity.CENTER);
-            shiftContainer.setPadding(8, 8, 8, 8);
-            shiftContainer.setBackgroundResource(R.drawable.shift_background);
-            shiftContainer.setOrientation(LinearLayout.VERTICAL);
+        // Always use Sunday of the current week
+        Calendar sunday = (Calendar) currentWeek.clone();
+        sunday.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        String formattedDate = dateFormat.format(sunday.getTime());
 
-            ImageButton addButton = new ImageButton(this);
-            addButton.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
-            addButton.setImageResource(R.drawable.ic_add);
-            addButton.setBackgroundResource(android.R.color.transparent);
-            addButton.setContentDescription("Add Shift");
+        workArrangementId = generateValidDocumentId(managerEmail, formattedDate);
 
-            final int shiftIndex = i;
-            addButton.setOnClickListener(view -> {
-                Toast.makeText(this, "Adding shift " + (shiftIndex + 1) + " for " + shiftType, Toast.LENGTH_SHORT).show();
-                // shiftIndex, shiftType
-                ShiftDialogFragment shiftDialog = new ShiftDialogFragment("John Doe", selectedStartTime, selectedEndTime,
-                        new ShiftDialogFragment.ShiftDialogListener() {
-                            @Override
-                            public void onShiftTimeSelected(String updatedStartTime, String updatedEndTime) {
-                                // Update stored values
-                                selectedStartTime = updatedStartTime;
-                                selectedEndTime = updatedEndTime;
+        db.collection("Work Arrangement").document(workArrangementId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Log.d(TAG, "Work arrangement exists. Loading data...");
 
-                                // Log updated values
-                                Log.d(TAG, "Updated Start Time: " + selectedStartTime);
-                                Log.d(TAG, "Updated End Time: " + selectedEndTime);
+                        // ✅ Correctly load Firestore data into WorkSchedule
+                        Map<String, Object> data = documentSnapshot.getData();
+                        workSchedule = new WorkSchedule(formattedDate); // Initialize
+
+                        if (data != null) {
+                            for (String day : workSchedule.getSchedule().keySet()) {
+                                if (data.containsKey(day)) {
+                                    Map<String, Object> shiftMap = (Map<String, Object>) data.get(day);
+
+                                    for (String shiftType : workSchedule.getSchedule().get(day).keySet()) {
+                                        if (shiftMap.containsKey(shiftType)) {
+                                            List<Map<String, String>> shiftList = (List<Map<String, String>>) shiftMap.get(shiftType);
+                                            workSchedule.getSchedule().get(day).put(shiftType, shiftList);
+                                        }
+                                    }
+                                }
                             }
                         }
+
+                    } else {
+                        Log.d(TAG, "No work arrangement found. Creating a new one for Sunday...");
+                        workSchedule = new WorkSchedule(formattedDate);
+                        workSchedule.saveToFirestore(workArrangementId);
+                    }
+
+                    updateShiftsOnUI(); // 🔥 Ensure UI updates immediately after data fetch
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error fetching work arrangement", e);
+                    updateShiftsOnUI(); // 🔥 Ensure UI still updates even if Firestore fails
+                });
+    }
+
+
+
+    public static String generateValidDocumentId(String email, String formattedDate) {
+        return email.replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + formattedDate.replaceAll("[^a-zA-Z0-9_-]", "_");
+    }
+
+    private void updateShiftsOnUI() {
+        morningShiftLayout.removeAllViews();
+        eveningShiftLayout.removeAllViews();
+
+        if (workSchedule == null || workSchedule.getSchedule() == null) {
+            Log.e("updateShiftsOnUI", "WorkSchedule or schedule map is null!");
+            return;
+        }
+
+        // Get the correct date format for shift retrieval
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        Calendar calendar = (Calendar) currentWeek.clone();
+
+        String[] daysToDisplay = new String[3];
+        for (int i = -1; i <= 1; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, i);
+            daysToDisplay[i + 1] = dateFormat.format(calendar.getTime()); // Corrected index
+            calendar.add(Calendar.DAY_OF_MONTH, -i); // Reset calendar position
+        }
+
+
+        for (String shiftType : new String[]{"morning", "evening"}) {
+            LinearLayout shiftRow = shiftType.equals("morning") ? morningShiftLayout : eveningShiftLayout;
+            shiftRow.removeAllViews(); // Clear previous shifts
+
+            for (String day : daysToDisplay) {
+                List<Map<String, String>> shifts = workSchedule.getSchedule()
+                        .getOrDefault(day, new HashMap<>())
+                        .getOrDefault(shiftType, new ArrayList<>());
+
+                if (!shifts.isEmpty()) {
+                    for (Map<String, String> shift : shifts) {
+                        createShiftView(shift, day, shiftType);
+                    }
+                } else {
+                    createEmptyShiftView(shiftRow, shiftType, day);
+                }
+            }
+        }
+    }
+
+    private void createEmptyShiftView(LinearLayout parentLayout, String shiftType, String day) {
+        LinearLayout emptyShift = new LinearLayout(this);
+        emptyShift.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 160, 1)); // Make it fit the row
+        emptyShift.setGravity(Gravity.CENTER);
+        emptyShift.setPadding(8, 8, 8, 8);
+        emptyShift.setBackgroundResource(R.drawable.shift_background);
+        emptyShift.setOrientation(LinearLayout.VERTICAL);
+
+        ImageButton addButton = new ImageButton(this);
+        addButton.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+        addButton.setImageResource(R.drawable.ic_add);
+        addButton.setBackgroundResource(android.R.color.transparent);
+        addButton.setContentDescription("Add Shift");
+        try {
+            addButton.setOnClickListener(view -> {
+                ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
+                        managerEmail,
+                        workArrangementId,
+                        day,
+                        shiftType.toLowerCase(),
+                        workSchedule,
+                        this::getWorkArrangement // Refresh after adding shift
                 );
                 shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
             });
+        } catch (Exception e) {
+            Log.e("shiftDialog", "Shift Dialog Crashed!");
+        }
+
+        emptyShift.addView(addButton);
+        parentLayout.addView(emptyShift);
+    }
 
 
-            shiftContainer.addView(addButton);
-            parentLayout.addView(shiftContainer);
+    private void createShiftView(Map<String, String> shift, String day, String shiftType) {
+        LinearLayout shiftContainer = new LinearLayout(this);
+        shiftContainer.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 100));
+        shiftContainer.setGravity(Gravity.CENTER);
+        shiftContainer.setPadding(8, 8, 8, 8);
+        shiftContainer.setBackgroundResource(R.drawable.shift_background);
+        shiftContainer.setOrientation(LinearLayout.VERTICAL);
+
+        TextView employeeNameView = new TextView(this);
+        employeeNameView.setText(shift.get("name"));
+        employeeNameView.setTextSize(16);
+        shiftContainer.addView(employeeNameView);
+
+        shiftContainer.setOnClickListener(view -> openShiftDialog(day, shiftType));
+
+        if ("morning".equals(shiftType)) {
+            morningShiftLayout.addView(shiftContainer);
+        } else {
+            eveningShiftLayout.addView(shiftContainer);
         }
     }
+
+    private void openShiftDialog(String day, String shiftType) {
+        ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
+                managerEmail,
+                workArrangementId,
+                day,
+                shiftType,
+                workSchedule,
+                this::getWorkArrangement
+        );
+        shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
+        getWorkArrangement();
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
-        String message = "";
-
-
         if (item.getItemId() == R.id.m_my_profile) {
-            message = "Already on My Profile";
             intent = new Intent(this, ManagerHomePage.class);
-        } else if (item.getItemId() == R.id.employees_requests) {
-            message = "Employees requests clicked";
-            intent = new Intent(this, ManagerRequestPage.class);
-        } else if (item.getItemId() == R.id.build_work_arrangement) {
-            message = "Build work arrangement clicked";
-        } else if (item.getItemId() == R.id.published_work_arrangement) {
-            message = "Published work arrangement clicked";
-        } else if (item.getItemId() == R.id.send_notifications) {
-            message = "Send notifications clicked";
-            intent = new Intent(this, ManagerSendNotificationPage.class);
-        } else if (item.getItemId() == R.id.sent_notifications) {
-            message = "Sent notifications clicked";
-            intent = new Intent(this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
-            message = "Logging out...";
             intent = new Intent(this, Login.class);
         }
-
-
-        // Show the Toast and delay navigation
-        if (!message.isEmpty()) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-
         if (intent != null) {
-            showToastThenNavigate(message, intent);
+            startActivity(intent);
         }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private void showToastThenNavigate(String message, Intent intent) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        intent.putExtra("LOGIN_EMAIL", managerEmail);
-
-        new android.os.Handler().postDelayed(() -> {
-            startActivity(intent);
-            // Don't finish the current activity immediately
-        }, 500);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 }
-
