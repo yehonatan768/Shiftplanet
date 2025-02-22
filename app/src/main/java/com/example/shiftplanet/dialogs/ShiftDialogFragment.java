@@ -12,7 +12,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
@@ -58,6 +57,16 @@ public class ShiftDialogFragment extends DialogFragment {
         this.listener = listener;
         this.employees = new ArrayList<>();
 
+        try {
+            if (isAdded() && getContext() != null) {
+                Toast.makeText(requireContext(), managerEmail, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("ShiftDialog", "Fragment not attached, cannot show Toast.");
+            }
+        } catch (Exception e) {
+            Log.e("ShiftDialog", "Error displaying Toast", e);
+        }
+
         // ✅ Set default shift times
         if ("morning".equals(shiftType)) {
             this.startTime = "07:30";
@@ -68,13 +77,18 @@ public class ShiftDialogFragment extends DialogFragment {
         }
     }
 
-    @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.shift_dialog, null);
+        if (getContext() != null) {
+            Toast.makeText(requireContext(), managerEmail, Toast.LENGTH_SHORT).show();
+        }
+
+        fetchEmployees();
+
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.shift_dialog, null);
         dialog.setContentView(view);
 
         // ✅ Fixed references to match XML updates
@@ -92,8 +106,6 @@ public class ShiftDialogFragment extends DialogFragment {
 
         btnUpdateShift.setOnClickListener(v -> addOrUpdateShift());
         btnDeleteShift.setOnClickListener(v -> deleteShift());
-
-        fetchEmployees();
 
         return dialog;
     }
@@ -207,49 +219,79 @@ public class ShiftDialogFragment extends DialogFragment {
      * ✅ Fetch employees under the same manager.
      */
     private void fetchEmployees() {
+        if (managerEmail == null || managerEmail.isEmpty()) {
+            Log.e("Firestore", "fetchEmployees() failed: managerEmail is null or empty.");
+            return;
+        }
+
+        // ✅ Normalize email to avoid Firestore mismatches
+        managerEmail = managerEmail.trim().toLowerCase();
+        Log.d("Firestore", "Fetching employees for managerEmail: " + managerEmail);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         employees.clear();
 
-        // ✅ Step 1: Fetch Manager's Name
-        db.collection("users").whereEqualTo("email", managerEmail)
-                .get()
-                .addOnSuccessListener(managerQuerySnapshot -> {
-                    if (!managerQuerySnapshot.isEmpty()) {
-                        for (QueryDocumentSnapshot doc : managerQuerySnapshot) {
-                            String managerName = doc.getString("name");
-                            if (managerName != null) {
-                                employees.add(managerName); // ✅ Add manager's real name
-                                Log.d("Firestore", "Manager found: " + managerName);
+        try {
+            // ✅ Step 1: Fetch Manager's Name
+            db.collection("users")
+                    .whereEqualTo("email", managerEmail)
+                    .get()
+                    .addOnSuccessListener(managerQuerySnapshot -> {
+                        Log.d("Firestore", "Manager query result size: " + managerQuerySnapshot.size());
+
+                        if (!managerQuerySnapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot doc : managerQuerySnapshot) {
+                                Log.d("Firestore", "Document Data: " + doc.getData().toString()); // Print entire document
+
+                                String managerName = doc.getString("fullname");
+                                if (managerName != null) {
+                                    employees.add(managerName);
+                                    Log.d("Firestore", "✅ Manager found: " + managerName);
+                                } else {
+                                    Log.e("Firestore", "❌ 'name' field is missing in document: " + doc.getId());
+                                }
                             }
                         }
-                    } else {
-                        Log.e("Firestore", "Manager not found with email: " + managerEmail);
-                    }
 
-                    // ✅ Step 2: Fetch Employees Under This Manager
-                    db.collection("users").whereEqualTo("managerEmail", managerEmail)
-                            .get()
-                            .addOnSuccessListener(employeeQuerySnapshot -> {
-                                if (!employeeQuerySnapshot.isEmpty()) {
-                                    for (QueryDocumentSnapshot document : employeeQuerySnapshot) {
-                                        String name = document.getString("name");
-                                        String email = document.getString("email");
-                                        if (name != null && email != null) {
-                                            employees.add(name);
-                                            Log.d("Firestore", "Employee found: " + name);
+                        // ✅ Step 2: Fetch Employees
+                        db.collection("users")
+                                .whereEqualTo("managerEmail", managerEmail)
+                                .get()
+                                .addOnSuccessListener(employeeQuerySnapshot -> {
+                                    Log.d("Firestore", "Employee query result size: " + employeeQuerySnapshot.size());
+
+                                    if (!employeeQuerySnapshot.isEmpty()) {
+                                        for (QueryDocumentSnapshot document : employeeQuerySnapshot) {
+                                            Log.d("Firestore", "Document Data: " + document.getData().toString()); // Print document
+
+                                            String name = document.getString("fullname");
+                                            if (name != null) {
+                                                employees.add(name);
+                                                Log.d("Firestore", "✅ Employee found: " + name);
+                                            } else {
+                                                Log.e("Firestore", "❌ 'name' field missing in employee document: " + document.getId());
+                                            }
                                         }
                                     }
-                                } else {
-                                    Log.e("Firestore", "No employees found for managerEmail: " + managerEmail);
-                                }
 
-                                // ✅ Update UI after fetching data
-                                updateAutoCompleteTextView();
-                            })
-                            .addOnFailureListener(e -> Log.e("Firestore", "Error fetching employees: " + e.getMessage(), e));
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching manager: " + e.getMessage(), e));
+                                    // ✅ Update UI after fetching data
+                                    updateAutoCompleteTextView();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Firestore", "❌ Error fetching employees: " + e.getMessage(), e);
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "❌ Error fetching manager: " + e.getMessage(), e);
+                    });
+
+        } catch (Exception e) {
+            Log.e("Firestore", "❌ Firestore query crashed!", e);
+        }
+        Log.d("Firestore", "✅ Fetch employees successfully!");
     }
+
+
 
     /**
      * ✅ Updates AutoCompleteTextView with the list of employees.

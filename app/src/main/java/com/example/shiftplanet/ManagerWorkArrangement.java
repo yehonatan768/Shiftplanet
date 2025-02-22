@@ -163,7 +163,6 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         String formattedDate = dateFormat.format(sunday.getTime());
 
         workArrangementId = generateValidDocumentId(managerEmail, formattedDate);
-        Log.e("Firestore", "Fetching Work Arrangement for: " + workArrangementId);
 
         db.collection("Work Arrangement").document(workArrangementId)
                 .get()
@@ -185,8 +184,8 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     }
 
 
-    public static String generateValidDocumentId(String managerEmail, String formattedDate) {
-        return managerEmail.replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + formattedDate.replaceAll("[^a-zA-Z0-9_-]", "_");
+    public static String generateValidDocumentId(String email, String formattedDate) {
+        return email.replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + formattedDate.replaceAll("[^a-zA-Z0-9_-]", "_");
     }
 
     private void updateShiftsOnUI() {
