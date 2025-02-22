@@ -169,12 +169,32 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         Log.d(TAG, "Work arrangement exists. Loading data...");
-                        workSchedule = new WorkSchedule(formattedDate);
+
+                        // ✅ Correctly load Firestore data into WorkSchedule
+                        Map<String, Object> data = documentSnapshot.getData();
+                        workSchedule = new WorkSchedule(formattedDate); // Initialize
+
+                        if (data != null) {
+                            for (String day : workSchedule.getSchedule().keySet()) {
+                                if (data.containsKey(day)) {
+                                    Map<String, Object> shiftMap = (Map<String, Object>) data.get(day);
+
+                                    for (String shiftType : workSchedule.getSchedule().get(day).keySet()) {
+                                        if (shiftMap.containsKey(shiftType)) {
+                                            List<Map<String, String>> shiftList = (List<Map<String, String>>) shiftMap.get(shiftType);
+                                            workSchedule.getSchedule().get(day).put(shiftType, shiftList);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                     } else {
                         Log.d(TAG, "No work arrangement found. Creating a new one for Sunday...");
                         workSchedule = new WorkSchedule(formattedDate);
                         workSchedule.saveToFirestore(workArrangementId);
                     }
+
                     updateShiftsOnUI(); // 🔥 Ensure UI updates immediately after data fetch
                 })
                 .addOnFailureListener(e -> {
@@ -182,6 +202,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                     updateShiftsOnUI(); // 🔥 Ensure UI still updates even if Firestore fails
                 });
     }
+
 
 
     public static String generateValidDocumentId(String email, String formattedDate) {
