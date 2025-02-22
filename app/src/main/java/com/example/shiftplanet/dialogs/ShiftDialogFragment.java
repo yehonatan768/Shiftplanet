@@ -123,8 +123,10 @@ public class ShiftDialogFragment extends DialogFragment {
                 .getOrDefault(shiftType, new ArrayList<>());
 
         for (Map<String, String> shift : existingShifts) {
-            if (shift.get("email").equals(selectedEmployeeEmail)) {
+            if (!shift.get("email").equals(selectedEmployeeEmail)) {
                 shiftExists = true;
+                shift.put("email", selectedEmployeeEmail);
+                shift.put("name", selectedEmployee);
                 shift.put("start_time", startTime);
                 shift.put("end_time", endTime);
                 break;

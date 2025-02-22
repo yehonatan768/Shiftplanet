@@ -198,7 +198,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         }
 
         // Get the correct date format for shift retrieval
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
         Calendar calendar = (Calendar) currentWeek.clone();
 
         String[] daysToDisplay = new String[3];
@@ -207,6 +207,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             daysToDisplay[i + 1] = dateFormat.format(calendar.getTime()); // Corrected index
             calendar.add(Calendar.DAY_OF_MONTH, -i); // Reset calendar position
         }
+
 
         for (String shiftType : new String[]{"morning", "evening"}) {
             LinearLayout shiftRow = shiftType.equals("morning") ? morningShiftLayout : eveningShiftLayout;
