@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:id="@+id/profile_manager">
+
+
+    <!-- התוכן של המסך -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/login_background"
+        android:gravity="center">
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </androidx.appcompat.widget.Toolbar>
+
+
+
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_marginTop="40dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/logoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kanmed"
+            android:text="@string/app_name"
+            android:textSize="55sp"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/logoImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- שדות לעדכון פרטי המשתמש -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/logoText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- שדה עדכון אימייל -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+                <EditText
+                    android:id="@+id/updated_email"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/white"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="13dp"
+                    android:background="@drawable/rounded_background"
+                    android:drawableStart="@drawable/email_icon"
+                    android:hint="Email"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/updated_email_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/accent_purple"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+
+            <!-- שדות נוספים לאיפוס סיסמא, שם מלא, מספר טלפון... -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+                <EditText
+                    android:id="@+id/updated_password"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/white"
+                    android:background="@drawable/rounded_background"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="13dp"
+                    android:drawableStart="@drawable/security_icon"
+                    android:hint="Password"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/updated_password_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/accent_purple"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+                <EditText
+                    android:id="@+id/updated_full_name"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/white"
+                    android:background="@drawable/rounded_background"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="13dp"
+                    android:drawableStart="@drawable/name_icon"
+                    android:hint="Full Name"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/updated_full_name_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/accent_purple"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+                <EditText
+                    android:id="@+id/updated_phone"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_background"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="13dp"
+                    android:drawableStart="@drawable/phone_icon"
+                    android:hint="Phone Number"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/updated_phone_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/accent_purple"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- תפריט ניווט -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view3"
+        android:layout_width="290dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/manager_menu_header"
+        app:menu="@menu/manager_menu"
+        android:background="@drawable/login_background"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white" />
+</androidx.drawerlayout.widget.DrawerLayout>

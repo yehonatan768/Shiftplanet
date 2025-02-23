@@ -104,25 +104,25 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
         if (item.getItemId() ==  R.id.m_my_profile) {
             message = "My profile clicked";
-            //intent = new Intent(this, Profile.class);
+            intent = new Intent(ManagerHomePage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             message = "Employees requests clicked";
-            intent = new Intent(this, ManagerRequestPage.class);
+            intent = new Intent(ManagerHomePage.this, ManagerRequestPage.class);
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             message = "Build work arrangement clicked";
-            intent = new Intent(this, ManagerWorkArrangement.class);
+            intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.published_work_arrangement) {
             message = "Published work arrangement clicked";
-            intent = new Intent(this, ManagerWorkArrangement.class);
+            intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.send_notifications) {
             message = "Send notifications clicked";
-            intent = new Intent(this, ManagerSendNotificationPage.class);
+            intent = new Intent(ManagerHomePage.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {
             message = "Sent notifications clicked";
-            intent = new Intent(this, ManagerSentNotificationsPage.class);
+            intent = new Intent(ManagerHomePage.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
             message = "Logging out...";
-            intent = new Intent(this, Login.class);
+            intent = new Intent(ManagerHomePage.this, Login.class);
         }
 
         // Show the Toast and delay navigation

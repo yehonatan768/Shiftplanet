@@ -290,7 +290,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, Profile.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();

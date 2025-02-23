@@ -68,7 +68,10 @@
             android:name=".EmployeeHomePage"
             android:exported="false" /> <!-- דף ההרשמה -->
         <activity
-            android:name=".Profile"
+            android:name=".EmployeeProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ManagerProfile"
             android:exported="false" />
         <activity
             android:name=".Registration"

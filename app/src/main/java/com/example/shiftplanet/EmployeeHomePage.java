@@ -100,7 +100,7 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, Profile.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();

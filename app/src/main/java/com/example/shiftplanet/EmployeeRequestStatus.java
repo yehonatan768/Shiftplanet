@@ -219,7 +219,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestStatus.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, Profile.class);
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestStatus.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
