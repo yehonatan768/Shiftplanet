@@ -204,19 +204,22 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-
-
-                <LinearLayout
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="6dp"
-                    android:weightSum="3"
-                    android:id="@+id/morningRow1">
+                    android:layout_height="240dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="6dp"
+                        android:weightSum="3"
+                        android:id="@+id/morningRow1">
 
                     <!-- Employee Shifts -->
 
-                </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -227,18 +230,22 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <!-- Evening Section -->
-                <LinearLayout
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="6dp"
-                    android:weightSum="3"
-                    android:id="@+id/eveningRow1">
+                    android:layout_height="240dp">
+                    <!-- Evening Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="6dp"
+                        android:weightSum="3"
+                        android:id="@+id/eveningRow1">
 
-                    <!-- Employee Shifts -->
+                        <!-- Employee Shifts -->
 
-                </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

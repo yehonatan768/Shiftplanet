@@ -70,16 +70,18 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
 
         Button sendNotificationButton = findViewById(R.id.send_notification_btn);
         TextInputEditText notificationEditText = findViewById(R.id.notification_txt);
+        TextInputEditText titleEditText = findViewById(R.id.title_txt);
 
         sendNotificationButton.setOnClickListener(v -> {
             String notification = notificationEditText.getText().toString();
+            String title = titleEditText.getText().toString();
 
             db.collection("users").document(uid).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         businessCode = Integer.parseInt(document.getString("businessCode"));
-                        sendNotification(notification, businessCode, managerEmail);
+                        sendNotification(title,notification, businessCode, managerEmail);
                     } else {
                         Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
                         Toast.makeText(ManagerSendNotificationPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
@@ -91,7 +93,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
         });
     }
 
-    private void sendNotification(String notification, int businessCode, String managerEmail) {
+    private void sendNotification(String title, String notification, int businessCode, String managerEmail) {
         getNextNotificationNumber(notificationNumber -> {
             if (notificationNumber == -1) {
                 Toast.makeText(ManagerSendNotificationPage.this, "Error generating notification number", Toast.LENGTH_SHORT).show();
@@ -100,6 +102,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
 
             // Create the notification map
             Map<String, Object> managerNotification = new HashMap<>();
+            managerNotification.put("title", title);
             managerNotification.put("notification", notification);
             managerNotification.put("businessCode", businessCode);
             managerNotification.put("managerEmail", managerEmail);
