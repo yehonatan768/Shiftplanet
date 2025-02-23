@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dialog_request_details">
+    android:id="@+id/manager_shiftchange_dialog">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,19 +20,10 @@
             android:padding="14dp"
             android:src="@drawable/arrow_back_icon" />
 
-        <!-- Profile Picture -->
-        <ImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="16dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/profile"
-            android:contentDescription="Profile Picture" />
 
         <!-- Employee Name -->
         <TextView
-            android:id="@+id/employee_name"
+            android:id="@+id/employees_names"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loading..."
@@ -42,13 +33,13 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/white" />
 
-        <!-- Start Date, End Date -->
+        <!-- Start Date, hours -->
         <TextView
-            android:id="@+id/dates"
+            android:id="@+id/datesAndHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Loading..."
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:padding="8dp"
             android:textStyle="bold"
             android:background="@drawable/rounded_background"
@@ -61,7 +52,7 @@
             android:layout_width="360dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/details"
@@ -72,25 +63,15 @@
                 android:paddingBottom="5dp"
                 android:text="Details"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/requestTypeText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Loading..."
-                android:paddingRight="24dp"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:gravity="end"
-                android:textColor="@android:color/white" />
         </LinearLayout>
 
         <!-- Details Section -->
         <LinearLayout
             android:layout_width="360dp"
-            android:layout_height="130dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_background"

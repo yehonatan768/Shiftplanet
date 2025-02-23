@@ -25,7 +25,8 @@
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
-    
+    import java.util.concurrent.atomic.AtomicInteger;
+
     public class EmployeeNotificationsPage extends AppCompatActivity {
     
         private DrawerLayout drawerLayout;
@@ -97,7 +98,25 @@
 
                             if (managerEmail != null) {
                                 // Now that we have the manager's email, fetch the notifications for that manager
-                                fetchManagerNotifications(managerEmail, onComplete);
+
+
+
+
+                                AtomicInteger pendingRequests = new AtomicInteger(2);
+
+                                Runnable completionCallback = () -> {
+                                    if (pendingRequests.decrementAndGet() == 0) {
+                                        onComplete.run(); // מפעילים את onComplete רק אחרי ששתי השאילתות הסתיימו
+                                    }
+                                };
+
+                                fetchManagerNotifications(managerEmail, completionCallback);
+                                fetchShiftChangeRequests(managerEmail, completionCallback);
+
+                                //fetchManagerNotifications(managerEmail, onComplete);
+
+
+
                             } else {
                                 Toast.makeText(EmployeeNotificationsPage.this, "Manager email not found.", Toast.LENGTH_SHORT).show();
                                 onComplete.run();  // Proceed even if manager email is missing
@@ -125,7 +144,7 @@
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Map<String, String> notification = new HashMap<>();
                             notification.put("notificationId", document.getId());
-                            notification.put("updateType", document.getString("updateType"));  // סוג העדכון
+                            notification.put("updateType", "Manager Update");  // סוג העדכון
                             notification.put("message", document.getString("message"));  // תיאור קצר של העדכון
                             notifications.add(notification);
                         }
@@ -136,6 +155,31 @@
                         onComplete.run();
                     });
         }
+
+
+        private void fetchShiftChangeRequests(String managerEmail, Runnable onComplete) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("ShiftChangeRequests")
+                    .whereEqualTo("managerEmail", managerEmail) // מסנן רק בקשות שמיועדות למנהל הזה
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Map<String, String> shiftRequest = new HashMap<>();
+                            shiftRequest.put("notificationId", document.getId());
+                            shiftRequest.put("updateType", "Shift Change Request");
+                            shiftRequest.put("message", document.getString("employeeEmail") + " requested a shift change.");
+                            notifications.add(shiftRequest);
+                        }
+                        onComplete.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(EmployeeNotificationsPage.this, "Failed to load shift change requests: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        onComplete.run();
+                    });
+        }
+
+
 
         private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
             // Clear any previous views
@@ -156,21 +200,34 @@
             int idCounter = 1; // Start the ID counter
             for (Map<String, String> request : requests) {
                 String notificationId = request.get("notificationId");
-                String updateType = "Update";
+                String updateType = request.get("updateType");
                 String message = request.get("message");
 
                 LinearLayout requestLayout = createRequestLayout(
                         idCounter,
                         updateType,  // Type of update (e.g., "Vacation Approved", "Sick Leave")
-                        message,     // A brief message or description of the update
+                        "",     // A brief message or description of the update
                         backgroundColor
                 );
 
                 // Set click listener to open detailed notification
                 requestLayout.setOnClickListener(v -> {
                     if (notificationId != null) {
-                        Intent intent = new Intent(EmployeeNotificationsPage.this, NotificationDetailActivityPage.class);
-                        intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                        Intent intent;
+
+                        if ("Manager Update".equals(updateType)) {
+                            intent = new Intent(EmployeeNotificationsPage.this, NotificationDetailActivityPage.class);
+                            intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                        }
+                        // אם סוג העדכון הוא "החלפה"
+                        else if ("Shift Change Request".equals(updateType)) {
+                            intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChangeDialog.class); // כאן את שולחת לעמוד דיאלוג החלפה
+                            intent.putExtra("notificationId", notificationId);  // תעביר גם את ה- notificationId לעמוד של החלפה, אם צריך
+                        }
+                        else {
+                            Toast.makeText(EmployeeNotificationsPage.this, "Unknown update type", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         startActivity(intent);
                     } else {
                         Toast.makeText(EmployeeNotificationsPage.this, "Notification ID is missing", Toast.LENGTH_SHORT).show();
@@ -213,19 +270,19 @@
             updateTypeTextView.setGravity(Gravity.CENTER_VERTICAL);
 
             // Message TextView
-            TextView messageTextView = new TextView(this);
-            messageTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            ));
-            messageTextView.setText(message);
-            messageTextView.setTextColor(getResources().getColor(android.R.color.white));
-            messageTextView.setTextSize(16);
-            messageTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
+            //TextView messageTextView = new TextView(this);
+            //messageTextView.setLayoutParams(new LinearLayout.LayoutParams(
+              //      LinearLayout.LayoutParams.WRAP_CONTENT,
+                //    LinearLayout.LayoutParams.MATCH_PARENT
+            //));
+            //messageTextView.setText(message);
+            //messageTextView.setTextColor(getResources().getColor(android.R.color.white));
+            //messageTextView.setTextSize(16);
+            //messageTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
             // Add TextViews to the request layout
             requestLayout.addView(updateTypeTextView);
-            requestLayout.addView(messageTextView);
+            //requestLayout.addView(messageTextView);
 
             return requestLayout;
         }
@@ -234,7 +291,7 @@
             Intent intent = null;
             if (item.getItemId() == R.id.e_my_profile) {
                 Toast.makeText(EmployeeNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-                intent = new Intent(EmployeeNotificationsPage.this, EmployeeHomePage.class);
+                intent = new Intent(EmployeeNotificationsPage.this, Profile.class);
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             } else if (item.getItemId() == R.id.e_work_arrangement) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
@@ -250,7 +307,7 @@
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             }else if (item.getItemId() == R.id.shift_change) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-                intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChange.class);
+                intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChangeRequest.class);
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             }else if (item.getItemId() == R.id.requests_status) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
