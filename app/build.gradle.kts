@@ -67,7 +67,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.androidx.espresso.intents)
     implementation(libs.core)
-
+    implementation("com.android.volley:volley:1.2.1")
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.junit)
