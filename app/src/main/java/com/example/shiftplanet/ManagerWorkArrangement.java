@@ -216,6 +216,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                     Log.e("Firestore", "Error fetching work arrangement", e);
                     updateShiftsOnUI(); // 🔥 Ensure UI still updates even if Firestore fails
                 });
+
     }
 
     public static String generateValidDocumentId(String email, String formattedDate) {
@@ -423,10 +424,9 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 day,
                 shiftType,
                 workSchedule,
-                this::getWorkArrangement
+                this::getWorkArrangement // Refresh after adding/updating shift
         );
         shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
-        getWorkArrangement();
     }
 
 
