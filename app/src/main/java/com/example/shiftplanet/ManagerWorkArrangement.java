@@ -168,21 +168,33 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "Work arrangement exists. Loading data...");
+                        Log.d("Firestore", "Work arrangement exists. Loading data...");
 
                         // ✅ Correctly load Firestore data into WorkSchedule
                         Map<String, Object> data = documentSnapshot.getData();
+                        // Log the raw data fetched from Firestore
+                        Log.d("Firestore", "Raw data from Firestore: " + data);
                         workSchedule = new WorkSchedule(formattedDate); // Initialize
 
-                        if (data != null) {
-                            for (String day : workSchedule.getSchedule().keySet()) {
-                                if (data.containsKey(day)) {
-                                    Map<String, Object> shiftMap = (Map<String, Object>) data.get(day);
+                        // Retrieve the schedule map from the raw data using the "schedule" key
+                        if (data != null && data.containsKey("schedule")) {
+                            Map<String, Object> scheduleData = (Map<String, Object>) data.get("schedule");
+                            Log.d("Firestore", "Schedule data: " + scheduleData);
 
+                            // Iterate through each day in the WorkSchedule's schedule map
+                            for (String day : workSchedule.getSchedule().keySet()) {
+                                if (scheduleData.containsKey(day)) {
+                                    Map<String, Object> shiftMap = (Map<String, Object>) scheduleData.get(day);
+                                    // Log the data for the specific day
+                                    Log.d("Firestore", "Data for day " + day + ": " + shiftMap);
+
+                                    // Iterate through each shift type ("morning", "evening") for the day
                                     for (String shiftType : workSchedule.getSchedule().get(day).keySet()) {
                                         if (shiftMap.containsKey(shiftType)) {
                                             List<Map<String, String>> shiftList = (List<Map<String, String>>) shiftMap.get(shiftType);
                                             workSchedule.getSchedule().get(day).put(shiftType, shiftList);
+                                            // Log the data for the specific shift type on that day
+                                            Log.d("Firestore", "Data for day " + day + ", shift " + shiftType + ": " + shiftList);
                                         }
                                     }
                                 }
@@ -190,7 +202,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                         }
 
                     } else {
-                        Log.d(TAG, "No work arrangement found. Creating a new one for Sunday...");
+                        Log.d("Firestore", "No work arrangement found. Creating a new one for Sunday...");
                         workSchedule = new WorkSchedule(formattedDate);
                         workSchedule.saveToFirestore(workArrangementId);
                     }
@@ -203,68 +215,105 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 });
     }
 
-
-
     public static String generateValidDocumentId(String email, String formattedDate) {
         return email.replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + formattedDate.replaceAll("[^a-zA-Z0-9_-]", "_");
     }
 
+    /**
+     * Updates the shift views on the UI for both morning and evening shifts.
+     * <p>
+     * This method clears the current shift layouts, then retrieves the shift data
+     * from the workSchedule object. It formats the dates for the current day,
+     * previous day, and next day, then iterates over each shift type ("morning" and "evening")
+     * to populate the layouts. For each day and shift type, it either creates a shift view
+     * if there is scheduled shift data or an empty shift view with an add button if there isn't.
+     * </p>
+     */
     private void updateShiftsOnUI() {
+        // Clear previous shift views from the morning and evening layouts.
         morningShiftLayout.removeAllViews();
         eveningShiftLayout.removeAllViews();
 
+        // Check if workSchedule or its schedule map is null.
         if (workSchedule == null || workSchedule.getSchedule() == null) {
             Log.e("updateShiftsOnUI", "WorkSchedule or schedule map is null!");
             return;
         }
 
-        // Get the correct date format for shift retrieval
+        // Create a date formatter to get the day of the week in full text (e.g., "Monday").
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        // Clone the currentWeek calendar to avoid modifying the original calendar.
         Calendar calendar = (Calendar) currentWeek.clone();
 
+        // Prepare an array to hold the day names for display (previous day, current day, and next day).
         String[] daysToDisplay = new String[3];
         for (int i = -1; i <= 1; i++) {
+            // Adjust the calendar to the correct day.
             calendar.add(Calendar.DAY_OF_MONTH, i);
-            daysToDisplay[i + 1] = dateFormat.format(calendar.getTime()); // Corrected index
-            calendar.add(Calendar.DAY_OF_MONTH, -i); // Reset calendar position
+            // Format the date and store it in the array using a corrected index.
+            daysToDisplay[i + 1] = dateFormat.format(calendar.getTime());
+            // Reset the calendar position by reversing the previous day adjustment.
+            calendar.add(Calendar.DAY_OF_MONTH, -i);
         }
 
-
+        // Iterate over the two shift types: "morning" and "evening".
         for (String shiftType : new String[]{"morning", "evening"}) {
+            // Determine the correct layout for the current shift type.
             LinearLayout shiftRow = shiftType.equals("morning") ? morningShiftLayout : eveningShiftLayout;
-            shiftRow.removeAllViews(); // Clear previous shifts
+            // Clear the layout of any existing views.
+            shiftRow.removeAllViews();
 
+            // Loop through each day to display shifts.
             for (String day : daysToDisplay) {
+                // Retrieve the list of shifts for the given day and shift type from the schedule.
                 List<Map<String, String>> shifts = workSchedule.getSchedule()
                         .getOrDefault(day, new HashMap<>())
                         .getOrDefault(shiftType, new ArrayList<>());
 
+                // If there are shifts scheduled, create a view for each shift.
                 if (!shifts.isEmpty()) {
                     for (Map<String, String> shift : shifts) {
                         createShiftView(shift, day, shiftType);
                     }
                 } else {
+                    // Otherwise, create an empty shift view with an add button.
                     createEmptyShiftView(shiftRow, shiftType, day);
+                    Log.e("Firestore", "No shifts in " + day + " " + shiftType);
                 }
             }
         }
     }
 
+    /**
+     * Creates an empty shift view with an add button for a specific day and shift type.
+     * <p>
+     * This method constructs a LinearLayout representing an empty shift slot. It sets the layout parameters,
+     * gravity, padding, and background. An ImageButton is added to the layout, which, when clicked,
+     * opens a dialog to add a new shift.
+     * </p>
+     *
+     * @param parentLayout The layout where the empty shift view will be added.
+     * @param shiftType    The type of shift ("morning" or "evening").
+     * @param day          The day for which the shift view is being created.
+     */
     private void createEmptyShiftView(LinearLayout parentLayout, String shiftType, String day) {
+        // Create a new LinearLayout to represent the empty shift slot.
         LinearLayout emptyShift = new LinearLayout(this);
         emptyShift.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 160, 1)); // Make it fit the row
+                LinearLayout.LayoutParams.MATCH_PARENT, 160, 1)); // Make it fit the row.
         emptyShift.setGravity(Gravity.CENTER);
         emptyShift.setPadding(8, 8, 8, 8);
         emptyShift.setBackgroundResource(R.drawable.shift_background);
         emptyShift.setOrientation(LinearLayout.VERTICAL);
 
+        // Create an ImageButton that will allow the user to add a new shift.
         ImageButton addButton = new ImageButton(this);
         addButton.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
         addButton.setImageResource(R.drawable.ic_add);
         addButton.setBackgroundResource(android.R.color.transparent);
         addButton.setContentDescription("Add Shift");
         try {
+            // Set an OnClickListener on the add button to open the ShiftDialogFragment.
             addButton.setOnClickListener(view -> {
                 ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
                         managerEmail,
@@ -272,20 +321,34 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                         day,
                         shiftType.toLowerCase(),
                         workSchedule,
-                        this::getWorkArrangement // Refresh after adding shift
+                        this::getWorkArrangement // Refresh after adding shift.
                 );
                 shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
             });
         } catch (Exception e) {
+            // Log an error if there is an exception when setting up the shift dialog.
             Log.e("shiftDialog", "Shift Dialog Crashed!");
         }
 
+        // Add the add button to the empty shift layout and then add this layout to the parent layout.
         emptyShift.addView(addButton);
         parentLayout.addView(emptyShift);
     }
 
-
+    /**
+     * Creates a shift view to display a scheduled shift's details.
+     * <p>
+     * This method creates a LinearLayout to serve as a container for shift details.
+     * It adds a TextView displaying the employee's name (retrieved from the shift map) and sets up an OnClickListener
+     * that allows the user to edit the shift details by opening a dialog.
+     * </p>
+     *
+     * @param shift     A map containing the shift details (for example, an employee's name).
+     * @param day       The day for which the shift is scheduled.
+     * @param shiftType The type of shift ("morning" or "evening").
+     */
     private void createShiftView(Map<String, String> shift, String day, String shiftType) {
+        // Create a container layout for the shift view.
         LinearLayout shiftContainer = new LinearLayout(this);
         shiftContainer.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 100));
@@ -294,13 +357,17 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         shiftContainer.setBackgroundResource(R.drawable.shift_background);
         shiftContainer.setOrientation(LinearLayout.VERTICAL);
 
+        // Create a TextView to display the employee's name from the shift map.
         TextView employeeNameView = new TextView(this);
         employeeNameView.setText(shift.get("name"));
         employeeNameView.setTextSize(16);
+        // Add the TextView to the shift container.
         shiftContainer.addView(employeeNameView);
 
+        // Set an OnClickListener on the shift container to open a dialog for editing the shift when clicked.
         shiftContainer.setOnClickListener(view -> openShiftDialog(day, shiftType));
 
+        // Depending on the shift type, add the shift container to the appropriate layout.
         if ("morning".equals(shiftType)) {
             morningShiftLayout.addView(shiftContainer);
         } else {
