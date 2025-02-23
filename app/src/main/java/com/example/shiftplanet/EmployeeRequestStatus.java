@@ -223,7 +223,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestStatus.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeRequestStatus.this, "Constraints clicked", Toast.LENGTH_SHORT).show();

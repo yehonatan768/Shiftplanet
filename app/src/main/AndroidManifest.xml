@@ -23,6 +23,9 @@
             android:name=".EmployeeShiftChangeRequest"
             android:exported="false" />
         <activity
+            android:name=".EmployeeWorkArrangement"
+            android:exported="false" />
+        <activity
             android:name=".EmployeeShiftChangeDialog"
             android:exported="false" />
         <activity

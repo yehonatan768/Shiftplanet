@@ -223,7 +223,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeSubmitConstraintsPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeSubmitConstraintsPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeSubmitConstraintsPage.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeSubmitConstraintsPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
