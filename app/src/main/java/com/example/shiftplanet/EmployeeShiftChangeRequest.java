@@ -9,20 +9,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -41,7 +35,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class EmployeeShiftChange extends AppCompatActivity {
+public class EmployeeShiftChangeRequest extends AppCompatActivity {
 
     private EditText DateEditText, HoursEditText, detailsEditText;
     private String managerEmail;
@@ -52,6 +46,7 @@ public class EmployeeShiftChange extends AppCompatActivity {
     private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String employeeEmail;
+    private String employeeName;
 
 
     @Override
@@ -66,9 +61,11 @@ public class EmployeeShiftChange extends AppCompatActivity {
         } else {
             Log.e(TAG, "No email received");
         }
-        setContentView(R.layout.activity_shift_change_request);
+        setContentView(R.layout.employee_shiftchange_request);
         initializeUI();
         initToolbar();
+        fetchEmployeeName();
+
 
         // Setup date pickers
         DateEditText.setOnClickListener(v -> showDatePicker((date) -> DateEditText.setText(date)));
@@ -104,7 +101,7 @@ public class EmployeeShiftChange extends AppCompatActivity {
                             submitShiftChange(Date, Hours, details, employeeEmail, managerEmail);
                         } else {
                             Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
-                            Toast.makeText(EmployeeShiftChange.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EmployeeShiftChangeRequest.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Log.e("FirestoreError", "Error getting user document", task.getException());
@@ -112,7 +109,7 @@ public class EmployeeShiftChange extends AppCompatActivity {
                 });
             } catch (ParseException e) {
                 e.printStackTrace();
-                Toast.makeText(EmployeeShiftChange.this, "Invalid date format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EmployeeShiftChangeRequest.this, "Invalid date format", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -149,10 +146,26 @@ public class EmployeeShiftChange extends AppCompatActivity {
         });
     }
 
+    private void fetchEmployeeName() {
+        db.collection("users").document(current.getUid()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        employeeName = documentSnapshot.getString("fullname"); // לוודא שזה השדה הנכון
+                        Log.d(TAG, "Employee name retrieved: " + employeeName);
+                    } else {
+                        Log.e(TAG, "Employee document does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching employee name", e);
+                });
+    }
+
+
     private void submitShiftChange(String Date, String hours, String details, String employeeEmail, String managerEmail) {
         getNextRequestNumber(requestNumber -> {
             if (requestNumber == -1) {
-                Toast.makeText(EmployeeShiftChange.this, "Error generating request number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EmployeeShiftChangeRequest.this, "Error generating request number", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -161,6 +174,8 @@ public class EmployeeShiftChange extends AppCompatActivity {
             request.put("Hours", hours);
             request.put("details", details);
             request.put("status", "pending");
+            request.put("approvedByEmployee", false);
+            request.put("employeeName", employeeName);
             request.put("employeeEmail", employeeEmail);
             request.put("managerEmail", managerEmail);
             request.put("businessCode", businessCode);
@@ -170,10 +185,10 @@ public class EmployeeShiftChange extends AppCompatActivity {
             db.collection("ShiftChangeRequests")
                     .add(request)
                     .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(EmployeeShiftChange.this, "Request submitted with number: " + requestNumber, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EmployeeShiftChangeRequest.this, "Request submitted with number: " + requestNumber, Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(EmployeeShiftChange.this, "Error submitting request", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EmployeeShiftChangeRequest.this, "Error submitting request", Toast.LENGTH_SHORT).show();
                     });
         });
     }
@@ -183,7 +198,7 @@ public class EmployeeShiftChange extends AppCompatActivity {
                 .update("counter", FieldValue.increment(1))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        db.collection("ShiftChangeCounterDB").document("GlobalCounter")
+                        db.collection("ShiftChangeCounterDB").document("shiftChangeCounter")
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
@@ -206,29 +221,29 @@ public class EmployeeShiftChange extends AppCompatActivity {
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, Profile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeHomePage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeSubmitConstraintsPage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeSubmitConstraintsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.day_off) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeRequestPage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeRequestPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.shift_change) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeShiftChange.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeShiftChangeRequest.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.requests_status) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeRequestStatus.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeRequestStatus.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.notification) {
-            intent = new Intent(EmployeeShiftChange.this, EmployeeNotificationsPage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeNotificationsPage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_log_out) {
-            Toast.makeText(EmployeeShiftChange.this, "Log out clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeShiftChange.this, Login.class);
+            Toast.makeText(EmployeeShiftChangeRequest.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeShiftChangeRequest.this, Login.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }
         drawerLayout.closeDrawer(GravityCompat.START);

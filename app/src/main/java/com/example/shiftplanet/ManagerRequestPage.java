@@ -268,7 +268,7 @@ public class ManagerRequestPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
+            intent = new Intent(ManagerRequestPage.this, Profile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerRequestPage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerRequestPage.class);

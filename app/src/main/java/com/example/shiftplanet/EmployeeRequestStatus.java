@@ -11,14 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -223,7 +219,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestStatus.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestStatus.this, Profile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestStatus.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
@@ -239,7 +235,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestStatus.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestStatus.this, EmployeeShiftChange.class);
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeShiftChangeRequest.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestStatus.this, "Requests status clicked", Toast.LENGTH_SHORT).show();

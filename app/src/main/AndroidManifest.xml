@@ -20,10 +20,10 @@
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
         <activity
-            android:name=".EmployeeShiftChange"
+            android:name=".EmployeeShiftChangeRequest"
             android:exported="false" />
         <activity
-            android:name=".shiftChangeRequest"
+            android:name=".EmployeeShiftChangeDialog"
             android:exported="false" />
         <activity
             android:name=".ManagerSentNotificationsPage"
@@ -64,6 +64,9 @@
         <activity
             android:name=".EmployeeHomePage"
             android:exported="false" /> <!-- דף ההרשמה -->
+        <activity
+            android:name=".Profile"
+            android:exported="false" />
         <activity
             android:name=".Registration"
             android:exported="false" /> <!-- דף הלוגין - נדרש להיות exported="true" כי זה הדף הראשון שנפתח באפליקציה -->

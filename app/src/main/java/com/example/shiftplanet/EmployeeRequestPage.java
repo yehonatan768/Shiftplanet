@@ -207,6 +207,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
     private void saveRequestWithDocumentUrl(String documentUrl) {
         Map<String, Object> request = new HashMap<>();
+        request.put("type", "day off");
         request.put("reason", autoCompleteTextView.getText().toString().trim());
         request.put("startDate", startDateEditText.getText().toString().trim());
         request.put("endDate", endDateEditText.getText().toString().trim());
@@ -289,7 +290,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeRequestPage.this, Profile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
@@ -305,7 +306,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeShiftChange.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeShiftChangeRequest.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
