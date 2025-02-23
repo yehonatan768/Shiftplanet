@@ -388,9 +388,9 @@ public class EmployeeWorkArrangement extends AppCompatActivity implements Naviga
                     } else {
                         Map<String, String> emptyShift = new HashMap<>();
                         emptyShift.put("email", "");
-                        emptyShift.put("end_time", "_");
+                        emptyShift.put("end_time", "");
                         emptyShift.put("name", "");
-                        emptyShift.put("start_time", "_");
+                        emptyShift.put("start_time", "");
                         // Otherwise, create an empty shift view with an add button.
                         cellView = buildShiftItemView(emptyShift, day, shiftType);
                         Log.d("Firestore", "No shift at row " + row + " for " + day + " (" + shiftType + ")");
