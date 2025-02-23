@@ -157,13 +157,16 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
                 .whereEqualTo("managerEmail", managerEmail) // מסנן רק בקשות שמיועדות למנהל הזה
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        Map<String, String> shiftRequest = new HashMap<>();
-                        shiftRequest.put("notificationId", document.getId());
-                        shiftRequest.put("updateType", "Shift Change Request");
-                        shiftRequest.put("message", document.getString("employeeEmail") + " requested a shift change.");
-                        notifications.add(shiftRequest);
-                    }
+                            for (DocumentSnapshot document : queryDocumentSnapshots) {
+                                String employeeEmailRequest = document.getString("employeeEmail");  // הכתובת דוא"ל של העובד שהגיש את הבקשה
+                                if (employeeEmailRequest != null && !employeeEmailRequest.equals(employeeEmail)) {
+                                Map<String, String> shiftRequest = new HashMap<>();
+                                shiftRequest.put("notificationId", document.getId());
+                                shiftRequest.put("updateType", "Shift Change Request");
+                                shiftRequest.put("message", employeeEmailRequest + " requested a shift change.");
+                                notifications.add(shiftRequest);
+                            }
+                        }
                     onComplete.run();
                 })
                 .addOnFailureListener(e -> {
