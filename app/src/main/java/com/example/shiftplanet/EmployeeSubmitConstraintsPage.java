@@ -219,7 +219,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeSubmitConstraintsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeSubmitConstraintsPage.this, Profile.class);
+            intent = new Intent(EmployeeSubmitConstraintsPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeSubmitConstraintsPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();

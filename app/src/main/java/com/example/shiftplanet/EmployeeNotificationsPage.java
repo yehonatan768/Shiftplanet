@@ -273,7 +273,7 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeNotificationsPage.this, Profile.class);
+            intent = new Intent(EmployeeNotificationsPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeNotificationsPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();

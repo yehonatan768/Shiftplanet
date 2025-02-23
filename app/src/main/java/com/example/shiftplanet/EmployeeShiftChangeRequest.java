@@ -221,7 +221,7 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
-            intent = new Intent(EmployeeShiftChangeRequest.this, Profile.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeHomePage.class);
