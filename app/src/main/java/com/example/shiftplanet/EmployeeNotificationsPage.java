@@ -1,7 +1,8 @@
     package com.example.shiftplanet;
     
     import static android.content.ContentValues.TAG;
-    
+    import static android.content.Intent.getIntent;
+
     import android.content.Intent;
     import android.os.Bundle;
     import android.util.Log;
@@ -246,7 +247,7 @@
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             }else if (item.getItemId() == R.id.shift_change) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-                intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChange.class);
+                intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChangeRequest.class);
                 intent.putExtra("LOGIN_EMAIL", employeeEmail);
             }else if (item.getItemId() == R.id.requests_status) {
                 Toast.makeText(EmployeeNotificationsPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
