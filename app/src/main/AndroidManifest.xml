@@ -71,6 +71,9 @@
             android:name=".EmployeeProfile"
             android:exported="false" />
         <activity
+            android:name=".ManagerProfile"
+            android:exported="false" />
+        <activity
             android:name=".Registration"
             android:exported="false" /> <!-- דף הלוגין - נדרש להיות exported="true" כי זה הדף הראשון שנפתח באפליקציה -->
         <activity

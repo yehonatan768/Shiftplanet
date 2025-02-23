@@ -506,7 +506,7 @@ public class EmployeeWorkArrangement extends AppCompatActivity implements Naviga
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeWorkArrangement.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeWorkArrangement.this, Profile.class);
+            intent = new Intent(EmployeeWorkArrangement.this, ManagerProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeWorkArrangement.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
