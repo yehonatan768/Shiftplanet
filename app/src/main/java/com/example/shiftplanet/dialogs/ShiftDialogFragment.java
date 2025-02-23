@@ -118,15 +118,17 @@ public class ShiftDialogFragment extends DialogFragment {
             return;
         }
 
-        // ✅ Check if the shift already exists and update instead of adding a duplicate
         boolean shiftExists = false;
         List<Map<String, String>> existingShifts = workSchedule.getSchedule()
                 .getOrDefault(shiftDay, new HashMap<>())
                 .getOrDefault(shiftType, new ArrayList<>());
 
+        // Check if there's already a shift with this email
         for (Map<String, String> shift : existingShifts) {
-            if (!shift.get("email").equals(selectedEmployeeEmail)) {
+            // FIXED: Use equals(...) to detect the same email
+            if (shift.get("email").equals(selectedEmployeeEmail)) {
                 shiftExists = true;
+                // Update existing shift in memory
                 shift.put("email", selectedEmployeeEmail);
                 shift.put("name", selectedEmployee);
                 shift.put("start_time", startTime);
@@ -136,11 +138,20 @@ public class ShiftDialogFragment extends DialogFragment {
         }
 
         if (!shiftExists) {
-            Log.d("Firestore", selectedEmployeeEmail);
-            workSchedule.addEmployeeToShift(workArrangementId, shiftDay, shiftType, startTime, endTime, selectedEmployeeEmail, selectedEmployee);
+            // If we never found the shift, we add a new one
+            workSchedule.addEmployeeToShift(
+                    workArrangementId,
+                    shiftDay,
+                    shiftType,
+                    startTime,
+                    endTime,
+                    selectedEmployeeEmail,
+                    selectedEmployee
+            );
             Toast.makeText(getContext(), "Shift added successfully!", Toast.LENGTH_SHORT).show();
         } else {
-            workSchedule.saveToFirestore(workArrangementId); // ✅ Update Firestore
+            // We updated an existing shift in memory, so just save the entire schedule
+            workSchedule.saveToFirestore(workArrangementId);
             Toast.makeText(getContext(), "Shift updated successfully!", Toast.LENGTH_SHORT).show();
         }
 

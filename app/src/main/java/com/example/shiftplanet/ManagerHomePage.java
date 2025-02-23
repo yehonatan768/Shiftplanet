@@ -102,8 +102,9 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
         Intent intent = null;
         String message = "";
 
-        if (item.getItemId() == R.id.m_my_profile) {
-            message = "Already on My Profile";
+        if (item.getItemId() ==  R.id.m_my_profile) {
+            message = "My profile clicked";
+            //intent = new Intent(this, Profile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             message = "Employees requests clicked";
             intent = new Intent(this, ManagerRequestPage.class);
