@@ -224,7 +224,7 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
             intent = new Intent(EmployeeShiftChangeRequest.this, Profile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
-            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeSubmitConstraintsPage.class);

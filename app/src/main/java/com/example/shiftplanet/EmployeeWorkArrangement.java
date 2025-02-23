@@ -1,7 +1,7 @@
 package com.example.shiftplanet;
 
-import com.example.shiftplanet.utils.WorkSchedule;
-import com.example.shiftplanet.dialogs.ShiftDialogFragment;
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +13,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.shiftplanet.dialogs.ShiftDialogFragment;
+import com.example.shiftplanet.utils.WorkSchedule;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,11 +36,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ManagerWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class EmployeeWorkArrangement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    String managerEmail;
+    private String managerEmail, employeeEmail;
     LinearLayout morningShiftLayout, eveningShiftLayout;
     TextView firstDayLetter, firstDayNumber, secondDayLetter, secondDayNumber, thirdDayLetter, thirdDayNumber, calendarTitle;
     ImageButton btnPreviousWeek, btnNextWeek, btnPreviousDay, btnNextDay;
@@ -48,18 +54,22 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.manager_work_arrangement_page);
+        setContentView(R.layout.employee_work_arrangement_page);
 
-        managerEmail = getIntent().getStringExtra("LOGIN_EMAIL");
-        if (managerEmail == null) {
-            Toast.makeText(this, "Error: Manager email is not set.", Toast.LENGTH_SHORT).show();
-            return;
+        db = FirebaseFirestore.getInstance();
+
+        employeeEmail = getIntent().getStringExtra("LOGIN_EMAIL");
+        if (employeeEmail == null) {
+            Log.e("Firestore", "Employee email is not set");
+        } else {
+            getManagerEmail();
+            Log.d("Firestore", "done");
         }
+
 
         toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
-        db = FirebaseFirestore.getInstance();
-        drawerLayout = findViewById(R.id.manager_work_arrangement);
+        drawerLayout = findViewById(R.id.employee_work_arrangement);
         navigationView = findViewById(R.id.nav_view1);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -108,6 +118,8 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             updateDateDisplay();
             checkAndUpdateWeek();
         });
+
+
     }
 
     private void updateCalendarTitleAndDates() {
@@ -121,7 +133,10 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         calendarTitle.setText("Work Arrangement - " + formattedDate);
 
         updateDateDisplay();
-        getWorkArrangement(); // 🔥 Ensure Firestore data is fetched and UI updates
+        if (managerEmail != null) {
+            getWorkArrangement(); // 🔥 Ensure Firestore data is fetched and UI updates
+        }
+
     }
 
 
@@ -218,6 +233,63 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
 
     }
 
+    private void getManagerEmail() {
+        try {
+            Log.d("Firestore", "getManagerEmail() called, searching for email: " + employeeEmail);
+
+            if (employeeEmail == null || employeeEmail.isEmpty()) {
+                Log.e("Firestore", "Error: Employee email is null or empty!");
+                return;
+            }
+
+            if (db == null) {
+                Log.e("Firestore", "Firestore instance (db) is NULL!");
+                return;
+            }
+
+            db.collection("users")
+                    .whereEqualTo("email", employeeEmail) // 🔥 Match employee email
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        try {
+                            Log.d("Firestore", "Query executed successfully, checking results...");
+
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                                Log.d("Firestore", "Document found: " + document.getId());
+
+                                if (document.contains("managerEmail")) {
+                                    managerEmail = document.getString("managerEmail");
+                                    Log.d("Firestore", "✅ Manager email found: " + managerEmail);
+
+                                    // 🔥 Ensure next steps only run after fetching manager email
+                                    Log.d("Firestore", "Employee email is " + employeeEmail + ". Manager email is " + managerEmail);
+
+                                    getWorkArrangement();
+                                } else {
+                                    Log.e("Firestore", "❌ Manager email field does not exist in document!");
+                                }
+                            } else {
+                                Log.e("Firestore", "❌ No user found with email: " + employeeEmail);
+                            }
+                        } catch (Exception e) {
+                            Log.e("Firestore", "❌ Error processing Firestore response", e);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "❌ Firestore query failed: " + e.getMessage(), e);
+                        try {
+                            Toast.makeText(getApplicationContext(), "Error fetching manager email: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception toastException) {
+                            Log.e("Firestore", "❌ Toast display failed!", toastException);
+                        }
+                    });
+
+        } catch (Exception e) {
+            Log.e("Firestore", "❌ getManagerEmail() failed!", e);
+        }
+    }
+
     public static String generateValidDocumentId(String email, String formattedDate) {
         return email.replaceAll("[^a-zA-Z0-9_-]", "_") + "_" + formattedDate.replaceAll("[^a-zA-Z0-9_-]", "_");
     }
@@ -283,7 +355,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             }
 
             // We'll iterate one extra row to always show an "empty" cell for adding a new shift.
-            int numRows = maxSize + 1;
+            int numRows = maxSize;
 
             // For each row (each potential shift index)
             for (int row = 0; row < numRows; row++) {
@@ -432,15 +504,42 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
-            intent = new Intent(this, ManagerHomePage.class);
-        } else if (item.getItemId() == R.id.m_log_out) {
-            intent = new Intent(this, Login.class);
-        }
-        if (intent != null) {
-            startActivity(intent);
+        if (item.getItemId() == R.id.e_my_profile) {
+            Toast.makeText(EmployeeWorkArrangement.this, "My profile clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, Profile.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_work_arrangement) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.constraints) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, EmployeeSubmitConstraintsPage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.day_off) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Day off clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, EmployeeRequestPage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.shift_change) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, EmployeeShiftChangeRequest.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.requests_status) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Requests status clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, EmployeeRequestStatus.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.notification) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, EmployeeNotificationsPage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_log_out) {
+            Toast.makeText(EmployeeWorkArrangement.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeWorkArrangement.this, Login.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
+        if (intent != null) {
+            startActivity(intent);
+            finish();
+        }
+        return true; // מחזיר true כי הטיפול ב-item הושלם
     }
 }

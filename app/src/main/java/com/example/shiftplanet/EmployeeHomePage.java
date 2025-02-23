@@ -104,7 +104,7 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
@@ -132,8 +132,10 @@ public class EmployeeHomePage extends AppCompatActivity implements NavigationVie
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
-        startActivity(intent);
-        finish();
+        if (intent != null) {
+            startActivity(intent);
+            finish();
+        }
         return true; // מחזיר true כי הטיפול ב-item הושלם
     }
 
