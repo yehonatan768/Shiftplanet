@@ -78,7 +78,7 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
 
     private void fetchRequestDetails(String notificationId) {
 
-        db.collection("Requests").document(notificationId)
+        db.collection("ShiftChangeRequests").document(notificationId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
