@@ -30,7 +30,7 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
     private TextView employeeName, datesAndHours, detailsText;
     private Button approveButton, denyButton;
     private ImageView btnBack;
-    private String currentEmployeeName;
+    private String currentEmployeeName, currentEmployeeEmail;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
@@ -113,27 +113,31 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         // קבלת כל המידע מהבקשה הנוכחית
                         String employeeName = documentSnapshot.getString("employeeName");
+                        String employeeEmail = documentSnapshot.getString("employeeEmail");
                         String date = documentSnapshot.getString("Date");
                         String hours = documentSnapshot.getString("Hours");
                         String managerEmail = documentSnapshot.getString("managerEmail");
                         String details = documentSnapshot.getString("details");
                         long requestNumber = documentSnapshot.getLong("requestNumber");
-                        fetchEmployeeName();
+                        fetchEmployeeDetails();
                         // עדכון הבקשה הנוכחית
                         db.collection("ShiftChangeRequests").document(notificationId)
                                 .update("approvedByEmployee", true) // עדכון הסטטוס של העובד
                                 .addOnSuccessListener(aVoid -> {
 
                                     Map<String, Object> request = new HashMap<>();
-                                    request.put("type", "shift change");
+                                    request.put("requestType", "shift change");
                                     request.put("requestNumber", requestNumber);
                                     request.put("employeeName", employeeName);
+                                    request.put("employeeEmail", employeeEmail);
                                     request.put("date", date);
                                     request.put("hours", hours);
                                     request.put("details", details);
                                     request.put("managerEmail", managerEmail);
                                     request.put("timestamp", FieldValue.serverTimestamp());
-                                    request.put("switch employee", currentEmployeeName);
+                                    request.put("switchEmployee", currentEmployeeName);
+                                    request.put("switchEmployeeEmail", currentEmployeeEmail);
+
                                     request.put("status", "pending");
 
 
@@ -162,10 +166,11 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
 
     }
 
-                    private void fetchEmployeeName () {
+                    private void fetchEmployeeDetails () {
                         db.collection("users").document(current.getUid()).get()
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
+                                        currentEmployeeEmail= documentSnapshot.getString("email");
                                         currentEmployeeName = documentSnapshot.getString("fullname"); // לוודא שזה השדה הנכון
                                         Log.d(TAG, "Employee name retrieved: " + employeeName);
                                     } else {
