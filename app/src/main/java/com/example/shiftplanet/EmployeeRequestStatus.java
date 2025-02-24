@@ -95,7 +95,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
                     pendingRequests.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
-                        request.put("requestType", document.getString("reason"));
+                        request.put("requestType", document.getString("requestType"));
                         request.put("requestStatus", document.getString("status"));
                         pendingRequests.add(request);
                     }
@@ -120,7 +120,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
                     closedRequests.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
-                        request.put("requestType", document.getString("reason"));
+                        request.put("requestType", document.getString("requestType"));
                         request.put("status", document.getString("status"));
                         closedRequests.add(request);
                     }
@@ -207,7 +207,6 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         requestTypeTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
 
-        requestLayout.addView(nameTextView);
         requestLayout.addView(requestTypeTextView);
 
         return requestLayout;

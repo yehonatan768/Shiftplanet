@@ -109,14 +109,14 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
         Button submitRequestButton = findViewById(R.id.submit_request_button);
         submitRequestButton.setOnClickListener(v -> {
-            String reason = autoCompleteTextView.getText().toString().trim();
+            String requestType = autoCompleteTextView.getText().toString().trim();
             String startDate = startDateEditText.getText().toString().trim();
             String endDate = endDateEditText.getText().toString().trim();
             String details = detailsEditText.getText().toString().trim();
             String employeeEmail = current.getEmail();
 
 
-            if (!requestFieldsCheck(reason,startDate,endDate)) {
+            if (!requestFieldsCheck(requestType,startDate,endDate)) {
                 Toast.makeText(this, "please fill in all fields", LENGTH_SHORT).show();
                 return;
             }
@@ -142,7 +142,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                         if (document.exists()) {
                             managerEmail = document.getString("managerEmail");
                             businessCode = Integer.parseInt(document.getString("businessCode"));
-                            submitRequest(reason, startDate, endDate, details, employeeEmail, managerEmail);
+                            submitRequest(requestType, startDate, endDate, details, employeeEmail, managerEmail);
                         } else {
                             Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
                             Toast.makeText(EmployeeRequestPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
@@ -208,7 +208,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private void saveRequestWithDocumentUrl(String documentUrl) {
         Map<String, Object> request = new HashMap<>();
         request.put("type", "day off");
-        request.put("reason", autoCompleteTextView.getText().toString().trim());
+        request.put("requestType", autoCompleteTextView.getText().toString().trim());
         request.put("startDate", startDateEditText.getText().toString().trim());
         request.put("endDate", endDateEditText.getText().toString().trim());
         request.put("details", detailsEditText.getText().toString().trim());
@@ -230,7 +230,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                 });
     }
 
-    private void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
+    private void submitRequest(String requestType, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
         getNextRequestNumber(requestNumber -> {
             if (requestNumber == -1) {
                 Toast.makeText(EmployeeRequestPage.this, "Error generating request number", Toast.LENGTH_SHORT).show();
@@ -238,7 +238,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             }
 
             Map<String, Object> request = new HashMap<>();
-            request.put("reason", reason);
+            request.put("requestType", requestType);
             request.put("startDate", startDate);
             request.put("endDate", endDate);
             request.put("details", details);
@@ -346,8 +346,8 @@ public class EmployeeRequestPage extends AppCompatActivity {
         void onDateSelected(String date);
     }
 
-    static boolean requestFieldsCheck(String reason, String startDate, String endDate ) {
-        if (reason.isEmpty()) {
+    static boolean requestFieldsCheck(String requestType, String startDate, String endDate ) {
+        if (requestType.isEmpty()) {
             return false;
         }
         if (startDate.isEmpty()) {

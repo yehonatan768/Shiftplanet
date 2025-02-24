@@ -33,7 +33,7 @@ public class ManagerRequestPage extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar toolbar;
     private String managerEmail;
-
+    // Class variables to store query results
     private List<Map<String, String>> pendingRequests = new ArrayList<>();
     private List<Map<String, String>> closedRequests = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class ManagerRequestPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // Retrieve the email
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -50,37 +50,37 @@ public class ManagerRequestPage extends AppCompatActivity {
         } else {
             Log.e(TAG, "No email received");
         }
-
+        // Fetch and store requests
         fetchRequests(() -> {
-
+            // Once data is loaded, set the content view and initialize UI
             setContentView(R.layout.manager_request_page);
             initializeUI();
         });
     }
 
     private void initializeUI() {
-
+        // Setup DrawerLayout and Toolbar
         drawerLayout = findViewById(R.id.manager_request_page);
         navigationView = findViewById(R.id.nav_view1);
         toolbar = findViewById(R.id.toolbar);
 
-
+        // Set Toolbar as the ActionBar
         setSupportActionBar(toolbar);
 
-
+        // Setup Drawer Toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
+        // Setup NavigationView listener
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
             return true;
         });
 
-
+        // Populate requests into UI
         LinearLayout pendingLayout = findViewById(R.id.layout_pending_requests);
         LinearLayout closedLayout = findViewById(R.id.layout_closed_requests);
 
@@ -93,20 +93,20 @@ public class ManagerRequestPage extends AppCompatActivity {
 
         db.collection("Requests")
                 .whereEqualTo("status", "pending")
-                .whereEqualTo("managerEmail", managerEmail)
+                .whereEqualTo("managerEmail", managerEmail) 
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    pendingRequests.clear();
+                    pendingRequests.clear(); 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
-                        request.put("employeeName", document.getString("employeeEmail"));
+                        request.put("employeeName", document.getString("employeeEmail")); 
                         request.put("requestType", document.getString("requestType"));
 
                         Long requestNumberLong = document.getLong("requestNumber");
                         if (requestNumberLong != null) {
                             request.put("requestNumber", String.valueOf(requestNumberLong.intValue()));
                         } else {
-                            request.put("requestNumber", "0");
+                            request.put("requestNumber", "0"); 
                         }
 
                         pendingRequests.add(request);
@@ -129,22 +129,22 @@ public class ManagerRequestPage extends AppCompatActivity {
                 .whereEqualTo("managerEmail", managerEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    closedRequests.clear();
+                    closedRequests.clear(); 
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
                         request.put("employeeName", document.getString("employeeEmail"));
                         request.put("requestType", document.getString("requestType"));
-                        request.put("status", document.getString("status"));
+                        request.put("status", document.getString("status")); 
                         Long requestNumberLong = document.getLong("requestNumber");
                         if (requestNumberLong != null) {
                             request.put("requestNumber", String.valueOf(requestNumberLong.intValue()));
                         } else {
-                            request.put("requestNumber", "0");
+                            request.put("requestNumber", "0"); 
                         }
                         closedRequests.add(request);
                     }
 
-
+                 
                     onComplete.run();
                 })
                 .addOnFailureListener(e -> {
@@ -168,23 +168,23 @@ public class ManagerRequestPage extends AppCompatActivity {
             return;
         }
 
-        int idCounter = 1;
+        int idCounter = 1; 
         for (Map<String, String> request : requests) {
             String name = request.get("employeeName");
             String requestType = request.get("requestType");
             String requestNumberStr = request.get("requestNumber");
-            String status = request.get("status");
+            String status = request.get("status"); 
 
             int requestNumber = 0;
             if (requestNumberStr != null && requestNumberStr.matches("\\d+")) {
                 requestNumber = Integer.parseInt(requestNumberStr);
             }
 
-            int backgroundColor = defaultBackgroundColor;
+            int backgroundColor = defaultBackgroundColor; 
             if ("approved".equalsIgnoreCase(status)) {
                 backgroundColor = getResources().getColor(android.R.color.holo_green_dark);
             } else if ("denied".equalsIgnoreCase(status)) {
-                backgroundColor = getResources().getColor(android.R.color.holo_red_dark);
+                backgroundColor = getResources().getColor(android.R.color.holo_red_dark); 
             }
 
             LinearLayout requestLayout = createRequestLayout(
@@ -208,9 +208,9 @@ public class ManagerRequestPage extends AppCompatActivity {
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                120
+                120 
         );
-        layoutParams.setMargins(0, 8, 0, 8);
+        layoutParams.setMargins(0, 8, 0, 8); 
         requestLayout.setLayoutParams(layoutParams);
 
         requestLayout.setPadding(12, 12, 12, 12);
@@ -218,9 +218,9 @@ public class ManagerRequestPage extends AppCompatActivity {
 
         TextView nameTextView = new TextView(this);
         nameTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                0,
+                0, 
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                1
+                1 
         ));
         nameTextView.setText(employeeEmail);
         nameTextView.setTextColor(getResources().getColor(android.R.color.white));
@@ -237,7 +237,7 @@ public class ManagerRequestPage extends AppCompatActivity {
         requestTypeTextView.setTextSize(16);
         requestTypeTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
-        requestLayout.addView(nameTextView);
+
         requestLayout.addView(requestTypeTextView);
 
 
@@ -248,7 +248,7 @@ public class ManagerRequestPage extends AppCompatActivity {
             } else if ("shift change".equalsIgnoreCase(requestType)) {
                 intent = new Intent(ManagerRequestPage.this, ManagerShiftChangeDialog.class);
             } else {
-                    return;
+                    return; 
                 }
 
             intent.putExtra("managerEmail", managerEmail);
@@ -262,10 +262,7 @@ public class ManagerRequestPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() ==  R.id.m_home_page) {
-            Toast.makeText(ManagerRequestPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-        } else if (item.getItemId() == R.id.m_my_profile) {
+        if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
