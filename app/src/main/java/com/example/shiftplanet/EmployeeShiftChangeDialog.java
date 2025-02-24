@@ -25,15 +25,12 @@ import java.util.Objects;
 
 public class EmployeeShiftChangeDialog extends AppCompatActivity {
 
-
     private String notificationId; // The ID of the notification
-
     protected DocumentSnapshot requestDocument;
     private TextView employeeName, datesAndHours, detailsText;
     private Button approveButton, denyButton;
     private ImageView btnBack;
     private String currentEmployeeName;
-
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
@@ -67,14 +64,12 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
             finish();
         });
 
-
         denyButton.setOnClickListener(v -> finish());
         approveButton.setOnClickListener(v -> {
             handleApproveAction();
             finish();
         });
     }
-
 
     private void fetchRequestDetails(String notificationId) {
 
