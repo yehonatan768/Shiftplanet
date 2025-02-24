@@ -1,7 +1,11 @@
     package com.example.shiftplanet;
 
 
-
+    import android.Manifest;
+    import android.content.pm.PackageManager;
+    import android.os.Build;
+    import androidx.core.app.ActivityCompat;
+    import androidx.core.content.ContextCompat;
     import android.content.Intent;
     import android.os.Bundle;
     import android.util.Log;
@@ -41,6 +45,13 @@
                     .requestIdToken(getString(R.string.default_web_client_id)) // Ensure this is correctly set in strings.xml
                     .requestEmail()
                     .build();
+
+            // Request permission only on Android 13+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+                }
+            }
 
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
