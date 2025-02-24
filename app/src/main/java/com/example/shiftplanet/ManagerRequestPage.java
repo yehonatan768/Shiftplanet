@@ -255,7 +255,7 @@ public class ManagerRequestPage extends AppCompatActivity {
 
         requestLayout.setOnClickListener(v -> {
             Intent intent;
-            if ("vacation".equalsIgnoreCase(requestType) || "sick day".equalsIgnoreCase(requestType)) {
+            if ("Vacation".equalsIgnoreCase(requestType) || "Sick Day".equalsIgnoreCase(requestType)) {
                 intent = new Intent(ManagerRequestPage.this, ManagerDialogRequestDetails.class);
             } else if ("shift change".equalsIgnoreCase(requestType)) {
                 intent = new Intent(ManagerRequestPage.this, ManagerShiftChangeDialog.class);
