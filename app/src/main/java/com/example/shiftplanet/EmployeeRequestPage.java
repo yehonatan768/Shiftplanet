@@ -52,7 +52,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private Toolbar toolbar;
     private FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String employeeEmail, employeeName;
+    private String employeeEmail;
 
     private static final int PICK_DOCUMENT_REQUEST = 1; // constant for the file
     private Uri documentUri; // Variable that will hold the URI of the chosen file
@@ -78,7 +78,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         endDateEditText.setOnClickListener(v -> showDatePicker((date) -> endDateEditText.setText(date)));
 
         // Setup DrawerLayout and Toolbar
-        drawerLayout = findViewById(R.id.employee_request_page);
+        drawerLayout = findViewById(R.id.employee_request_drawer_layout);
         navigationView = findViewById(R.id.employee_request_nav_view);
         toolbar = findViewById(R.id.employee_request_toolbar);
 
@@ -142,8 +142,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                         if (document.exists()) {
                             managerEmail = document.getString("managerEmail");
                             businessCode = Integer.parseInt(document.getString("businessCode"));
-                            employeeName=  document.getString("fullname");
-                            submitRequest(reason, startDate, endDate, details, employeeEmail, employeeName, managerEmail);
+                            submitRequest(reason, startDate, endDate, details, employeeEmail, managerEmail);
                         } else {
                             Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
                             Toast.makeText(EmployeeRequestPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
@@ -231,7 +230,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                 });
     }
 
-    private void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String employeeName, String managerEmail) {
+    private void submitRequest(String reason, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
         getNextRequestNumber(requestNumber -> {
             if (requestNumber == -1) {
                 Toast.makeText(EmployeeRequestPage.this, "Error generating request number", Toast.LENGTH_SHORT).show();
@@ -239,13 +238,12 @@ public class EmployeeRequestPage extends AppCompatActivity {
             }
 
             Map<String, Object> request = new HashMap<>();
-            request.put("requestType", reason);
+            request.put("reason", reason);
             request.put("startDate", startDate);
             request.put("endDate", endDate);
             request.put("details", details);
             request.put("status", "pending");
             request.put("employeeEmail", employeeEmail);
-            request.put("employeeName", employeeName);
             request.put("managerEmail", managerEmail);
             request.put("businessCode", businessCode);
             request.put("timestamp", FieldValue.serverTimestamp());
@@ -296,7 +294,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeRequestPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeWorkArrangement.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeRequestPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();
@@ -358,6 +356,5 @@ public class EmployeeRequestPage extends AppCompatActivity {
             return true;
         }
     }
-
 
 }

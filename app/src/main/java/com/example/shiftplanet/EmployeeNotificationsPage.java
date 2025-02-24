@@ -214,6 +214,7 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
                         intent = new Intent(EmployeeNotificationsPage.this, NotificationDetailActivityPage.class);
                         intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
                         intent.putExtra("LOGIN_EMAIL", employeeEmail);
+                        intent.putExtra("CLASS_NAME", "EmployeeNotificationsPage");
                     }
                     // אם סוג העדכון הוא "החלפה"
                     else if ("Shift Change Request".equals(updateType)) {

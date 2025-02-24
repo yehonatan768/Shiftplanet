@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,6 @@ public class Registration extends AppCompatActivity {
         initializeUI();
         initializeFirebase();
         setButtonListeners();
-
     }
 
     private void initializeFirebase() {
@@ -51,7 +51,7 @@ public class Registration extends AppCompatActivity {
         autoCompleteTextView = findViewById(R.id.autoCompleteUserType);
         businessCodeEditText = findViewById(R.id.inputBusinessCode);
         idEditText = findViewById(R.id.input_id);
-        managerEmailEditText=findViewById(R.id.input_manager_email);
+        managerEmailEditText = findViewById(R.id.input_manager_email);
 
         // Setup dropdown
         adapterItems = new ArrayAdapter<>(this, R.layout.user_type_list, userTypes);
@@ -61,9 +61,7 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(Registration.this, "Selected: " + item, LENGTH_SHORT).show();
         });
 
-        //Setup employee visibility of manager email
-        managerEmailEditText = findViewById(R.id.input_manager_email);
-        autoCompleteTextView = findViewById(R.id.autoCompleteUserType);
+        // Setup employee visibility of manager email
         autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedUserType = parent.getItemAtPosition(position).toString();
             if (selectedUserType.equals("Employee")) {
@@ -73,6 +71,7 @@ public class Registration extends AppCompatActivity {
             }
         });
     }
+
     private void setButtonListeners() {
         findViewById(R.id.btnRegister).setOnClickListener(v -> registerUser());
         findViewById(R.id.back_btn).setOnClickListener(v -> {
@@ -84,6 +83,7 @@ public class Registration extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -93,12 +93,14 @@ public class Registration extends AppCompatActivity {
         String userType = autoCompleteTextView.getText().toString().trim();
         String businessCode = businessCodeEditText.getText().toString().trim();
         String id = idEditText.getText().toString().trim();
-        String managerEmail;
+
+        // יצירת משתנה final או effectively final של managerEmail
+        final String managerEmail;
 
         if ("Employee".equalsIgnoreCase(userType)) {
             managerEmail = managerEmailEditText.getText().toString().trim();
         } else {
-            managerEmail = "";
+            managerEmail = "";  // למנהל לא צריך managerEmail
         }
 
         if (email.isEmpty() || password.isEmpty() || confirmPasswordText.isEmpty() || fullname.isEmpty() || phone.isEmpty() || userType.isEmpty() || businessCode.isEmpty() || id.isEmpty()) {
@@ -106,8 +108,8 @@ public class Registration extends AppCompatActivity {
             return;
         }
 
-        if (!validPasswordCheck(password)){
-            Toast.makeText(this, "password must contain 6 chars, at least 1 uppercase letter and at least 1 number ", LENGTH_SHORT).show();
+        if (!validPasswordCheck(password)) {
+            Toast.makeText(this, "Password must contain 6 chars, at least 1 uppercase letter and at least 1 number", LENGTH_SHORT).show();
             return;
         }
 
@@ -116,7 +118,6 @@ public class Registration extends AppCompatActivity {
             return;
         }
 
-
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -124,7 +125,19 @@ public class Registration extends AppCompatActivity {
                     // Send email verification
                     currentUser.sendEmailVerification().addOnCompleteListener(verificationTask -> {
                         if (verificationTask.isSuccessful()) {
+                            // Save user info to Firestore
                             saveUserInfo(fullname, phone, email, userType, businessCode, id, managerEmail, currentUser);
+
+                            // Get FCM token and save it in Firestore
+                            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(fcmTask -> {
+                                if (fcmTask.isSuccessful()) {
+                                    String fcmToken = fcmTask.getResult();
+                                    saveFCMToken(fcmToken, currentUser);
+                                } else {
+                                    Log.e("FCM", "Failed to get FCM token: " + fcmTask.getException());
+                                }
+                            });
+
                             Toast.makeText(this, "Registration Completed. Please verify your email!", LENGTH_SHORT).show();
                         } else {
                             String errorMessage = verificationTask.getException() != null
@@ -135,17 +148,17 @@ public class Registration extends AppCompatActivity {
                         }
                     });
                 }
-
             } else {
                 String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error";
                 Toast.makeText(this, "Registration failed: " + errorMessage, LENGTH_SHORT).show();
                 Log.e("FirebaseAuth", "Error: " + errorMessage);
             }
         });
-        Intent intent = new Intent(Registration.this, Login.class); // Redirect to login
+
+        // Redirect to login page
+        Intent intent = new Intent(Registration.this, Login.class);
         startActivity(intent);
     }
-
 
     private void saveUserInfo(String fullname, String phone, String email, String userType, String businessCode, String id, String managerEmail, FirebaseUser currentUser) {
         Map<String, Object> user = new HashMap<>();
@@ -166,6 +179,16 @@ public class Registration extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error saving user data", e));
     }
 
+    private void saveFCMToken(String token, FirebaseUser currentUser) {
+        // Save the FCM token under the user document
+        Map<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("fcmToken", token);
+
+        db.collection("users").document(currentUser.getUid())
+                .update(tokenMap)
+                .addOnSuccessListener(aVoid -> Log.d("FCM", "FCM token saved successfully"))
+                .addOnFailureListener(e -> Log.e("FCM", "Error saving FCM token", e));
+    }
 
     static boolean validPasswordCheck(String password) {
         if (password.length() < 6) {
@@ -176,10 +199,8 @@ public class Registration extends AppCompatActivity {
         }
         if (!password.matches(".*\\d.*")) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
-
 }

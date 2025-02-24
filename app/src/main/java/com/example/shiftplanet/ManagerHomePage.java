@@ -5,7 +5,11 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.activity.EdgeToEdge;
@@ -17,85 +21,124 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ManagerHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar toolbar;
-    String managerEmail;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+    private String managerEmail;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.manager_home_page);
+        private TextView tvEmployeeName;
+        private LinearLayout updatesLayout;
 
-        // Retrieve the email
-        String email = getIntent().getStringExtra("LOGIN_EMAIL");
+        private FirebaseFirestore db = FirebaseFirestore.getInstance();
+        private List<Map<String, String>> notifications = new ArrayList<>();
 
-        if (email != null) {
-            Log.d(TAG, "Received email: " + email);
-            managerEmail = email;
-        } else {
-            Log.e(TAG, "No email received");
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            EdgeToEdge.enable(this);
+
+            String email = getIntent().getStringExtra("LOGIN_EMAIL");
+            if (email != null) {
+                managerEmail = email;
+            }
+
+            setContentView(R.layout.manager_home_page);
+            initializeUI();
+
         }
 
-        toolbar = findViewById(R.id.toolbar1);
-        setSupportActionBar(toolbar);
+        private void initializeUI() {
 
-        drawerLayout = findViewById(R.id.manager_home_page);
-        navigationView = findViewById(R.id.nav_view1);
-        navigationView.setNavigationItemSelectedListener(this);
+            tvEmployeeName = findViewById(R.id.tv_manager_name);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
 
-    }
 
-    private void saveFCMTokenToFirestore(String token) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            Button buildWorkArrangementButton = findViewById(R.id.build_work_arrangement_button);
+            Button publishedWorkArrangementButton = findViewById(R.id.published_work_arrangement_button);
+            Button sendNotifications = findViewById(R.id.send_notifications_button);
+            Button sentNotifications = findViewById(R.id.sent_notifications_button);
+            Button employeesRequests = findViewById(R.id.employees_requests_button);
 
-        // 🔥 Check if user is logged in
-        if (user == null) {
-            Log.e(TAG, "Error: User is not logged in. Cannot save FCM token.");
-            return;
+
+
+
+            buildWorkArrangementButton.setOnClickListener(v -> navigateToPage("Build Work Arrangement"));
+            publishedWorkArrangementButton.setOnClickListener(v -> navigateToPage("Published Work Arrangement"));
+            sendNotifications.setOnClickListener(v -> navigateToPage("Send Notifications"));
+            sentNotifications.setOnClickListener(v -> navigateToPage("Sent Notifications"));
+            employeesRequests.setOnClickListener(v -> navigateToPage("Employees Requests"));
+
+
+            getEmployeeName();
+            drawerLayout = findViewById(R.id.manager_home_page);
+            navigationView = findViewById(R.id.manager_home_page_nav_view);
+            toolbar = findViewById(R.id.manager_home_page_toolbar);
+            setSupportActionBar(toolbar);
+
+
+
+            // Set Toolbar as the ActionBar
+            setSupportActionBar(toolbar);
+
+            // Setup Drawer Toggle
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawerLayout, toolbar, R.string.open, R.string.close);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+
+            // Setup NavigationView listener
+            navigationView.setNavigationItemSelectedListener(menuItem -> {
+                onNavigationItemSelected(menuItem);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                return true;
+            });
         }
 
-        String userId = user.getUid();
-        if (userId == null || userId.isEmpty()) {
-            Log.e(TAG, "Error: Invalid user ID. Cannot save FCM token.");
-            return;
+        private void getEmployeeName() {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                db.collection("users").document(user.getUid()).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                String fullName = documentSnapshot.getString("fullname");
+                                tvEmployeeName.setText("Hello " + fullName);
+                            }
+                        })
+                        .addOnFailureListener(e -> Log.e("Error", "Error fetching user name", e));
+            }
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("fcmToken", token);
 
-        // 🔥 Use set() with merge = true to avoid overwriting existing user data
-        db.collection("users")
-                .document(userId)
-                .set(updates, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "✅ FCM Token updated successfully for user: " + userId))
-                .addOnFailureListener(e -> Log.e(TAG, "❌ Error updating FCM Token: " + e.getMessage(), e));
-    }
+        private void navigateToPage(String buttonName) {
+            Intent intent = null;
+            if (buttonName.equals("Build Work Arrangement")) {
+                intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
+            } else if (buttonName.equals("Published Work Arrangement")) {
+                intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
+            } else if (buttonName.equals("Send Notifications")) {
+                intent = new Intent(ManagerHomePage.this, ManagerSendNotificationPage.class);
+            } else if (buttonName.equals("Sent Notifications")) {
+                intent = new Intent(ManagerHomePage.this, ManagerSentNotificationsPage.class);
+            } else if (buttonName.equals("Employees Requests")) {
+                intent = new Intent(ManagerHomePage.this, ManagerRequestPage.class);
+            }
 
-
-    private void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnSuccessListener(this, token -> {
-                    Log.d(TAG, "🎯 Retrieved FCM Token: " + token);
-                    saveFCMTokenToFirestore(token);
-                })
-                .addOnFailureListener(this, e -> {
-                    Log.e(TAG, "❌ Error getting FCM Token: " + e.getMessage(), e);
-                });
-    }
+            if (intent != null) {
+                intent.putExtra("LOGIN_EMAIL", managerEmail);
+                startActivity(intent);
+            }
+        }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

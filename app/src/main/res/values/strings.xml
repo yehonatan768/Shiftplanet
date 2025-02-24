@@ -54,6 +54,7 @@
     <string name="requests_status">Requests status</string>
     <string name="notifications">Notifications</string>
     <string name="employees_requests">Employees requests</string>
+    <string name="HomePage">Home Page</string>
     <string name="build_work_arrangement">Build work arrangement</string>
     <string name="published_work_arrangement">Published work arrangement</string>
     <string name="send_notifications">Send notifications</string>
@@ -63,9 +64,6 @@
     <string name="manager_email">Manager email</string>
     <string name="log_out">Log out</string>
     <string name="day_off_reason">Reason</string>
-    <string name="default_notification_channel_id">ShiftPlanet_Notifications</string>
-
-    <string name="default_web_client_id"><![CDATA[107116464080-73vm17jj564fvhu2kqi8ljrc0qqd4q6.apps.googleusercontent.com]]></string>
 
 
 </resources>

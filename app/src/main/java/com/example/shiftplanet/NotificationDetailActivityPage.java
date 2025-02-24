@@ -23,6 +23,7 @@ public class NotificationDetailActivityPage extends AppCompatActivity {
     private String notificationId; // The ID of the notification
     private ImageView backButton;
     private String employeeEmail;
+    private String className;
 
 
     @Override
@@ -45,6 +46,7 @@ public class NotificationDetailActivityPage extends AppCompatActivity {
 
         // Get the notification ID passed from previous activity
         notificationId = getIntent().getStringExtra("notificationId");
+        className = getIntent().getStringExtra("CLASS_NAME");
 
         if (notificationId != null) {
             fetchNotificationDetails(notificationId);
@@ -69,7 +71,12 @@ public class NotificationDetailActivityPage extends AppCompatActivity {
                             if ("Manager".equalsIgnoreCase(userType)) {
                                 intent = new Intent(NotificationDetailActivityPage.this, ManagerSentNotificationsPage.class);
                             } else if ("Employee".equalsIgnoreCase(userType)) {
-                                intent = new Intent(NotificationDetailActivityPage.this, EmployeeNotificationsPage.class);
+                                if("EmployeeNotificationsPage".equalsIgnoreCase(className)) {
+                                    intent = new Intent(NotificationDetailActivityPage.this, EmployeeNotificationsPage.class);
+                                }
+                                else{ intent = new Intent(NotificationDetailActivityPage.this, EmployeeHomePage.class);}
+
+
                             } else {
                                 // Default case if user type is unknown
                                 Toast.makeText(NotificationDetailActivityPage.this, "Usertype unknown.", Toast.LENGTH_SHORT).show();
