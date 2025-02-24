@@ -28,7 +28,7 @@
             android:name=".EmployeeShiftChangeRequest"
             android:exported="false" />
         <activity
-            android:name=".Complete"
+            android:name=".CompleteRegistration"
             android:exported="false" />
         <activity
             android:name=".EmployeeWorkArrangement"
