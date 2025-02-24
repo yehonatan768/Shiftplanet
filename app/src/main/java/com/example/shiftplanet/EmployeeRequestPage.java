@@ -3,10 +3,14 @@ package com.example.shiftplanet;
 import static android.content.ContentValues.TAG;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.util.Base64;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -29,6 +33,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,14 +60,16 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String employeeEmail;
 
-    private static final int PICK_DOCUMENT_REQUEST = 1;
-    private Uri documentUri;
-    private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int CAPTURE_IMAGE_REQUEST = 2;
+    private FirebaseUser currentUser;
+    private String imageBase64 = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -108,60 +116,11 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
 
         Button submitRequestButton = findViewById(R.id.submit_request_button);
-        submitRequestButton.setOnClickListener(v -> {
-            String requestType = autoCompleteTextView.getText().toString().trim();
-            String startDate = startDateEditText.getText().toString().trim();
-            String endDate = endDateEditText.getText().toString().trim();
-            String details = detailsEditText.getText().toString().trim();
-            String employeeEmail = current.getEmail();
-
-
-            if (!requestFieldsCheck(requestType,startDate,endDate)) {
-                Toast.makeText(this, "please fill in all fields", LENGTH_SHORT).show();
-                return;
-            }
-
-
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            try {
-
-                Date start = sdf.parse(startDate);
-                Date end = sdf.parse(endDate);
-
-
-                if (start.after(end)) {
-                    Toast.makeText(EmployeeRequestPage.this, "Start date cannot be after end date", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                db.collection("users").document(current.getUid()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            managerEmail = document.getString("managerEmail");
-                            businessCode = Integer.parseInt(document.getString("businessCode"));
-                            submitRequest(requestType, startDate, endDate, details, employeeEmail, managerEmail);
-                        } else {
-                            Log.e("FirestoreError", "Failed to fetch manager's email", task.getException());
-                            Toast.makeText(EmployeeRequestPage.this, "Failed to retrieve manager's email.", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.e("FirestoreError", "Error getting user document", task.getException());
-                    }
-                });
-            } catch (ParseException e) {
-                e.printStackTrace();
-                Toast.makeText(EmployeeRequestPage.this, "Invalid date format", Toast.LENGTH_SHORT).show();
-            }
-
-
-        });
-
+        submitRequestButton.setOnClickListener(v -> submitRequest());
 
         Button addDocumentButton = findViewById(R.id.add_document_button);
-        addDocumentButton.setOnClickListener(v -> openDocumentPicker());
+        addDocumentButton.setOnClickListener(v -> showImagePickerDialog());
+
     }
 
     private void initializeUI() {
@@ -170,94 +129,130 @@ public class EmployeeRequestPage extends AppCompatActivity {
         detailsEditText = findViewById(R.id.details);
         autoCompleteTextView = findViewById(R.id.autoCompleteRequestType);
     }
-
-    private void openDocumentPicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        startActivityForResult(intent, PICK_DOCUMENT_REQUEST);
+    private void showImagePickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("בחר אפשרות")
+                .setItems(new CharSequence[]{"צלם תמונה", "בחר מהגלריה"}, (dialog, which) -> {
+                    if (which == 0) {
+                        openCamera();
+                    } else {
+                        openGallery();
+                    }
+                })
+                .show();
     }
 
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == PICK_DOCUMENT_REQUEST) {
-            if (data != null) {
-                documentUri = data.getData();
-                Toast.makeText(this, "Document selected: " + documentUri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+        if (resultCode == RESULT_OK) {
+            Bitmap bitmap = null;
+            if (requestCode == PICK_IMAGE_REQUEST && data != null) {
+                Uri imageUri = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == CAPTURE_IMAGE_REQUEST && data.getExtras() != null) {
+                bitmap = (Bitmap) data.getExtras().get("data");
+            }
+            if (bitmap != null) {
+                compressImage(bitmap);
             }
         }
     }
 
-    private void uploadDocumentToFirebase() {
-        if (documentUri != null) {
-            StorageReference fileReference = storageReference.child("documents/" + System.currentTimeMillis() + ".pdf");
-            fileReference.putFile(documentUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String documentUrl = uri.toString();
-                            saveRequestWithDocumentUrl(documentUrl);
-                        });
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload document", Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(this, "No document selected", Toast.LENGTH_SHORT).show();
+    private void compressImage(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] imageData = baos.toByteArray();
+        imageBase64 = Base64.encodeToString(imageData, Base64.DEFAULT);
+    }
+
+    private void submitRequest() {
+        // קבלת הנתונים מה-UI
+        String requestType = autoCompleteTextView.getText().toString().trim();
+        String startDate = startDateEditText.getText().toString().trim();
+        String endDate = endDateEditText.getText().toString().trim();
+        String details = detailsEditText.getText().toString().trim();
+        String employeeEmail = currentUser.getEmail();
+
+        // בדיקה שכל השדות מולאו
+        if (requestType.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+            Toast.makeText(this, "please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void saveRequestWithDocumentUrl(String documentUrl) {
-        Map<String, Object> request = new HashMap<>();
-        request.put("type", "day off");
-        request.put("requestType", autoCompleteTextView.getText().toString().trim());
-        request.put("startDate", startDateEditText.getText().toString().trim());
-        request.put("endDate", endDateEditText.getText().toString().trim());
-        request.put("details", detailsEditText.getText().toString().trim());
-        request.put("status", "pending");
-        request.put("employeeEmail", current.getEmail());
-        request.put("managerEmail", managerEmail);
-        request.put("businessCode", businessCode);
-        request.put("timestamp", FieldValue.serverTimestamp());
-        request.put("documentUrl", documentUrl);
+        // שליפת פרטי המשתמש מקולקציית "users"
+        db.collection("users").document(currentUser.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
+                    // קבלת הנתונים מהמסמך
+                    String businessCode = documentSnapshot.getString("businessCode");
+                    String managerEmail = documentSnapshot.getString("managerEmail");
 
-        db.collection("Requests")
-                .add(request)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(EmployeeRequestPage.this, "Request submitted", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show();
-                });
-    }
+                    // בדיקה שהערכים אינם ריקים
+                    if (businessCode == null || managerEmail == null) {
+                        Toast.makeText(this, "Missing user details", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-    private void submitRequest(String requestType, String startDate, String endDate, String details, String employeeEmail, String managerEmail) {
-        getNextRequestNumber(requestNumber -> {
-            if (requestNumber == -1) {
-                Toast.makeText(EmployeeRequestPage.this, "Error generating request number", Toast.LENGTH_SHORT).show();
-                return;
-            }
+                    // קבלת מספר הבקשה
+                    getNextRequestNumber(requestNumber -> {
+                        if (requestNumber == -1) {
+                            Toast.makeText(EmployeeRequestPage.this, "Error generating request number", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-            Map<String, Object> request = new HashMap<>();
-            request.put("requestType", requestType);
-            request.put("startDate", startDate);
-            request.put("endDate", endDate);
-            request.put("details", details);
-            request.put("status", "pending");
-            request.put("employeeEmail", employeeEmail);
-            request.put("managerEmail", managerEmail);
-            request.put("businessCode", businessCode);
-            request.put("timestamp", FieldValue.serverTimestamp());
-            request.put("requestNumber", requestNumber);
+                        // יצירת האובייקט עם כל הנתונים
+                        Map<String, Object> request = new HashMap<>();
+                        request.put("requestType", requestType);
+                        request.put("startDate", startDate);
+                        request.put("endDate", endDate);
+                        request.put("details", details);
+                        request.put("status", "pending");
+                        request.put("employeeEmail", employeeEmail);
+                        request.put("managerEmail", managerEmail);
+                        request.put("businessCode", businessCode);
+                        request.put("requestNumber", requestNumber);
+                        request.put("timestamp", FieldValue.serverTimestamp());
 
-            db.collection("Requests")
-                    .add(request)
-                    .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(EmployeeRequestPage.this, "Request submitted with number: " + requestNumber, Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show();
+                        // הוספת תמונה אם קיימת
+                        if (imageBase64 != null) {
+                            request.put("imageBase64", imageBase64);
+                        }
+
+                        // שליחת הנתונים לפיירבייס
+                        db.collection("Requests")
+                                .add(request)
+                                .addOnSuccessListener(documentReference ->
+                                        Toast.makeText(EmployeeRequestPage.this, "Request submitted successfully", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(EmployeeRequestPage.this, "Error submitting request", Toast.LENGTH_SHORT).show());
                     });
-        });
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error fetching user details", Toast.LENGTH_SHORT).show()
+                );
     }
 
 
@@ -266,7 +261,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
                 .update("counter", FieldValue.increment(1))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        db.collection("RequestCounters").document("GlobalCounter")
+                        db.collection("RequestCounters").document("RequestsCounter")
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
