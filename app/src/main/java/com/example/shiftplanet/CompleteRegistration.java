@@ -36,6 +36,7 @@ public class CompleteRegistration extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        // Retrieve Google Data
         Intent intent = getIntent();
         fullName = intent.getStringExtra("FULL_NAME");
         email = intent.getStringExtra("EMAIL");
@@ -120,8 +121,6 @@ public class CompleteRegistration extends AppCompatActivity {
         }
 
         intent.putExtra("LOGIN_EMAIL", email);
-        intent.putExtra("USER_NAME", fullName);
-        intent.putExtra("USER_PHONE", phone);
 
         startActivity(intent);
         finish();
