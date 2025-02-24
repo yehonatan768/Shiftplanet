@@ -153,9 +153,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             message = "Build work arrangement clicked";
             intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
-        } else if (item.getItemId() == R.id.published_work_arrangement) {
-            message = "Published work arrangement clicked";
-            intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.send_notifications) {
             message = "Send notifications clicked";
             intent = new Intent(ManagerHomePage.this, ManagerSendNotificationPage.class);

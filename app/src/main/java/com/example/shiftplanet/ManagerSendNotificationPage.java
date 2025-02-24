@@ -166,10 +166,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerSendNotificationPage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSendNotificationPage.this, ManagerWorkArrangement.class);
-        } else if (item.getItemId() == R.id.published_work_arrangement) {
-            Toast.makeText(ManagerSendNotificationPage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerSendNotificationPage.this, ManagerWorkArrangement.class);
-        } else if (item.getItemId() == R.id.send_notifications) {
+        }  else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerSendNotificationPage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSendNotificationPage.this, ManagerSendNotificationPage.class);
         } else if (item.getItemId() == R.id.sent_notifications) {

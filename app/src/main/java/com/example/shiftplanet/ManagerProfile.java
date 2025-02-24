@@ -166,9 +166,6 @@ public class ManagerProfile extends AppCompatActivity {
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerProfile.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerProfile.this, ManagerHomePage.class);
-        } else if (item.getItemId() == R.id.published_work_arrangement) {
-            Toast.makeText(ManagerProfile.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerProfile.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerProfile.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerProfile.this, ManagerSendNotificationPage.class);

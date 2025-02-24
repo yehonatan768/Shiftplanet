@@ -26,29 +26,15 @@
             android:iconTint="@color/white" />
 
         <item
-            android:id="@+id/m_work_arrangement"
+            android:id="@+id/build_work_arrangement"
             android:title="@string/work_arrangement"
-            android:textColor="@color/white">
+            android:icon="@drawable/build_workarrangement"
+            android:textColor="@color/white"/>
 
-
-            <menu>
-                <item
-                    android:id="@+id/build_work_arrangement"
-                    android:title="@string/build_work_arrangement"
-                    android:icon="@drawable/build_workarrangement"
-                    android:textColor="@color/white"/>
-                <item
-                    android:id="@+id/published_work_arrangement"
-                    android:title="@string/published_work_arrangement"
-                    android:icon="@drawable/work_arrangement_icon"
-                    android:textColor="@color/white"/>
-            </menu>
-        </item>
         <item
             android:id="@+id/m_notification"
             android:title="@string/notifications"
-            android:textColor="@color/white"
-            >
+            android:textColor="@color/white">
             <menu>
                 <item
                     android:id="@+id/send_notifications"

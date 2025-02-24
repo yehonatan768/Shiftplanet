@@ -271,9 +271,6 @@ public class ManagerRequestPage extends AppCompatActivity {
         } else if (item.getItemId() == R.id.build_work_arrangement) {
             Toast.makeText(ManagerRequestPage.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
-        } else if (item.getItemId() == R.id.published_work_arrangement) {
-            Toast.makeText(ManagerRequestPage.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, ManagerWorkArrangement.class);
         } else if (item.getItemId() == R.id.send_notifications) {
             Toast.makeText(ManagerRequestPage.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerSendNotificationPage.class);

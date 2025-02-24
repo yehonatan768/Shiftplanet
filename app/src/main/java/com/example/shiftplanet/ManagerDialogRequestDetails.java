@@ -118,7 +118,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                                         })
                                         .addOnFailureListener(e -> Log.e(TAG, "Firestore query failed: " + e.getMessage()));
 
-                                String reason = requestDocument.getString("reason");
+                                String requestType = requestDocument.getString("requestType");
                                 String startDate = requestDocument.getString("startDate");
                                 String endDate = requestDocument.getString("endDate");
                                 String additionalDetails = requestDocument.getString("details");
@@ -132,7 +132,7 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
 
                                 try {
                                     TextView requestTypeView = findViewById(R.id.requestTypeText);
-                                    requestTypeView.setText(reason);
+                                    requestTypeView.setText(requestType);
                                 } catch (Exception e) {
                                     Log.e(TAG, "Error updating request type view: " + e.getMessage());
                                 }
