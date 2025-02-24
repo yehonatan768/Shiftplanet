@@ -32,6 +32,9 @@
             android:name=".ManagerSentNotificationsPage"
             android:exported="false" />
         <activity
+            android:name=".ManagerShiftChangeDialog"
+            android:exported="false" />
+        <activity
             android:name=".ManagerWorkArrangement"
             android:exported="false" />
         <activity
