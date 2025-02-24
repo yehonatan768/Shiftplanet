@@ -24,17 +24,14 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
     private ImageView btnBack;
     private TextView requestDetailsContent;
     private String notificationId; // The ID of the notification
-
     private Button approveButton;
     private Button denyButton;
     private TextView names, datesAndHours, detailsText;
-
-    private Button downloadDocument;
-
     private int requestNumber;
 
     protected String managerEmail;
     private String employeeEmail;
+
     protected FirebaseFirestore db;
     protected DocumentSnapshot requestDocument;
 
@@ -42,6 +39,8 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manager_shiftchange_dialog);
+        db = FirebaseFirestore.getInstance();
+
 
         managerEmail = Objects.requireNonNull(getIntent().getStringExtra("managerEmail")).trim();
         employeeEmail = Objects.requireNonNull(getIntent().getStringExtra("employeeEmail")).trim();
@@ -61,12 +60,7 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
         approveButton = findViewById(R.id.approve_button);
         denyButton = findViewById(R.id.deny_button);
 
-
-
-
-        db = FirebaseFirestore.getInstance();
-
-        fetchRequestDocument(requestNumber, managerEmail, employeeEmail);
+        fetchRequestDocument(requestNumber, managerEmail);
 
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(ManagerShiftChangeDialog.this, ManagerRequestPage.class);
@@ -79,21 +73,39 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
         //denyButton.setOnClickListener(v -> handleDenyAction());
     }
 
-    private void fetchRequestDocument(int requestNumber, String managerEmail, String employeeEmail) {
+    private void fetchRequestDocument(int requestNumber, String managerEmail) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("Requests")
                 .whereEqualTo("requestNumber", requestNumber)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
+                .whereEqualTo("managerEmail", managerEmail).get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        requestDocument = querySnapshot.getDocuments().get(0); // שומר את המסמך הראשון שנמצא
 
-                        String employeesNames = requestDocument.getString("employeeName") + " wants to switch his shift with " + requestDocument.getString("switchName");
-                        String datesHours = requestDocument.getString("date") + ", " + requestDocument.getString("hours");
+                        String employeeName = requestDocument.getString("employeeName");
+                        String switchName = requestDocument.getString("switchEmployee");
+                        String date = requestDocument.getString("date");
+                        String hours = requestDocument.getString("hours");
                         String details = requestDocument.getString("details");
 
-                        // Populate request data
-                        names.setText(employeesNames);
-                        datesAndHours.setText(datesHours);
-                        detailsText.setText(details);
+                        // מוודא שהנתונים אינם null כדי למנוע שגיאות
+                        String employeesNames = (employeeName != null ? employeeName : "Unknown") +
+                                " wants to switch his shift with " +
+                                (switchName != null ? switchName : "Unknown");
+
+                        String datesHours = (date != null ? date : "Unknown") + ", " + (hours != null ? hours : "Unknown");
+
+                        runOnUiThread(() -> {
+                            names.setText(employeesNames);
+                            datesAndHours.setText(datesHours);
+                            detailsText.setText(details != null ? details : "No details provided");
+                        });
+
+                    } else {
+                        Toast.makeText(this, "No request found for this number", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error fetching request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -101,19 +113,7 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
                 });
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-/*
-
+    /*
     void handleApproveAction() {
         try {
             Toast.makeText(this, "Approving request...", Toast.LENGTH_SHORT).show();

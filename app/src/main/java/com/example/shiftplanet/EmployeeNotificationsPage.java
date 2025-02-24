@@ -88,7 +88,7 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Fetch the employee's details to get their manager's email
-        db.collection("users")  // Assuming "Employees" is the collection with employee data
+        db.collection("users")
                 .whereEqualTo("email", employeeEmail)  // Find the employee by their email
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {

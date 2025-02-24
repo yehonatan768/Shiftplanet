@@ -137,7 +137,6 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                                     request.put("timestamp", FieldValue.serverTimestamp());
                                     request.put("switchEmployee", currentEmployeeName);
                                     request.put("switchEmployeeEmail", currentEmployeeEmail);
-
                                     request.put("status", "pending");
 
 
