@@ -386,8 +386,13 @@ public class EmployeeWorkArrangement extends AppCompatActivity implements Naviga
                         Map<String, String> shift = currentList.get(row);
                         cellView = buildShiftItemView(shift, day, shiftType);
                     } else {
+                        Map<String, String> emptyShift = new HashMap<>();
+                        emptyShift.put("email", "");
+                        emptyShift.put("end_time", "");
+                        emptyShift.put("name", "");
+                        emptyShift.put("start_time", "");
                         // Otherwise, create an empty shift view with an add button.
-                        cellView = buildEmptyShiftItemView(day, shiftType);
+                        cellView = buildShiftItemView(emptyShift, day, shiftType);
                         Log.d("Firestore", "No shift at row " + row + " for " + day + " (" + shiftType + ")");
                     }
 
@@ -429,52 +434,7 @@ public class EmployeeWorkArrangement extends AppCompatActivity implements Naviga
         btnStartTime.setText(shift.get("start_time"));
         btnEndTime.setText(shift.get("end_time"));
 
-        // Set an OnClickListener to allow editing the shift details.
-        view.setOnClickListener(v -> openShiftDialog(day, shiftType));
-
         return view;
-    }
-
-    /**
-     * Builds an empty shift view that includes an add button. When clicked, the button opens
-     * a ShiftDialogFragment to allow the user to add a new shift.
-     *
-     * @param day       The day for which this empty shift view is created.
-     * @param shiftType The type of shift ("morning" or "evening").
-     * @return A view representing an empty shift slot.
-     */
-    private View buildEmptyShiftItemView(String day, String shiftType) {
-        LinearLayout emptyShift = new LinearLayout(this);
-        emptyShift.setOrientation(LinearLayout.VERTICAL);
-        emptyShift.setGravity(Gravity.CENTER);
-        emptyShift.setPadding(8, 8, 8, 8);
-        emptyShift.setBackgroundResource(R.drawable.shift_background);
-
-        ImageButton addButton = new ImageButton(this);
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(100, 100);
-        addButton.setLayoutParams(buttonParams);
-        addButton.setImageResource(R.drawable.ic_add);
-        addButton.setBackgroundResource(android.R.color.transparent);
-        addButton.setContentDescription("Add Shift");
-
-        try {
-            addButton.setOnClickListener(view -> {
-                // Example usage of your ShiftDialogFragment
-                ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
-                        managerEmail,
-                        workArrangementId,
-                        day,
-                        shiftType.toLowerCase(),
-                        workSchedule,
-                        this::getWorkArrangement // Refresh after adding shift
-                );
-                shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
-            });
-        } catch (Exception e) {
-            Log.e("shiftDialog", "Shift Dialog Crashed!", e);
-        }
-        emptyShift.addView(addButton);
-        return emptyShift;
     }
 
     /**
@@ -485,19 +445,6 @@ public class EmployeeWorkArrangement extends AppCompatActivity implements Naviga
      */
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
-    }
-
-
-    private void openShiftDialog(String day, String shiftType) {
-        ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
-                managerEmail,
-                workArrangementId,
-                day,
-                shiftType,
-                workSchedule,
-                this::getWorkArrangement // Refresh after adding/updating shift
-        );
-        shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
     }
 
 

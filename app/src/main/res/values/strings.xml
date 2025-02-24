@@ -63,6 +63,7 @@
     <string name="manager_email">Manager email</string>
     <string name="log_out">Log out</string>
     <string name="day_off_reason">Reason</string>
+    <string name="default_web_client_id"><![CDATA[107116464080-73vm17jj564fvhu2kqi8ljrc0qqd4q6.apps.googleusercontent.com]]></string>
 
 
 </resources>

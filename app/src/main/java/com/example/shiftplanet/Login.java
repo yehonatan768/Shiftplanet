@@ -7,11 +7,21 @@
     import android.util.Log;
     import android.widget.EditText;
     import android.widget.Toast;
+
+    import androidx.annotation.Nullable;
     import androidx.appcompat.app.AppCompatActivity;
+    import com.google.android.gms.auth.api.signin.GoogleSignIn;
+    import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+    import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+    import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+    import com.google.android.gms.common.api.ApiException;
+    import com.google.firebase.auth.AuthCredential;
     import com.google.firebase.auth.FirebaseAuth;
     import com.google.firebase.auth.FirebaseUser;
-    import com.google.firebase.firestore.DocumentSnapshot;
+    import com.google.firebase.auth.GoogleAuthProvider;
     import com.google.firebase.firestore.FirebaseFirestore;
+    import com.google.android.gms.tasks.Task;
+    import com.google.firebase.firestore.DocumentSnapshot;
 
     public class Login extends AppCompatActivity {
 
@@ -20,10 +30,20 @@
         private String userType;
         private FirebaseAuth mAuth;
         private FirebaseFirestore db;
+        private GoogleSignInClient mGoogleSignInClient;
+        private static final int RC_SIGN_IN = 9001;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id)) // Ensure this is correctly set in strings.xml
+                    .requestEmail()
+                    .build();
+
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
             setContentView(R.layout.login);
 
             try {
@@ -55,6 +75,16 @@
                     showToast("An error occurred while logging in. Please try again.");
                 }
             });
+
+            findViewById(R.id.btnGoogle).setOnClickListener(view -> {
+                try {
+                    loginUsingGoogle();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error during login with google: " + e.getMessage());
+                    showToast("An error occurred while logging in with google account. Please try again.");
+                }
+            });
+
             findViewById(R.id.forgotPasswordLogin).setOnClickListener(view -> navigateTo(ForgotPassword.class));
             findViewById(R.id.createNewAccount).setOnClickListener(view -> navigateTo(Registration.class));
         }
@@ -69,6 +99,106 @@
                 showToast("Please enter both email and password.");
             }
         }
+
+        public void loginUsingGoogle() {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == RC_SIGN_IN) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    if (account != null) {
+                        firebaseAuthWithGoogle(account);
+                    }
+                } catch (ApiException e) {
+                    Log.w(TAG, "Google sign-in failed", e);
+                    showToast("Google sign-in failed. Please try again.");
+                }
+            }
+        }
+
+        private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+            Log.d(TAG, "firebaseAuthWithGoogle: " + acct.getId());
+
+            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                checkUserInFirestore(user);  // Check Firestore before proceeding
+                            }
+                        } else {
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                Log.w(TAG, "Sign-in with Google failed", exception);
+                                handleFirebaseAuthError(exception, acct.getEmail());
+                            } else {
+                                showToast("Authentication failed.");
+                            }
+                        }
+                    });
+        }
+
+
+        private void handleFirebaseAuthError(Exception exception, String email) {
+            if (exception.getMessage() != null && exception.getMessage().contains("The email address is already in use")) {
+                showToast("This email is already registered. Please sign in using Email & Password.");
+
+                // Redirect the user to the login screen with the email filled in
+                Intent intent = new Intent(Login.this, Login.class);
+                intent.putExtra("EMAIL", email);
+                startActivity(intent);
+                finish();
+            } else {
+                showToast("Sign-in failed: " + exception.getMessage());
+            }
+        }
+
+
+
+        private void checkUserInFirestore(FirebaseUser user) {
+            String uid = user.getUid();
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+            String phone = user.getPhoneNumber(); // Might be null
+
+            db.collection("users").document(uid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            // User exists, get their role and navigate accordingly
+                            Log.d(TAG, "User exists in Firestore. Logging in...");
+                            userType = documentSnapshot.getString("userType");
+
+                            if (userType != null) {
+                                navigateToHomePage(email);
+                            } else {
+                                showToast("Error: User type not found. Please contact support.");
+                            }
+                        } else {
+                            // User does not exist, navigate to CompleteRegistration
+                            Log.d(TAG, "New Google user. Redirecting to Complete Registration...");
+                            Intent intent = new Intent(Login.this, CompleteRegistration.class);
+                            intent.putExtra("FULL_NAME", name);
+                            intent.putExtra("EMAIL", email);
+                            intent.putExtra("PHONE", phone);
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Firestore check failed", e);
+                        showToast("Error checking user data. Try again.");
+                    });
+        }
+
+
 
         private boolean isInputValid(String email, String password) {
             return !email.isEmpty() && !password.isEmpty();
