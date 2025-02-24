@@ -65,7 +65,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
 
             Button buildWorkArrangementButton = findViewById(R.id.build_work_arrangement_button);
-            Button publishedWorkArrangementButton = findViewById(R.id.published_work_arrangement_button);
             Button sendNotifications = findViewById(R.id.send_notifications_button);
             Button sentNotifications = findViewById(R.id.sent_notifications_button);
             Button employeesRequests = findViewById(R.id.employees_requests_button);
@@ -74,7 +73,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
 
             buildWorkArrangementButton.setOnClickListener(v -> navigateToPage("Build Work Arrangement"));
-            publishedWorkArrangementButton.setOnClickListener(v -> navigateToPage("Published Work Arrangement"));
             sendNotifications.setOnClickListener(v -> navigateToPage("Send Notifications"));
             sentNotifications.setOnClickListener(v -> navigateToPage("Sent Notifications"));
             employeesRequests.setOnClickListener(v -> navigateToPage("Employees Requests"));
@@ -121,9 +119,7 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
             Intent intent = null;
             if (buttonName.equals("Build Work Arrangement")) {
                 intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
-            } else if (buttonName.equals("Published Work Arrangement")) {
-                intent = new Intent(ManagerHomePage.this, ManagerWorkArrangement.class);
-            } else if (buttonName.equals("Send Notifications")) {
+            }  else if (buttonName.equals("Send Notifications")) {
                 intent = new Intent(ManagerHomePage.this, ManagerSendNotificationPage.class);
             } else if (buttonName.equals("Sent Notifications")) {
                 intent = new Intent(ManagerHomePage.this, ManagerSentNotificationsPage.class);

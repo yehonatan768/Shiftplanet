@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="0dp">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -434,7 +434,7 @@
                 android:id="@+id/submit_constraints_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="25dp"
                 android:backgroundTint="@color/purple"
                 android:text="Submit Constraints"
                 android:textSize="20sp"

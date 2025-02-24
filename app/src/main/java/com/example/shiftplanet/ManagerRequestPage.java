@@ -262,7 +262,10 @@ public class ManagerRequestPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
+        if (item.getItemId() ==  R.id.m_home_page) {
+            Toast.makeText(ManagerRequestPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerRequestPage.this, ManagerHomePage.class);
+        } else if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
