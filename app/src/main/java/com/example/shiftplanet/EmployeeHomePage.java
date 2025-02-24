@@ -85,17 +85,12 @@ public class EmployeeHomePage extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
-        // Set Toolbar as the ActionBar
-        setSupportActionBar(toolbar);
-
-        // Setup Drawer Toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
@@ -171,11 +166,11 @@ public class EmployeeHomePage extends AppCompatActivity {
             notificationView.setTextSize(16);
             notificationView.setPadding(16, 16, 16, 16);
 
-            // הופך את הטקסט לאובייקט לחיץ
+
             notificationView.setOnClickListener(v -> {
                 if(notificationId!=null){
                     Intent intent = new Intent(EmployeeHomePage.this, NotificationDetailActivityPage.class);
-                    intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                    intent.putExtra("notificationId", notificationId);
                     intent.putExtra("LOGIN_EMAIL", employeeEmail);
                     intent.putExtra("CLASS_NAME", "EmployeeHomePage");
                     startActivity(intent);
@@ -208,13 +203,18 @@ public class EmployeeHomePage extends AppCompatActivity {
     }
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
+        if (item.getItemId() == R.id.e_home_page) {
+            Toast.makeText(EmployeeHomePage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeHomePage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeHomePage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeHomePage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeHomePage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();

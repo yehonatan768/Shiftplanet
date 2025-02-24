@@ -39,7 +39,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the email
+
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -48,35 +48,35 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         } else {
             Log.e(TAG, "No email received");
         }
-        // Fetch and store requests
+
         fetchRequests(() -> {
-            // Once data is loaded, set the content view and initialize UI
+
             setContentView(R.layout.employee_request_status);
             initializeUI();
         });
     }
     private void initializeUI() {
-        // Setup DrawerLayout and Toolbar
+
         drawerLayout = findViewById(R.id.drawer_layout1);
         navigationView = findViewById(R.id.nav_view1);
         toolbar = findViewById(R.id.toolbar);
 
-        // Set Toolbar as the ActionBar
+
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
             return true;
         });
-        // Populate requests into UI
+
         LinearLayout pendingLayout = findViewById(R.id.layout_pending_requests);
         LinearLayout closedLayout = findViewById(R.id.layout_closed_requests);
 
@@ -86,61 +86,60 @@ public class EmployeeRequestStatus extends AppCompatActivity {
     private void fetchRequests(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Fetch pending requests with the given managerEmail
+
         db.collection("Requests")
                 .whereEqualTo("status", "pending")
-                .whereEqualTo("employeeEmail", employeeEmail) // Filter by employeeEmail
+                .whereEqualTo("employeeEmail", employeeEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    pendingRequests.clear(); // Clear any existing data
+                    pendingRequests.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
-                        request.put("requestType", document.getString("reason")); // Replace "reason" with the actual field
-                        request.put("requestStatus", document.getString("status")); // Replace with actual status
+                        request.put("requestType", document.getString("reason"));
+                        request.put("requestStatus", document.getString("status"));
                         pendingRequests.add(request);
                     }
 
-                    // Fetch closed requests after pending requests
+
                     fetchClosedRequests(onComplete);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load pending requests: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    fetchClosedRequests(onComplete); // Proceed to fetch closed requests
+                    fetchClosedRequests(onComplete);
                 });
     }
     private void fetchClosedRequests(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Query for requests where the status is either "approved" or "denied"
+
         db.collection("Requests")
                 .whereIn("status", Arrays.asList("approved", "denied"))
                 .whereEqualTo("employeeEmail", employeeEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    closedRequests.clear(); // Clear any existing data
+                    closedRequests.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
                         request.put("requestType", document.getString("reason"));
-                        request.put("status", document.getString("status")); // Replace with actual status
+                        request.put("status", document.getString("status"));
                         closedRequests.add(request);
                     }
 
-                    // Call the callback once both queries are completed
                     onComplete.run();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to load approved/denied requests: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    onComplete.run(); // Call the callback even if this query fails
+                    onComplete.run();
                 });
     }
 
 
     private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
-        // Clear any previous views
+
         parentLayout.removeAllViews();
 
         if (requests.isEmpty()) {
-            // Add a "No Requests" message if the list is empty
+
             TextView noRequestsMessage = new TextView(this);
             noRequestsMessage.setText("No requests available.");
             noRequestsMessage.setTextColor(getResources().getColor(android.R.color.white));
@@ -150,8 +149,8 @@ public class EmployeeRequestStatus extends AppCompatActivity {
             return;
         }
 
-        // Dynamically add each request to the layout
-        int idCounter = 1; // Start the ID counter
+
+        int idCounter = 1;
         for (Map<String, String> request : requests) {
             String name = request.get("employeeName");
             String requestType = request.get("requestType");
@@ -170,33 +169,33 @@ public class EmployeeRequestStatus extends AppCompatActivity {
 
     private LinearLayout createRequestLayout(int id, String name, String requestType, int backgroundColor) {
         LinearLayout requestLayout = new LinearLayout(this);
-        requestLayout.setId(id); // Set the unique ID
+        requestLayout.setId(id);
         requestLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        // Set LayoutParams with a bottom margin
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                120 // Height in px (adjust as needed)
+                120
         );
-        layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 16px
+        layoutParams.setMargins(0, 8, 0, 8);
         requestLayout.setLayoutParams(layoutParams);
 
         requestLayout.setPadding(12, 12, 12, 12);
         requestLayout.setBackgroundColor(backgroundColor);
 
-        // Name TextView
+
         TextView nameTextView = new TextView(this);
         nameTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                0, // Width = fill remaining space
+                0,
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                1 // Weight
+                1
         ));
         nameTextView.setText(name);
         nameTextView.setTextColor(getResources().getColor(android.R.color.white));
         nameTextView.setTextSize(16);
         nameTextView.setGravity(Gravity.CENTER_VERTICAL);
 
-        // Request Type TextView
+
         TextView requestTypeTextView = new TextView(this);
         requestTypeTextView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -207,7 +206,7 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         requestTypeTextView.setTextSize(16);
         requestTypeTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
-        // Add TextViews to the request layout
+
         requestLayout.addView(nameTextView);
         requestLayout.addView(requestTypeTextView);
 
@@ -217,7 +216,11 @@ public class EmployeeRequestStatus extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.e_my_profile) {
+        if (item.getItemId() == R.id.e_home_page) {
+            Toast.makeText(EmployeeRequestStatus.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeRequestStatus.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestStatus.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestStatus.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);

@@ -54,14 +54,14 @@ public class EmployeeRequestPage extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String employeeEmail;
 
-    private static final int PICK_DOCUMENT_REQUEST = 1; // constant for the file
-    private Uri documentUri; // Variable that will hold the URI of the chosen file
-    private StorageReference storageReference = FirebaseStorage.getInstance().getReference(); // קישור לאחסון ב-Firebase
+    private static final int PICK_DOCUMENT_REQUEST = 1;
+    private Uri documentUri;
+    private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the email
+
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -73,32 +73,32 @@ public class EmployeeRequestPage extends AppCompatActivity {
         setContentView(R.layout.employee_request_page);
         initializeUI();
 
-        // Setup date pickers
+
         startDateEditText.setOnClickListener(v -> showDatePicker((date) -> startDateEditText.setText(date)));
         endDateEditText.setOnClickListener(v -> showDatePicker((date) -> endDateEditText.setText(date)));
 
-        // Setup DrawerLayout and Toolbar
+
         drawerLayout = findViewById(R.id.employee_request_drawer_layout);
         navigationView = findViewById(R.id.employee_request_nav_view);
         toolbar = findViewById(R.id.employee_request_toolbar);
 
-        // Set Toolbar as the ActionBar
+
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
             return true;
         });
 
-        // Setup dropdown
+
         adapterItems = new ArrayAdapter<>(this, R.layout.request_type_list, requestTypes);
         autoCompleteTextView.setAdapter(adapterItems);
         autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
@@ -106,7 +106,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             Toast.makeText(EmployeeRequestPage.this, "Selected: " + item, LENGTH_SHORT).show();
         });
 
-        // Setup Submit Request button
+
         Button submitRequestButton = findViewById(R.id.submit_request_button);
         submitRequestButton.setOnClickListener(v -> {
             String reason = autoCompleteTextView.getText().toString().trim();
@@ -122,20 +122,20 @@ public class EmployeeRequestPage extends AppCompatActivity {
             }
 
 
-            // המרת התאריכים למבני Date להשוואה
+
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
 
                 Date start = sdf.parse(startDate);
                 Date end = sdf.parse(endDate);
 
-                // בדיקה אם תאריך התחלה מאוחר יותר מתאריך הסיום
+
                 if (start.after(end)) {
                     Toast.makeText(EmployeeRequestPage.this, "Start date cannot be after end date", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // אם התאריכים תקינים, תוכל להמשיך לשלב הבא
+
                 db.collection("users").document(current.getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
@@ -159,7 +159,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
         });
 
-        // Add document button click listener
+
         Button addDocumentButton = findViewById(R.id.add_document_button);
         addDocumentButton.setOnClickListener(v -> openDocumentPicker());
     }
@@ -173,7 +173,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
     private void openDocumentPicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Pick any file type
+        intent.setType("*/*");
         startActivityForResult(intent, PICK_DOCUMENT_REQUEST);
     }
 
@@ -183,7 +183,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_DOCUMENT_REQUEST) {
             if (data != null) {
-                documentUri = data.getData(); // Save URI of selected document
+                documentUri = data.getData();
                 Toast.makeText(this, "Document selected: " + documentUri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -288,7 +288,11 @@ public class EmployeeRequestPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.e_my_profile) {
+        if (item.getItemId() == R.id.e_home_page) {
+            Toast.makeText(EmployeeRequestPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeRequestPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeRequestPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);

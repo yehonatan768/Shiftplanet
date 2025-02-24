@@ -39,7 +39,7 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the email
+
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -48,36 +48,36 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         } else {
             Log.e(TAG, "No email received");
         }
-        // Fetch and store requests
+
         fetchNotifications(() -> {
-            // Once data is loaded, set the content view and initialize UI
+
             setContentView(R.layout.employee_notifications_page);
             initializeUI();
         });
 
     }
     private void initializeUI() {
-        // Setup DrawerLayout and Toolbar
+
         drawerLayout = findViewById(R.id.employee_notifications_drawer_layout);
         navigationView = findViewById(R.id.employee_notifications_nav_view);
         toolbar = findViewById(R.id.employee_notifications_toolbar);
 
-        // Set Toolbar as the ActionBar
+
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
             return true;
         });
-        // Populate requests into UI
+
         LinearLayout pendingLayout = findViewById(R.id.layout_notifications);
 
 
@@ -87,23 +87,22 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
     private void fetchNotifications(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Fetch the employee's details to get their manager's email
+
         db.collection("users")
-                .whereEqualTo("email", employeeEmail)  // Find the employee by their email
+                .whereEqualTo("email", employeeEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot employeeDoc = queryDocumentSnapshots.getDocuments().get(0);
-                        String managerEmail = employeeDoc.getString("managerEmail");  // Retrieve the manager's email
+                        String managerEmail = employeeDoc.getString("managerEmail");
 
                         if (managerEmail != null) {
-                            // Now that we have the manager's email, fetch the notifications for that manager
 
                             AtomicInteger pendingRequests = new AtomicInteger(2);
 
                             Runnable completionCallback = () -> {
                                 if (pendingRequests.decrementAndGet() == 0) {
-                                    onComplete.run(); // מפעילים את onComplete רק אחרי ששתי השאילתות הסתיימו
+                                    onComplete.run();
                                 }
                             };
 
@@ -112,33 +111,33 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
 
                         } else {
                             Toast.makeText(EmployeeNotificationsPage.this, "Manager email not found.", Toast.LENGTH_SHORT).show();
-                            onComplete.run();  // Proceed even if manager email is missing
+                            onComplete.run();
                         }
                     } else {
                         Toast.makeText(EmployeeNotificationsPage.this, "Employee not found.", Toast.LENGTH_SHORT).show();
-                        onComplete.run();  // Proceed if employee data not found
+                        onComplete.run();
                     }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(EmployeeNotificationsPage.this, "Failed to load employee details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    onComplete.run();  // Proceed if there's an error fetching employee data
+                    onComplete.run();
                 });
     }
 
     private void fetchManagerNotifications(String managerEmail, Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Fetch notifications based on manager's email
+
         db.collection("Notifications")
-                .whereEqualTo("managerEmail", managerEmail)  // Ensure the notification is from the manager
+                .whereEqualTo("managerEmail", managerEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    notifications.clear();  // Clear any existing data
+                    notifications.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> notification = new HashMap<>();
                         notification.put("notificationId", document.getId());
-                        notification.put("updateType", "Manager Update");  // סוג העדכון
-                        notification.put("message", document.getString("message"));  // תיאור קצר של העדכון
+                        notification.put("updateType", "Manager Update");
+                        notification.put("message", document.getString("message"));
                         notifications.add(notification);
                     }
                     onComplete.run();
@@ -154,11 +153,11 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("ShiftChangeRequests")
-                .whereEqualTo("managerEmail", managerEmail) // מסנן רק בקשות שמיועדות למנהל הזה
+                .whereEqualTo("managerEmail", managerEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                             for (DocumentSnapshot document : queryDocumentSnapshots) {
-                                String employeeEmailRequest = document.getString("employeeEmail");  // הכתובת דוא"ל של העובד שהגיש את הבקשה
+                                String employeeEmailRequest = document.getString("employeeEmail");
                                 if (employeeEmailRequest != null && !employeeEmailRequest.equals(employeeEmail)) {
                                 Map<String, String> shiftRequest = new HashMap<>();
                                 shiftRequest.put("notificationId", document.getId());
@@ -177,11 +176,11 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
 
 
     private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
-        // Clear any previous views
+
         parentLayout.removeAllViews();
 
         if (requests.isEmpty()) {
-            // Add a "No Requests" message if the list is empty
+
             TextView noRequestsMessage = new TextView(this);
             noRequestsMessage.setText("No notifications available.");
             noRequestsMessage.setTextColor(getResources().getColor(android.R.color.white));
@@ -191,8 +190,8 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
             return;
         }
 
-        // Dynamically add each request to the layout
-        int idCounter = 1; // Start the ID counter
+
+        int idCounter = 1;
         for (Map<String, String> request : requests) {
             String notificationId = request.get("notificationId");
             String updateType = request.get("updateType");
@@ -200,26 +199,26 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
 
             LinearLayout requestLayout = createRequestLayout(
                     idCounter,
-                    updateType,  // Type of update (e.g., "Vacation Approved", "Sick Leave")
-                    "",     // A brief message or description of the update
+                    updateType,
+                    "",
                     backgroundColor
             );
 
-            // Set click listener to open detailed notification
+
             requestLayout.setOnClickListener(v -> {
                 if (notificationId != null) {
                     Intent intent;
 
                     if ("Manager Update".equals(updateType)) {
                         intent = new Intent(EmployeeNotificationsPage.this, NotificationDetailActivityPage.class);
-                        intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                        intent.putExtra("notificationId", notificationId);
                         intent.putExtra("LOGIN_EMAIL", employeeEmail);
                         intent.putExtra("CLASS_NAME", "EmployeeNotificationsPage");
                     }
-                    // אם סוג העדכון הוא "החלפה"
+
                     else if ("Shift Change Request".equals(updateType)) {
-                        intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChangeDialog.class); // כאן את שולחת לעמוד דיאלוג החלפה
-                        intent.putExtra("notificationId", notificationId);  // תעביר גם את ה- notificationId לעמוד של החלפה, אם צריך
+                        intent = new Intent(EmployeeNotificationsPage.this, EmployeeShiftChangeDialog.class);
+                        intent.putExtra("notificationId", notificationId);
                         intent.putExtra("LOGIN_EMAIL", employeeEmail);
                     }
                     else {
@@ -241,26 +240,26 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
 
     private LinearLayout createRequestLayout(int id, String updateType, String message, int backgroundColor) {
         LinearLayout requestLayout = new LinearLayout(this);
-        requestLayout.setId(id); // Set the unique ID
+        requestLayout.setId(id);
         requestLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        // Set LayoutParams with a bottom margin
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                120 // Height in px (adjust as needed)
+                120
         );
-        layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 16px
+        layoutParams.setMargins(0, 8, 0, 8);
         requestLayout.setLayoutParams(layoutParams);
 
         requestLayout.setPadding(12, 12, 12, 12);
         requestLayout.setBackgroundColor(backgroundColor);
 
-        // Update Type TextView
+
         TextView updateTypeTextView = new TextView(this);
         updateTypeTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                0, // Width = fill remaining space
+                0,
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                1 // Weight
+                1
         ));
         updateTypeTextView.setText(updateType);
         updateTypeTextView.setTextColor(getResources().getColor(android.R.color.white));
@@ -275,7 +274,12 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.e_my_profile) {
+        if (item.getItemId() == R.id.e_home_page) {
+            Toast.makeText(EmployeeNotificationsPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeNotificationsPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        }
+        else if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeNotificationsPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
