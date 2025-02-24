@@ -78,7 +78,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
         endDateEditText.setOnClickListener(v -> showDatePicker((date) -> endDateEditText.setText(date)));
 
         // Setup DrawerLayout and Toolbar
-        drawerLayout = findViewById(R.id.employee_request_page);
+        drawerLayout = findViewById(R.id.employee_request_drawer_layout);
         navigationView = findViewById(R.id.employee_request_nav_view);
         toolbar = findViewById(R.id.employee_request_toolbar);
 
@@ -305,7 +305,7 @@ public class EmployeeRequestPage extends AppCompatActivity {
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.shift_change) {
             Toast.makeText(EmployeeRequestPage.this, "Shift change clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeRequestPage.this, EmployeeShiftChange.class);
+            intent = new Intent(EmployeeRequestPage.this, EmployeeShiftChangeRequest.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.requests_status) {
             Toast.makeText(EmployeeRequestPage.this, "Requests status clicked", Toast.LENGTH_SHORT).show();

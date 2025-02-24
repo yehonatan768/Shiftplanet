@@ -5,6 +5,12 @@
 
     <group android:checkableBehavior="single">
 
+
+        <item
+            android:id="@+id/m_home_page"
+            android:icon="@drawable/home_page"
+            android:textColor="@color/white"
+            android:title="@string/HomePage" />
         <item
             android:id="@+id/m_my_profile"
             android:title="@string/profile"

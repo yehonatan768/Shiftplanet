@@ -6,36 +6,148 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer= "start"
-    tools:context=".EmployeeHomePage">
+    tools:context=".ManagerHomePage">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/background_primary"
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar1"
+            android:id="@+id/manager_home_page_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background_primary"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-        <FrameLayout
-            android:id="@+id/FrameLayout1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_manager_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Hello [Employee Name]"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <!-- Buttons Section -->
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/logo" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginTop="32dp"> <!-- הורדת הכפתורים למטה -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <Button
+                    android:id="@+id/build_work_arrangement_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_button"
+                    android:text="Build Work Arrangement"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/published_work_arrangement_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/red"
+                    android:text="Published Work Arrangement"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:layout_marginTop="16dp"> <!-- הורדת השורה למטה -->
+
+                <Button
+                    android:id="@+id/send_notifications_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/red"
+                    android:text="Send Notifications"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/sent_notifications_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/rounded_button"
+                    android:text="Sent Notifications"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:layout_marginTop="16dp"> <!-- הורדת השורה למטה -->
+
+                <Button
+                    android:id="@+id/employees_requests_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/red"
+                    android:text="Employees Requests"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="300dp"
-        android:layout_height="930dp"
-        app:headerLayout="@layout/manager_menu_header"
-        app:menu="@menu/manager_menu"
-        android:id="@+id/nav_view1"
-        android:background="@drawable/login_background"
-        android:layout_gravity="start"
-        app:itemIconPadding="30dp"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"/>
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="300dp"
+            android:layout_height="930dp"
+            app:headerLayout="@layout/manager_menu_header"
+            app:menu="@menu/manager_menu"
+            android:id="@+id/manager_home_page_nav_view"
+            android:background="@drawable/login_background"
+            android:layout_gravity="start"
+            app:itemIconPadding="30dp"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"/>
+
 </androidx.drawerlayout.widget.DrawerLayout>

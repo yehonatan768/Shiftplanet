@@ -53,6 +53,7 @@
     <string name="shift_change_request">Submit shift change request</string>
     <string name="requests_status">Requests status</string>
     <string name="notifications">Notifications</string>
+    <string name="HomePage">Home Page</string>
     <string name="employees_requests">Employees requests</string>
     <string name="build_work_arrangement">Build work arrangement</string>
     <string name="published_work_arrangement">Published work arrangement</string>
