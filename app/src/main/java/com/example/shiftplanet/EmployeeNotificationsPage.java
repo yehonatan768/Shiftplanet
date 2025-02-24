@@ -88,7 +88,7 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Fetch the employee's details to get their manager's email
-        db.collection("users")  // Assuming "Employees" is the collection with employee data
+        db.collection("users")
                 .whereEqualTo("email", employeeEmail)  // Find the employee by their email
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -157,13 +157,16 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
                 .whereEqualTo("managerEmail", managerEmail) // מסנן רק בקשות שמיועדות למנהל הזה
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        Map<String, String> shiftRequest = new HashMap<>();
-                        shiftRequest.put("notificationId", document.getId());
-                        shiftRequest.put("updateType", "Shift Change Request");
-                        shiftRequest.put("message", document.getString("employeeEmail") + " requested a shift change.");
-                        notifications.add(shiftRequest);
-                    }
+                            for (DocumentSnapshot document : queryDocumentSnapshots) {
+                                String employeeEmailRequest = document.getString("employeeEmail");  // הכתובת דוא"ל של העובד שהגיש את הבקשה
+                                if (employeeEmailRequest != null && !employeeEmailRequest.equals(employeeEmail)) {
+                                Map<String, String> shiftRequest = new HashMap<>();
+                                shiftRequest.put("notificationId", document.getId());
+                                shiftRequest.put("updateType", "Shift Change Request");
+                                shiftRequest.put("message", employeeEmailRequest + " requested a shift change.");
+                                notifications.add(shiftRequest);
+                            }
+                        }
                     onComplete.run();
                 })
                 .addOnFailureListener(e -> {
@@ -274,11 +277,11 @@ public class EmployeeNotificationsPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeNotificationsPage.this, Profile.class);
+            intent = new Intent(EmployeeNotificationsPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {
             Toast.makeText(EmployeeNotificationsPage.this, "Work arrangement clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(EmployeeNotificationsPage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeNotificationsPage.this, EmployeeWorkArrangement.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.constraints) {
             Toast.makeText(EmployeeNotificationsPage.this, "Constraints clicked", Toast.LENGTH_SHORT).show();

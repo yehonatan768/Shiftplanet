@@ -3,7 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required for FCM to receive push notifications -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <!-- Required for notifications on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,14 +26,53 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
+
+        <!-- Firebase Messaging Service (Handles incoming FCM notifications) -->
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <!-- Ensure FCM works after reboot -->
+       <!-- * <receiver
+            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+            android:exported="false"
+            android:permission="com.google.android.c2dm.permission.RECEIVE">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="${applicationId}"/>
+            </intent-filter>
+        </receiver>-->
+
+        <!-- Ensure app receives notifications when launched -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id"/>
+
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.ClientId"
+            android:value="@string/default_web_client_id"/>
+
         <activity
             android:name=".EmployeeShiftChangeRequest"
+            android:exported="false" />
+        <activity
+            android:name=".CompleteRegistration"
+            android:exported="false" />
+        <activity
+            android:name=".EmployeeWorkArrangement"
             android:exported="false" />
         <activity
             android:name=".EmployeeShiftChangeDialog"
             android:exported="false" />
         <activity
             android:name=".ManagerSentNotificationsPage"
+            android:exported="false" />
+        <activity
+            android:name=".ManagerShiftChangeDialog"
             android:exported="false" />
         <activity
             android:name=".ManagerWorkArrangement"
@@ -65,7 +111,10 @@
             android:name=".EmployeeHomePage"
             android:exported="false" /> <!-- דף ההרשמה -->
         <activity
-            android:name=".Profile"
+            android:name=".EmployeeProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ManagerProfile"
             android:exported="false" />
         <activity
             android:name=".Registration"

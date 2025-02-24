@@ -101,7 +101,7 @@ public class ManagerRequestPage extends AppCompatActivity {
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
                         request.put("employeeName", document.getString("employeeEmail")); // Replace with actual name field if available
-                        request.put("requestType", document.getString("reason")); // Replace "reason" with the actual field
+                        request.put("requestType", document.getString("requestType"));
 
                         // Retrieve requestNumber and store as a string in the map
                         Long requestNumberLong = document.getLong("requestNumber");
@@ -136,7 +136,7 @@ public class ManagerRequestPage extends AppCompatActivity {
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> request = new HashMap<>();
                         request.put("employeeName", document.getString("employeeEmail")); // Replace with actual name field if available
-                        request.put("requestType", document.getString("reason"));
+                        request.put("requestType", document.getString("requestType"));
                         request.put("status", document.getString("status")); // Include status
                         Long requestNumberLong = document.getLong("requestNumber");
                         if (requestNumberLong != null) {
@@ -254,7 +254,15 @@ public class ManagerRequestPage extends AppCompatActivity {
         // Set OnClickListener to navigate to ManagerDialogRequestDetails
 
         requestLayout.setOnClickListener(v -> {
-            Intent intent = new Intent(ManagerRequestPage.this, ManagerDialogRequestDetails.class);
+            Intent intent;
+            if ("vacation".equalsIgnoreCase(requestType) || "sick day".equalsIgnoreCase(requestType)) {
+                intent = new Intent(ManagerRequestPage.this, ManagerDialogRequestDetails.class);
+            } else if ("shift change".equalsIgnoreCase(requestType)) {
+                intent = new Intent(ManagerRequestPage.this, ManagerShiftChangeDialog.class);
+            } else {
+                    return; // אם זה סוג בקשה לא מוכר, לא נעשה כלום
+                }
+
             intent.putExtra("managerEmail", managerEmail);
             intent.putExtra("employeeEmail", employeeEmail);
             intent.putExtra("requestNumber", number); // Pass the unique request ID
@@ -268,7 +276,7 @@ public class ManagerRequestPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerRequestPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerRequestPage.this, Profile.class);
+            intent = new Intent(ManagerRequestPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerRequestPage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerRequestPage.this, ManagerRequestPage.class);

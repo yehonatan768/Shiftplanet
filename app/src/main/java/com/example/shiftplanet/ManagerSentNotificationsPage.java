@@ -214,7 +214,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
         Intent intent = null;
         if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerSentNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
-            intent = new Intent(ManagerSentNotificationsPage.this, Profile.class);
+            intent = new Intent(ManagerSentNotificationsPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
             Toast.makeText(ManagerSentNotificationsPage.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerRequestPage.class);
