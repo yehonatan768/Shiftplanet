@@ -69,8 +69,8 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
             finish();
         });
 
-        //approveButton.setOnClickListener(v -> handleApproveAction());
-        //denyButton.setOnClickListener(v -> handleDenyAction());
+        approveButton.setOnClickListener(v -> handleApproveAction());
+        denyButton.setOnClickListener(v -> handleDenyAction());
     }
 
     private void fetchRequestDocument(int requestNumber, String managerEmail) {
@@ -112,8 +112,7 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
                     finish();
                 });
     }
-}
-    /*
+
     void handleApproveAction() {
         try {
             Toast.makeText(this, "Approving request...", Toast.LENGTH_SHORT).show();
@@ -157,4 +156,4 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
             Toast.makeText(this, "Error handling deny action: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-*/
+}
