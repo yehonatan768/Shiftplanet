@@ -19,8 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShiftPlanet"
         tools:targetApi="34">
+
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.ClientId"
+            android:value="@string/default_web_client_id"/>
+
         <activity
             android:name=".EmployeeShiftChangeRequest"
+            android:exported="false" />
+        <activity
+            android:name=".Complete"
             android:exported="false" />
         <activity
             android:name=".EmployeeWorkArrangement"

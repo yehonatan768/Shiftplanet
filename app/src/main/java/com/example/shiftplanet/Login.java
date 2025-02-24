@@ -55,6 +55,16 @@
                     showToast("An error occurred while logging in. Please try again.");
                 }
             });
+
+            findViewById(R.id.btnGoogle).setOnClickListener(view -> {
+                try {
+                    loginUsingGoogle();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error during login with google: " + e.getMessage());
+                    showToast("An error occurred while logging in with google account. Please try again.");
+                }
+            });
+
             findViewById(R.id.forgotPasswordLogin).setOnClickListener(view -> navigateTo(ForgotPassword.class));
             findViewById(R.id.createNewAccount).setOnClickListener(view -> navigateTo(Registration.class));
         }
@@ -68,6 +78,10 @@
             } else {
                 showToast("Please enter both email and password.");
             }
+        }
+
+        public void loginUsingGoogle() {
+
         }
 
         private boolean isInputValid(String email, String password) {
