@@ -23,7 +23,7 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
 
     private ImageView btnBack;
     private TextView requestDetailsContent;
-    private String notificationId; // The ID of the notification
+    private String notificationId;
     private Button approveButton;
     private Button denyButton;
     private TextView names, datesAndHours, detailsText;
@@ -81,7 +81,7 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
                 .whereEqualTo("managerEmail", managerEmail).get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
-                        requestDocument = querySnapshot.getDocuments().get(0); // שומר את המסמך הראשון שנמצא
+                        requestDocument = querySnapshot.getDocuments().get(0);
 
                         String employeeName = requestDocument.getString("employeeName");
                         String switchName = requestDocument.getString("switchEmployee");
@@ -89,7 +89,6 @@ public class ManagerShiftChangeDialog extends AppCompatActivity {
                         String hours = requestDocument.getString("hours");
                         String details = requestDocument.getString("details");
 
-                        // מוודא שהנתונים אינם null כדי למנוע שגיאות
                         String employeesNames = (employeeName != null ? employeeName : "Unknown") +
                                 " wants to switch his shift with " +
                                 (switchName != null ? switchName : "Unknown");

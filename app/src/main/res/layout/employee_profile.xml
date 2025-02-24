@@ -9,7 +9,6 @@
     android:id="@+id/profile_employee">
 
 
-    <!-- התוכן של המסך -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +50,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- שדות לעדכון פרטי המשתמש -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +59,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- שדה עדכון אימייל -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,7 +92,6 @@
                     android:layout_marginStart="10dp" />
             </LinearLayout>
 
-            <!-- שדות נוספים לאיפוס סיסמא, שם מלא, מספר טלפון... -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -198,7 +194,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- תפריט ניווט -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view2"
         android:layout_width="290dp"

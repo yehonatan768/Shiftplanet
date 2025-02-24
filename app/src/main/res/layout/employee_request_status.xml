@@ -4,13 +4,11 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout1">
 
-    <!-- התוכן של העמוד -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -23,7 +21,6 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-        <!-- Main ScrollView -->
         <ScrollView
             android:id="@+id/main_scroll_view"
             android:layout_width="match_parent"
@@ -39,7 +36,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- בקשות ממתינות -->
                 <TextView
                     android:id="@+id/pending_requests_title"
                     android:layout_width="wrap_content"
@@ -50,7 +46,6 @@
                     android:textSize="18sp"
                     android:layout_marginBottom="8dp" />
 
-                <!-- תצוגת הבקשות הממתינות -->
                 <ScrollView
                     android:layout_width="380dp"
                     android:layout_height="265dp"
@@ -64,12 +59,9 @@
                         android:background="@color/background_secondary"
                         android:padding="8dp">
 
-                        <!-- Requests List -->
-                        <!-- Add more pending requests dynamically -->
 
                     </LinearLayout>
                 </ScrollView>
-                <!-- בקשות סגורות -->
                 <TextView
                     android:id="@+id/closed_requests_title"
                     android:layout_width="wrap_content"
@@ -94,8 +86,6 @@
                         android:background="@color/background_secondary"
                         android:padding="8dp">
 
-                        <!-- Requests List -->
-                        <!-- Add more closed requests dynamically -->
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>
@@ -103,7 +93,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- תפריט ניווט (Navigation Drawer) -->
     <com.google.android.material.navigation.NavigationView
         android:layout_width="290dp"
         android:layout_height="match_parent"

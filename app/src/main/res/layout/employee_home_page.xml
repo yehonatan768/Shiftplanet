@@ -13,7 +13,7 @@
         android:background="@color/background_primary"
         android:padding="16dp">
 
-        <!-- Toolbar -->
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/employee_home_page_toolbar"
             android:layout_width="match_parent"
@@ -40,7 +40,6 @@
             android:layout_marginTop="16dp"
             android:src="@drawable/logo" />
 
-        <!-- Buttons Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,7 +83,7 @@
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:padding="8dp"
-                android:layout_marginTop="16dp"> <!-- ריווח בין השורות -->
+                android:layout_marginTop="16dp">
 
                 <Button
                     android:id="@+id/Day_off_request_button"
@@ -115,7 +114,7 @@
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:padding="8dp"
-                android:layout_marginTop="16dp"> <!-- ריווח בין השורות -->
+                android:layout_marginTop="16dp">
 
                 <Button
                     android:id="@+id/Shift_change_request_button"
@@ -142,7 +141,6 @@
 
         </LinearLayout>
 
-        <!-- Recent Updates -->
         <TextView
             android:id="@+id/updates_header"
             android:layout_width="wrap_content"
@@ -166,7 +164,6 @@
                 android:orientation="vertical"
                 android:background="@color/background_secondary"
                 android:padding="8dp">
-                <!-- Updates go here dynamically -->
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

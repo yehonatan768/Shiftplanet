@@ -21,7 +21,6 @@
             android:src="@drawable/arrow_back_icon" />
 
 
-        <!-- Employee Name -->
         <TextView
             android:id="@+id/employee_name"
             android:layout_width="wrap_content"
@@ -33,7 +32,6 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/white" />
 
-        <!-- Start Date, hours -->
         <TextView
             android:id="@+id/datesAndHours"
             android:layout_width="wrap_content"
@@ -47,7 +45,6 @@
             android:layout_marginBottom="8dp"
             android:textColor="@android:color/white" />
 
-        <!-- Request Type -->
         <LinearLayout
             android:layout_width="360dp"
             android:layout_height="wrap_content"
@@ -68,7 +65,6 @@
 
         </LinearLayout>
 
-        <!-- Details Section -->
         <LinearLayout
             android:layout_width="360dp"
             android:layout_height="100dp"
@@ -88,7 +84,6 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <!-- Approve/Deny Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -107,7 +107,7 @@
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document != null && document.exists()) {
-                                userType = document.getString("userType"); // Ensure field name matches Firestore
+                                userType = document.getString("userType");
                                 if (userType != null) {
                                     navigateToHomePage(email);
                                 } else {
@@ -139,7 +139,6 @@
                     throw new IllegalArgumentException("Unknown user type: " + userType);
                 }
 
-                // Attach the email as an extra
                 intent.putExtra("LOGIN_EMAIL", email);
 
                 Log.d(TAG, "Navigating to: " + userType + " Home Page with email: " + email);

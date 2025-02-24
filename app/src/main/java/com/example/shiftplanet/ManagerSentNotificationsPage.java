@@ -37,7 +37,6 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the email
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -45,7 +44,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
             managerEmail = email;
         } else {
             Log.e(TAG, "No email received");
-            finish();  // Log out if email is not found
+            finish();
         }
 
         setContentView(R.layout.manager_sent_notification_page);
@@ -54,28 +53,28 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        // Setup DrawerLayout and Toolbar
+
         drawerLayout = findViewById(R.id.manager_sent_notification_drawer_layout);
         navigationView = findViewById(R.id.manager_sent_notification_nav_view);
         toolbar = findViewById(R.id.manager_sent_notifications_toolbar);
 
-        // Set Toolbar as the ActionBar
+
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
             return true;
         });
 
-        // Populate requests into UI
+
         LinearLayout pendingLayout = findViewById(R.id.layout_notifications);
         populateRequests(notifications, pendingLayout, getResources().getColor(android.R.color.holo_blue_light));
     }
@@ -83,25 +82,25 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     private void fetchManagerNotifications(String managerEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Fetch notifications based on manager's email
         db.collection("Notifications")
-                .whereEqualTo("managerEmail", managerEmail)  // Ensure the notification is from the manager
+                .whereEqualTo("managerEmail", managerEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    notifications.clear();  // Clear any existing data
+                    notifications.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, String> notification = new HashMap<>();
                         notification.put("notificationId", document.getId());
-                        notification.put("updateType", document.getString("updateType"));  // סוג העדכון
-                        notification.put("message", document.getString("message"));  // תיאור קצר של העדכון
-                        notification.put("title", document.getString("title"));  // הוסף את ה-title
+                        notification.put("updateType", document.getString("updateType"));
+                        notification.put("message", document.getString("message"));
+                        notification.put("title", document.getString("title"));
                         notifications.add(notification);
                     }
-                    updateUI(); // Update the UI after fetching data
+                    updateUI();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(ManagerSentNotificationsPage.this, "Failed to load notifications: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    updateUI(); // Still update the UI even if there's an error
+                    updateUI();
+
                 });
     }
 
@@ -109,7 +108,7 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     private void updateUI() {
         LinearLayout pendingLayout = findViewById(R.id.layout_notifications);
         if (notifications.isEmpty()) {
-            // Show no notifications message
+
             TextView noRequestsMessage = new TextView(this);
             noRequestsMessage.setText("No notifications available.");
             noRequestsMessage.setTextColor(getResources().getColor(android.R.color.white));
@@ -122,24 +121,24 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     }
 
     private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
-        // Clear any previous views
+
         parentLayout.removeAllViews();
 
-        // Dynamically add each request to the layout
-        int idCounter = 1; // Start the ID counter
+
+        int idCounter = 1;
         for (Map<String, String> request : requests) {
             String notificationId = request.get("notificationId");
-            String updateType = request.get("updateType") != null ? request.get("updateType") : "Update";  // Default to "Update"
+            String updateType = request.get("updateType") != null ? request.get("updateType") : "Update";
             String message = request.get("message");
-            String title = request.get("title");  // הוצאת השם של הכותרת
+            String title = request.get("title");
 
             LinearLayout requestLayout = createRequestLayout(idCounter, updateType, message, title, backgroundColor);
 
-            // Set click listener to open detailed notification
+
             requestLayout.setOnClickListener(v -> {
                 if (notificationId != null) {
                     Intent intent = new Intent(ManagerSentNotificationsPage.this, NotificationDetailActivityPage.class);
-                    intent.putExtra("notificationId", notificationId);  // Send the request ID to the next activity
+                    intent.putExtra("notificationId", notificationId);
                     intent.putExtra("LOGIN_EMAIL", managerEmail);
                     startActivity(intent);
                 } else {
@@ -153,24 +152,23 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
     }
     private LinearLayout createRequestLayout(int id, String updateType, String message, String title, int backgroundColor) {
         LinearLayout requestLayout = new LinearLayout(this);
-        requestLayout.setId(id); // Set the unique ID
+        requestLayout.setId(id);
         requestLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        // Set LayoutParams with a bottom margin
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                120 // Height in px (adjust as needed)
+                120
         );
-        layoutParams.setMargins(0, 8, 0, 8); // Add bottom margin of 8px
+        layoutParams.setMargins(0, 8, 0, 8);
         requestLayout.setLayoutParams(layoutParams);
 
         requestLayout.setPadding(12, 12, 12, 12);
         requestLayout.setBackgroundColor(backgroundColor);
 
-        // Title TextView
         TextView titleTextView = new TextView(this);
         titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // Take the remaining space
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
         ));
         titleTextView.setText(title);
@@ -178,19 +176,18 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
         titleTextView.setTextSize(16);
         titleTextView.setGravity(Gravity.CENTER_VERTICAL);
 
-        // Update Type TextView
         TextView updateTypeTextView = new TextView(this);
         updateTypeTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                0, // Width = fill remaining space
+                0,
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                1 // Weight
+                1
         ));
         updateTypeTextView.setText(updateType);
         updateTypeTextView.setTextColor(getResources().getColor(android.R.color.white));
         updateTypeTextView.setTextSize(16);
         updateTypeTextView.setGravity(Gravity.CENTER_VERTICAL);
 
-        // Message TextView
+
         TextView messageTextView = new TextView(this);
         messageTextView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -201,8 +198,8 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
         messageTextView.setTextSize(16);
         messageTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
 
-        // Add TextViews to the request layout
-        requestLayout.addView(titleTextView);  // Add the title view first
+
+        requestLayout.addView(titleTextView);
         requestLayout.addView(updateTypeTextView);
         requestLayout.addView(messageTextView);
 
@@ -212,7 +209,10 @@ public class ManagerSentNotificationsPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
+        if (item.getItemId() ==  R.id.m_home_page) {
+            Toast.makeText(ManagerSentNotificationsPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerSentNotificationsPage.this, ManagerHomePage.class);
+        } else if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerSentNotificationsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSentNotificationsPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {

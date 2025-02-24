@@ -8,13 +8,11 @@
     tools:openDrawer="start"
     tools:context=".ManagerWorkArrangement">
 
-    <!-- Main Layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar1"
             android:layout_width="match_parent"
@@ -25,7 +23,6 @@
             app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Calendar Navigation Layout -->
         <LinearLayout
             android:id="@+id/calendar_navigation_layout"
             android:layout_width="match_parent"
@@ -64,7 +61,6 @@
                 android:src="@drawable/ic_double_arrow_right" />
         </LinearLayout>
 
-        <!-- Day Navigation Layout -->
         <LinearLayout
             android:id="@+id/day_navigation_layout"
             android:layout_width="match_parent"
@@ -84,7 +80,6 @@
                 android:contentDescription="Previous Days"
                 android:src="@drawable/ic_arrow_left" />
 
-            <!-- Three Days -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -93,7 +88,6 @@
                 android:orientation="horizontal"
                 android:weightSum="3">
 
-                <!-- First Item Date Box-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -117,7 +111,6 @@
                         android:text="Date"
                         android:textSize="12sp" />
                 </LinearLayout>
-                <!-- Second Item Date Box-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -141,7 +134,6 @@
                         android:text="Date"
                         android:textSize="12sp" />
                 </LinearLayout>
-                <!-- Third Item Date Box-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -176,7 +168,6 @@
                 android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
-        <!-- ScrollView for Employee Shifts -->
         <ScrollView
             android:id="@+id/table_scroll_view"
             android:layout_width="match_parent"
@@ -193,7 +184,6 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <!-- Morning Section -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,7 +205,6 @@
                         android:weightSum="3"
                         android:id="@+id/morningRow1">
 
-                    <!-- Employee Shifts -->
 
                     </LinearLayout>
                 </ScrollView>
@@ -233,7 +222,6 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="240dp">
-                    <!-- Evening Section -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -242,7 +230,6 @@
                         android:weightSum="3"
                         android:id="@+id/eveningRow1">
 
-                        <!-- Employee Shifts -->
 
                     </LinearLayout>
                 </ScrollView>
@@ -250,7 +237,6 @@
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view1"
         android:layout_width="240dp"

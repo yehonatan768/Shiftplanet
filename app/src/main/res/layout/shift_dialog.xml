@@ -11,7 +11,6 @@
     android:background="@drawable/shift_background"
     android:gravity="center">
 
-    <!-- Employee Name -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputEmployee"
         android:layout_width="match_parent"
@@ -34,21 +33,18 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="@color/white"
         android:layout_marginVertical="12dp" />
 
-    <!-- Shift Time -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center">
 
-        <!-- Start Time (Button) -->
         <TextView
             android:id="@+id/btn_start_time"
             android:layout_width="wrap_content"
@@ -60,7 +56,6 @@
             android:textSize="20sp"
             android:background="?attr/selectableItemBackground" />
 
-        <!-- Dash (-) -->
         <TextView
             android:id="@+id/tv_dash"
             android:layout_width="wrap_content"
@@ -71,7 +66,6 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <!-- End Time (Button) -->
         <TextView
             android:id="@+id/btn_end_time"
             android:layout_width="wrap_content"
@@ -84,7 +78,6 @@
             android:background="?attr/selectableItemBackground" />
     </LinearLayout>
 
-    <!-- Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,7 +85,6 @@
         android:gravity="center"
         android:layout_marginTop="16dp">
 
-        <!-- Update Button -->
         <TextView
             android:id="@+id/btn_update_shift"
             android:layout_width="0dp"
@@ -109,7 +101,6 @@
             android:focusable="true"
             android:layout_marginEnd="8dp" />
 
-        <!-- Delete Button -->
         <TextView
             android:id="@+id/btn_delete_shift"
             android:layout_width="0dp"

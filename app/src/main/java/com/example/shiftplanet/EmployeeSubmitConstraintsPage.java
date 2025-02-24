@@ -48,7 +48,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retrieve the email
+
         employeeEmail = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (employeeEmail != null) {
@@ -59,29 +59,27 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         setContentView(R.layout.employee_submit_constraints_page);
 
         db = FirebaseFirestore.getInstance();
-        // Set Toolbar as ActionBar
+
         toolbar = findViewById(R.id.submit_constraints_toolbar);
         setSupportActionBar(toolbar);
 
-        // Set up Navigation Drawer
+
         drawerLayout = findViewById(R.id.submit_constraints);
         navigationView = findViewById(R.id.submit_constraints_nav_view);
-        navigationView.setNavigationItemSelectedListener(this);  // Use 'this' since the activity implements the listener
+        navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Initialize the calendar
         Calendar calendar = Calendar.getInstance();
 
-        // Add one week to the current date
+
         calendar.add(Calendar.WEEK_OF_YEAR, 1);
 
-        // Format to show date in the desired format
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-        // Set the dates for the next week
         setDateForDay(R.id.sundayDate, calendar, dateFormat);
         setDateForDay(R.id.mondayDate, calendar, dateFormat);
         setDateForDay(R.id.tuesdayDate, calendar, dateFormat);
@@ -90,7 +88,6 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         setDateForDay(R.id.fridayDate, calendar, dateFormat);
 
 
-        // Collecting user's choices (your existing CheckBox code)
         CheckBox sundayMorning = findViewById(R.id.sundayMorning);
         CheckBox sundayEvening = findViewById(R.id.sundayEvening);
         CheckBox mondayMorning = findViewById(R.id.mondayMorning);
@@ -142,7 +139,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         });
     }
 
-    // Submit constraints to Firestore
+
     private void submitConstraints(boolean sundayMSelected, boolean sundayESelected, boolean mondayMSelected, boolean mondayESelected,
                                    boolean tuesdayMSelected, boolean tuesdayESelected, boolean wednesdayMSelected, boolean wednesdayESelected,
                                    boolean thursdayMSelected, boolean thursdayESelected, boolean fridayMSelected, boolean fridayESelected,
@@ -150,7 +147,7 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
 
         String requestId = UUID.randomUUID().toString();
 
-        // Creating the object to send to Firestore
+
         Map<String, Object> userConstraints = new HashMap<>();
         userConstraints.put("sundayMorning", sundayMSelected);
         userConstraints.put("sundayEvening", sundayESelected);
@@ -170,33 +167,33 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
         userConstraints.put("notes", notes);
         userConstraints.put("timestamp", FieldValue.serverTimestamp());
 
-        // Send constraints to Firestore
+
         db.collection("Availability")
                 .add(userConstraints)
                 .addOnSuccessListener(documentReference -> {
-                    // Success
+
                     Toast.makeText(EmployeeSubmitConstraintsPage.this, "Constraints submitted successfully!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    // Failure
+
                     Toast.makeText(EmployeeSubmitConstraintsPage.this, "Error submitting constraints", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    // Helper method to set the date for each day
+
     private void setDateForDay(int textViewId, Calendar calendar, SimpleDateFormat dateFormat) {
-        // Clone the calendar and add days
+
         Calendar dayCalendar = (Calendar) calendar.clone();
         int offset = getDayOffset(textViewId);
         dayCalendar.add(Calendar.DAY_OF_YEAR, offset);
 
-        // Format the date and set it in the TextView
+
         String formattedDate = dateFormat.format(dayCalendar.getTime());
         TextView dayDateTextView = findViewById(textViewId);
         dayDateTextView.setText(formattedDate);
     }
 
-    // Return the offset for the given day TextView ID
+
     private int getDayOffset(int textViewId) {
         if (textViewId == R.id.sundayDate) {
             return 0;
@@ -217,7 +214,11 @@ public class EmployeeSubmitConstraintsPage extends AppCompatActivity implements 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.e_my_profile) {
+        if (item.getItemId() == R.id.e_home_page) {
+            Toast.makeText(EmployeeSubmitConstraintsPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(EmployeeSubmitConstraintsPage.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_my_profile) {
             Toast.makeText(EmployeeSubmitConstraintsPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(EmployeeSubmitConstraintsPage.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);

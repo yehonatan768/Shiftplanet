@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class EmployeeShiftChangeDialog extends AppCompatActivity {
 
-    private String notificationId; // The ID of the notification
+    private String notificationId;
     protected DocumentSnapshot requestDocument;
     private TextView employeeName, datesAndHours, detailsText;
     private Button approveButton, denyButton;
@@ -77,12 +77,12 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        //שליפת הנתונים מהמסמך
+
                         String employee = documentSnapshot.getString("employeeName") + " wants to switch shifts!";
                         String date = documentSnapshot.getString("Date") + ", " + documentSnapshot.getString("Hours") ;
                         String details = documentSnapshot.getString("details");
 
-                        // הצגת הנתונים ב-UI
+
                         employeeName.setText(employee);
                         datesAndHours.setText(date);
                         detailsText.setText(details);
@@ -106,12 +106,12 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
         }
 
 
-        // שליפת הבקשה הנוכחית
+
         db.collection("ShiftChangeRequests").document(notificationId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // קבלת כל המידע מהבקשה הנוכחית
+
                         String employeeName = documentSnapshot.getString("employeeName");
                         String employeeEmail = documentSnapshot.getString("employeeEmail");
                         String date = documentSnapshot.getString("Date");
@@ -120,9 +120,9 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                         String details = documentSnapshot.getString("details");
                         long requestNumber = documentSnapshot.getLong("requestNumber");
                         fetchEmployeeDetails();
-                        // עדכון הבקשה הנוכחית
+
                         db.collection("ShiftChangeRequests").document(notificationId)
-                                .update("approvedByEmployee", true) // עדכון הסטטוס של העובד
+                                .update("approvedByEmployee", true)
                                 .addOnSuccessListener(aVoid -> {
 
                                     Map<String, Object> request = new HashMap<>();
@@ -154,12 +154,12 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                                     Toast.makeText(EmployeeShiftChangeDialog.this, "Error updating request: " + e.getMessage() + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                     } else {
-                        // אם הבקשה לא קיימת במסד הנתונים
+
                         Toast.makeText(EmployeeShiftChangeDialog.this, "Request not found!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // במקרה של כישלון בשאילתת ה-Firestore
+
                     Toast.makeText(EmployeeShiftChangeDialog.this, "Error fetching request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
 
@@ -170,7 +170,7 @@ public class EmployeeShiftChangeDialog extends AppCompatActivity {
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
                                         currentEmployeeEmail= documentSnapshot.getString("email");
-                                        currentEmployeeName = documentSnapshot.getString("fullname"); // לוודא שזה השדה הנכון
+                                        currentEmployeeName = documentSnapshot.getString("fullname");
                                         Log.d(TAG, "Employee name retrieved: " + employeeName);
                                     } else {
                                         Log.e(TAG, "Employee document does not exist");

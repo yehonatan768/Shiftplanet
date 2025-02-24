@@ -22,7 +22,6 @@
 
 
 
-        <!-- Employee Name -->
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="300dp"
@@ -35,7 +34,6 @@
             android:layout_marginTop="40dp"
             android:textColor="@android:color/white" />
 
-        <!-- Start Date, End Date -->
         <TextView
             android:id="@+id/dateTextView"
             android:layout_width="180dp"

@@ -88,16 +88,13 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
 
 
-            // Set Toolbar as the ActionBar
             setSupportActionBar(toolbar);
 
-            // Setup Drawer Toggle
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawerLayout, toolbar, R.string.open, R.string.close);
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
 
-            // Setup NavigationView listener
             navigationView.setNavigationItemSelectedListener(menuItem -> {
                 onNavigationItemSelected(menuItem);
                 drawerLayout.closeDrawer(Gravity.LEFT);
@@ -144,8 +141,10 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
         String message = "";
-
-        if (item.getItemId() ==  R.id.m_my_profile) {
+        if (item.getItemId() ==  R.id.m_home_page) {
+            message = "Home Page clicked";
+            intent = new Intent(ManagerHomePage.this, ManagerHomePage.class);
+        } else if (item.getItemId() ==  R.id.m_my_profile) {
             message = "My profile clicked";
             intent = new Intent(ManagerHomePage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
@@ -168,7 +167,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
             intent = new Intent(ManagerHomePage.this, Login.class);
         }
 
-        // Show the Toast and delay navigation
         if (!message.isEmpty()) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
@@ -189,7 +187,6 @@ public class ManagerHomePage extends AppCompatActivity implements NavigationView
 
         new android.os.Handler().postDelayed(() -> {
             startActivity(intent);
-            // Don't finish the current activity immediately
         }, 500);
     }
 

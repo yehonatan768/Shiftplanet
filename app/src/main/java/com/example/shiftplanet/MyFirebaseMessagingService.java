@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         Log.d(TAG, "New FCM Token: " + token);
-        fcmToken = token; // Store the latest token
+        fcmToken = token;
         saveTokenToFirestore(token);
     }
 
@@ -54,7 +54,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void saveTokenToFirestore(String token) {
-        String userId = "USER_ID_HERE"; // Replace with the actual user ID
+        String userId = "USER_ID_HERE";
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> data = new HashMap<>();
         data.put("fcmToken", token);
@@ -80,11 +80,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String title, String message) {
         createNotificationChannel();
 
-        // Check if the app has the POST_NOTIFICATIONS permission (Android 13+)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 Log.w(TAG, "Notification permission is not granted!");
-                return; // Do not send notification without permission
+                return;
             }
         }
 
@@ -93,7 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification_icon) // Ensure you have a notification icon in `res/drawable`
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -121,7 +121,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    // 🔥 This function allows sending push notifications manually
     public static void sendPushNotification(String title, String message) {
         if (fcmToken == null) {
             Log.e(TAG, "FCM Token is null. Cannot send notification.");

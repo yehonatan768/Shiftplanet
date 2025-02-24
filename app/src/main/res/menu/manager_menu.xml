@@ -31,7 +31,6 @@
             android:textColor="@color/white">
 
 
-            <!--Work arrangement sub menu-->
             <menu>
                 <item
                     android:id="@+id/build_work_arrangement"
@@ -50,7 +49,6 @@
             android:title="@string/notifications"
             android:textColor="@color/white"
             >
-            <!-- Notification sub menu -->
             <menu>
                 <item
                     android:id="@+id/send_notifications"

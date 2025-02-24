@@ -89,9 +89,8 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                             if (!queryDocumentSnapshots.isEmpty()) {
                                 requestDocument = queryDocumentSnapshots.getDocuments().get(0);
 
-                                // Fetch employee name
                                 db.collection("users")
-                                        .whereEqualTo("email", employeeEmail.trim()) // Ensure sanitized email
+                                        .whereEqualTo("email", employeeEmail.trim())
                                         .get()
                                         .addOnSuccessListener(querySnapshots -> {
                                             Log.d(TAG, "Query succeeded. Number of matching documents: " + querySnapshots.size());
@@ -119,7 +118,6 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
                                         })
                                         .addOnFailureListener(e -> Log.e(TAG, "Firestore query failed: " + e.getMessage()));
 
-                                // Populate request data
                                 String reason = requestDocument.getString("reason");
                                 String startDate = requestDocument.getString("startDate");
                                 String endDate = requestDocument.getString("endDate");
@@ -203,7 +201,6 @@ public class ManagerDialogRequestDetails extends AppCompatActivity {
     private void handleAddDocumentAction() {
         try {
             Toast.makeText(this, "Downloading Document...", Toast.LENGTH_SHORT).show();
-            // TODO: Implement actual document download logic
         } catch (Exception e) {
             Toast.makeText(this, "Error handling add document action: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }

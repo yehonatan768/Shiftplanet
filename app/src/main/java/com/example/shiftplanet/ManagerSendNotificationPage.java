@@ -40,7 +40,6 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manager_send_notification_page);
 
-        // Retrieve the email
         managerEmail = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (managerEmail != null) {
@@ -49,7 +48,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
             Log.e(TAG, "No email received");
         }
 
-        db = FirebaseFirestore.getInstance();  // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         toolbar = findViewById(R.id.manager_send_notification_toolbar);
         setSupportActionBar(toolbar);
@@ -57,7 +56,6 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
         drawerLayout = findViewById(R.id.manager_send_notification);
         navigationView = findViewById(R.id.manager_send_notification_nav_view);
 
-        // Set up the listener for the navigation view
         navigationView.setNavigationItemSelectedListener(item -> {
             handleNavigationItemSelected(item);
             return true;
@@ -100,24 +98,20 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
                 return;
             }
 
-            // Create the notification map
             Map<String, Object> managerNotification = new HashMap<>();
             managerNotification.put("title", title);
             managerNotification.put("notification", notification);
             managerNotification.put("businessCode", businessCode);
             managerNotification.put("managerEmail", managerEmail);
             managerNotification.put("timestamp", FieldValue.serverTimestamp());
-            managerNotification.put("notificationId", notificationNumber); // You can also add the notification ID here
+            managerNotification.put("notificationId", notificationNumber);
 
-            // Instead of using set() with a fixed document ID, use add() to create a new document for each notification
             db.collection("Notifications")
-                    .add(managerNotification)  // This automatically generates a new unique ID for each document
+                    .add(managerNotification)
                     .addOnSuccessListener(documentReference -> {
-                        // Success
                         Toast.makeText(ManagerSendNotificationPage.this, "Notification published successfully!", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        // Failure
                         Toast.makeText(ManagerSendNotificationPage.this, "Error publishing notification", Toast.LENGTH_SHORT).show();
                     });
         });
@@ -125,10 +119,9 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
 
     private void getNextNotificationNumber(OnNotificationNumberGeneratedListener listener) {
         db.collection("RequestCounters").document("NotificationsCounter")
-                .get() // Ensure that we first get the document to check if it exists
+                .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Document exists, so we can increment the counter
                         db.collection("RequestCounters").document("NotificationsCounter")
                                 .update("counter", FieldValue.increment(1))
                                 .addOnCompleteListener(task -> {
@@ -144,10 +137,9 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
                                     }
                                 });
                     } else {
-                        // If the document doesn't exist, create it
                         db.collection("RequestCounters").document("NotificationsCounter")
                                 .set(new HashMap<String, Object>() {{
-                                    put("counter", 1); // Start the counter from 1
+                                    put("counter", 1);
                                 }}, SetOptions.merge())
                                 .addOnSuccessListener(aVoid -> listener.onNotificationNumberGenerated(1))
                                 .addOnFailureListener(e -> listener.onNotificationNumberGenerated(-1));
@@ -162,7 +154,10 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
+        if (item.getItemId() ==  R.id.m_home_page) {
+            Toast.makeText(ManagerSendNotificationPage.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerSendNotificationPage.this, ManagerHomePage.class);
+        } else if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerSendNotificationPage.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerSendNotificationPage.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {

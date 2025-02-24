@@ -46,7 +46,6 @@ public class ManagerProfile extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         initializeUI();
 
-        // אתחול הרכיבים מה-XML
         emailEditText = findViewById(R.id.updated_email);
         passwordEditText = findViewById(R.id.updated_password);
         fullNameEditText = findViewById(R.id.updated_full_name);
@@ -106,7 +105,6 @@ public class ManagerProfile extends AppCompatActivity {
                 return;
             }
 
-            // עדכון הסיסמה ב-Firebase Authentication
             mAuth.getCurrentUser().updatePassword(newPassword)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -127,11 +125,9 @@ public class ManagerProfile extends AppCompatActivity {
             }
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-// שליחה לאישור הכתובת החדשה לפני עדכון
             user.verifyBeforeUpdateEmail(newEmail)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            // הכתובת עודכנה אחרי שהמשתמש אישר את הדוא"ל
                             Log.d("Email Update", "Email verification sent.");
                             Toast.makeText(ManagerProfile.this, "email sent to verification", Toast.LENGTH_SHORT).show();
                             String userId = user.getUid();
@@ -145,7 +141,6 @@ public class ManagerProfile extends AppCompatActivity {
                                     });
 
                         } else {
-                            // טיפול בשגיאה
                             Log.e("Email Update", "Error sending email verification", task.getException());
                             Toast.makeText(ManagerProfile.this, "error sending email to verification", Toast.LENGTH_SHORT).show();
 
@@ -159,7 +154,10 @@ public class ManagerProfile extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
+        if (item.getItemId() ==  R.id.m_home_page) {
+            Toast.makeText(ManagerProfile.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerProfile.this, ManagerHomePage.class);
+        } else if (item.getItemId() == R.id.m_my_profile) {
             Toast.makeText(ManagerProfile.this, "My profile clicked", Toast.LENGTH_SHORT).show();
             intent = new Intent(ManagerProfile.this, ManagerProfile.class);
         } else if (item.getItemId() == R.id.employees_requests) {
@@ -188,21 +186,17 @@ public class ManagerProfile extends AppCompatActivity {
     }
 
         private void initializeUI() {
-        // Setup DrawerLayout and Toolbar
         drawerLayout = findViewById(R.id.profile_manager);
         navigationView = findViewById(R.id.nav_view3);
         toolbar = findViewById(R.id.toolbar);
 
-        // Set Toolbar as the ActionBar
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);

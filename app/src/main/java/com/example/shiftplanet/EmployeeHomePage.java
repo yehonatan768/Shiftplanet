@@ -183,7 +183,7 @@ public class EmployeeHomePage extends AppCompatActivity {
     private void navigateToPage(String buttonName) {
         Intent intent = null;
         if (buttonName.equals("Work Arrangement")) {
-            intent = new Intent(EmployeeHomePage.this, EmployeeHomePage.class);
+            intent = new Intent(EmployeeHomePage.this, EmployeeWorkArrangement.class);
         } else if (buttonName.equals("Submit Constraints")) {
             intent = new Intent(EmployeeHomePage.this, EmployeeSubmitConstraintsPage.class);
         } else if (buttonName.equals("Day Off Request")) {

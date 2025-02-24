@@ -53,7 +53,6 @@ public class Registration extends AppCompatActivity {
         idEditText = findViewById(R.id.input_id);
         managerEmailEditText = findViewById(R.id.input_manager_email);
 
-        // Setup dropdown
         adapterItems = new ArrayAdapter<>(this, R.layout.user_type_list, userTypes);
         autoCompleteTextView.setAdapter(adapterItems);
         autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
@@ -61,7 +60,6 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(Registration.this, "Selected: " + item, LENGTH_SHORT).show();
         });
 
-        // Setup employee visibility of manager email
         autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedUserType = parent.getItemAtPosition(position).toString();
             if (selectedUserType.equals("Employee")) {
@@ -94,13 +92,12 @@ public class Registration extends AppCompatActivity {
         String businessCode = businessCodeEditText.getText().toString().trim();
         String id = idEditText.getText().toString().trim();
 
-        // יצירת משתנה final או effectively final של managerEmail
         final String managerEmail;
 
         if ("Employee".equalsIgnoreCase(userType)) {
             managerEmail = managerEmailEditText.getText().toString().trim();
         } else {
-            managerEmail = "";  // למנהל לא צריך managerEmail
+            managerEmail = "";
         }
 
         if (email.isEmpty() || password.isEmpty() || confirmPasswordText.isEmpty() || fullname.isEmpty() || phone.isEmpty() || userType.isEmpty() || businessCode.isEmpty() || id.isEmpty()) {
@@ -122,13 +119,10 @@ public class Registration extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
-                    // Send email verification
                     currentUser.sendEmailVerification().addOnCompleteListener(verificationTask -> {
                         if (verificationTask.isSuccessful()) {
-                            // Save user info to Firestore
                             saveUserInfo(fullname, phone, email, userType, businessCode, id, managerEmail, currentUser);
 
-                            // Get FCM token and save it in Firestore
                             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(fcmTask -> {
                                 if (fcmTask.isSuccessful()) {
                                     String fcmToken = fcmTask.getResult();
@@ -155,7 +149,6 @@ public class Registration extends AppCompatActivity {
             }
         });
 
-        // Redirect to login page
         Intent intent = new Intent(Registration.this, Login.class);
         startActivity(intent);
     }
@@ -180,7 +173,6 @@ public class Registration extends AppCompatActivity {
     }
 
     private void saveFCMToken(String token, FirebaseUser currentUser) {
-        // Save the FCM token under the user document
         Map<String, Object> tokenMap = new HashMap<>();
         tokenMap.put("fcmToken", token);
 

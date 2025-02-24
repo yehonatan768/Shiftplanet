@@ -40,7 +40,6 @@ public class ForgotPassword extends AppCompatActivity {
                     return;
                 }
 
-                // Send the password reset request
                 sendPasswordResetEmail(email);
             }
         });
@@ -69,6 +68,6 @@ public class ForgotPassword extends AppCompatActivity {
     public void back() {
         Intent intent = new Intent(ForgotPassword.this, Login.class);
         startActivity(intent);
-        finish(); // Optional: Call finish() to close the ForgotPassword activity
+        finish();
     }
 }

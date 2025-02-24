@@ -14,14 +14,12 @@
         android:layout_height="match_parent"
         android:background="@drawable/login_background" />
 
-    <!-- התוכן של עמוד הבקשות -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layoutDirection="ltr">
 
-        <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/manager_send_notification_toolbar"
             android:layout_width="match_parent"
@@ -30,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-        <!-- כותרת - Text Input -->
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +48,6 @@
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- הודעה - Text Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +66,6 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
-        <!-- כפתור שלח -->
         <Button
             android:id="@+id/send_notification_btn"
             android:layout_width="match_parent"

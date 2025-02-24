@@ -113,7 +113,6 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     private void updateCalendarTitleAndDates() {
         SimpleDateFormat format = new SimpleDateFormat("d/M", Locale.getDefault());
 
-        // Always use Sunday of the current week
         Calendar sunday = (Calendar) currentWeek.clone();
         sunday.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         String formattedDate = format.format(sunday.getTime());
@@ -121,7 +120,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         calendarTitle.setText("Work Arrangement - " + formattedDate);
 
         updateDateDisplay();
-        getWorkArrangement(); // 🔥 Ensure Firestore data is fetched and UI updates
+        getWorkArrangement();
     }
 
 
@@ -159,7 +158,6 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     private void getWorkArrangement() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d/M", Locale.getDefault());
 
-        // Always use Sunday of the current week
         Calendar sunday = (Calendar) currentWeek.clone();
         sunday.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         String formattedDate = dateFormat.format(sunday.getTime());
@@ -172,30 +170,23 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                     if (documentSnapshot.exists()) {
                         Log.d("Firestore", "Work arrangement exists. Loading data...");
 
-                        // ✅ Correctly load Firestore data into WorkSchedule
                         Map<String, Object> data = documentSnapshot.getData();
-                        // Log the raw data fetched from Firestore
                         Log.d("Firestore", "Raw data from Firestore: " + data);
-                        workSchedule = new WorkSchedule(formattedDate); // Initialize
+                        workSchedule = new WorkSchedule(formattedDate);
 
-                        // Retrieve the schedule map from the raw data using the "schedule" key
                         if (data != null && data.containsKey("schedule")) {
                             Map<String, Object> scheduleData = (Map<String, Object>) data.get("schedule");
                             Log.d("Firestore", "Schedule data: " + scheduleData);
 
-                            // Iterate through each day in the WorkSchedule's schedule map
                             for (String day : workSchedule.getSchedule().keySet()) {
                                 if (scheduleData.containsKey(day)) {
                                     Map<String, Object> shiftMap = (Map<String, Object>) scheduleData.get(day);
-                                    // Log the data for the specific day
                                     Log.d("Firestore", "Data for day " + day + ": " + shiftMap);
 
-                                    // Iterate through each shift type ("morning", "evening") for the day
                                     for (String shiftType : workSchedule.getSchedule().get(day).keySet()) {
                                         if (shiftMap.containsKey(shiftType)) {
                                             List<Map<String, String>> shiftList = (List<Map<String, String>>) shiftMap.get(shiftType);
                                             workSchedule.getSchedule().get(day).put(shiftType, shiftList);
-                                            // Log the data for the specific shift type on that day
                                             Log.d("Firestore", "Data for day " + day + ", shift " + shiftType + ": " + shiftList);
                                         }
                                     }
@@ -209,11 +200,11 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                         workSchedule.saveToFirestore(workArrangementId);
                     }
 
-                    updateShiftsOnUI(); // 🔥 Ensure UI updates immediately after data fetch
+                    updateShiftsOnUI();
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error fetching work arrangement", e);
-                    updateShiftsOnUI(); // 🔥 Ensure UI still updates even if Firestore fails
+                    updateShiftsOnUI();
                 });
 
     }
@@ -234,10 +225,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
      */
 
     private void updateShiftsOnUI() {
-        // Clear previous shift views from the morning and evening layouts.
-        // NOTE: In your XML, make sure morningShiftLayout and eveningShiftLayout are declared as
-        // <LinearLayout> with android:orientation="vertical". That way, each new row is stacked
-        // beneath the previous one automatically.
+
         morningShiftLayout.removeAllViews();
         eveningShiftLayout.removeAllViews();
 
@@ -246,11 +234,9 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             return;
         }
 
-        // Create a date formatter to get the day of the week in full text (e.g., "Monday").
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
         Calendar calendar = (Calendar) currentWeek.clone();
 
-        // Prepare an array to hold the day names for display: previous, current, and next day.
         String[] daysToDisplay = new String[3];
         for (int i = -1; i <= 1; i++) {
             calendar.add(Calendar.DAY_OF_MONTH, i);
@@ -258,23 +244,18 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
             calendar.add(Calendar.DAY_OF_MONTH, -i);
         }
 
-        // Iterate over each shift type: "morning" and "evening"
         for (String shiftType : new String[]{"morning", "evening"}) {
-            // Get the correct parent layout (which should be a vertical LinearLayout in XML)
             LinearLayout shiftContainer = shiftType.equals("morning") ? morningShiftLayout : eveningShiftLayout;
             shiftContainer.removeAllViews();
 
-            // Build an array of shift lists for the three days (previous, current, next)
             List<Map<String, String>>[] shiftLists = new List[3];
             for (int i = 0; i < 3; i++) {
                 String day = daysToDisplay[i];
-                // Retrieve the list of shifts for this day and shift type
                 shiftLists[i] = workSchedule.getSchedule()
                         .getOrDefault(day, new HashMap<>())
                         .getOrDefault(shiftType, new ArrayList<>());
             }
 
-            // Find the maximum size among the three lists.
             int maxSize = 0;
             for (int i = 0; i < 3; i++) {
                 if (shiftLists[i].size() > maxSize) {
@@ -282,44 +263,34 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 }
             }
 
-            // We'll iterate one extra row to always show an "empty" cell for adding a new shift.
             int numRows = maxSize + 1;
 
-            // For each row (each potential shift index)
             for (int row = 0; row < numRows; row++) {
-                // Create a horizontal LinearLayout to serve as the row container.
                 LinearLayout rowLayout = new LinearLayout(this);
                 rowLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-                // Each row is 60dp tall (for example). We'll also add a top margin
-                // to space rows apart if desired (e.g., 8dp margin except for the first row).
                 LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         dpToPx(60)
                 );
                 if (row > 0) {
-                    // Add some space above subsequent rows if desired
                     rowParams.topMargin = dpToPx(8);
                 }
                 rowLayout.setLayoutParams(rowParams);
 
-                // Build the three "columns" (previous day, current day, next day)
                 for (int col = 0; col < 3; col++) {
                     View cellView;
                     List<Map<String, String>> currentList = shiftLists[col];
                     String day = daysToDisplay[col];
 
-                    // If the current row index exists in the day's shift list, create a shift view.
                     if (row < currentList.size()) {
                         Map<String, String> shift = currentList.get(row);
                         cellView = buildShiftItemView(shift, day, shiftType);
                     } else {
-                        // Otherwise, create an empty shift view with an add button.
                         cellView = buildEmptyShiftItemView(day, shiftType);
                         Log.d("Firestore", "No shift at row " + row + " for " + day + " (" + shiftType + ")");
                     }
 
-                    // Give each cell a weight of 1 so the three cells share the row's width evenly.
                     LinearLayout.LayoutParams cellParams = new LinearLayout.LayoutParams(
                             0, LinearLayout.LayoutParams.MATCH_PARENT, 1f
                     );
@@ -327,26 +298,14 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                     rowLayout.addView(cellView);
                 }
 
-                // Add the row container to the shiftContainer, which is a vertical LinearLayout.
-                // This automatically places each new row beneath the previous one.
                 shiftContainer.addView(rowLayout);
             }
         }
     }
 
-    /**
-     * Builds a shift view for a scheduled shift by inflating the item_shift_employee XML layout.
-     * It sets the employee name, start time, and end time from the shift map and attaches
-     * an onClick listener to open the shift dialog.
-     *
-     * @param shift     The map containing shift details (e.g., "name", "start_time", "end_time").
-     * @param day       The day corresponding to this shift.
-     * @param shiftType The type of shift ("morning" or "evening").
-     * @return A view representing the shift.
-     */
+
     private View buildShiftItemView(Map<String, String> shift, String day, String shiftType) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        // Inflate the XML layout for a shift item (ensure the layout file is named item_shift_employee.xml)
         View view = inflater.inflate(R.layout.item_shift_employee, null);
 
         TextView tvEmployeeName = view.findViewById(R.id.tv_employee_name);
@@ -357,20 +316,12 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         btnStartTime.setText(shift.get("start_time"));
         btnEndTime.setText(shift.get("end_time"));
 
-        // Set an OnClickListener to allow editing the shift details.
         view.setOnClickListener(v -> openShiftDialog(day, shiftType));
 
         return view;
     }
 
-    /**
-     * Builds an empty shift view that includes an add button. When clicked, the button opens
-     * a ShiftDialogFragment to allow the user to add a new shift.
-     *
-     * @param day       The day for which this empty shift view is created.
-     * @param shiftType The type of shift ("morning" or "evening").
-     * @return A view representing an empty shift slot.
-     */
+
     private View buildEmptyShiftItemView(String day, String shiftType) {
         LinearLayout emptyShift = new LinearLayout(this);
         emptyShift.setOrientation(LinearLayout.VERTICAL);
@@ -387,14 +338,13 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
 
         try {
             addButton.setOnClickListener(view -> {
-                // Example usage of your ShiftDialogFragment
                 ShiftDialogFragment shiftDialog = new ShiftDialogFragment(
                         managerEmail,
                         workArrangementId,
                         day,
                         shiftType.toLowerCase(),
                         workSchedule,
-                        this::getWorkArrangement // Refresh after adding shift
+                        this::getWorkArrangement
                 );
                 shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
             });
@@ -405,12 +355,6 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
         return emptyShift;
     }
 
-    /**
-     * Helper method to convert dp (density-independent pixels) to actual pixels.
-     *
-     * @param dp The value in dp to convert.
-     * @return The equivalent pixel value.
-     */
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
@@ -423,7 +367,7 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
                 day,
                 shiftType,
                 workSchedule,
-                this::getWorkArrangement // Refresh after adding/updating shift
+                this::getWorkArrangement
         );
         shiftDialog.show(getSupportFragmentManager(), "ShiftDialog");
     }
@@ -432,15 +376,38 @@ public class ManagerWorkArrangement extends AppCompatActivity implements Navigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.m_my_profile) {
-            intent = new Intent(this, ManagerHomePage.class);
+        if (item.getItemId() == R.id.m_home_page) {
+            Toast.makeText(ManagerWorkArrangement.this, "Home Page clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerHomePage.class);
+        } else if (item.getItemId() == R.id.m_my_profile) {
+            Toast.makeText(ManagerWorkArrangement.this, "My profile clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerProfile.class);
+        } else if (item.getItemId() == R.id.employees_requests) {
+            Toast.makeText(ManagerWorkArrangement.this, "Employees requests clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerRequestPage.class);
+        } else if (item.getItemId() == R.id.build_work_arrangement) {
+            Toast.makeText(ManagerWorkArrangement.this, "Build work arrangement clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerWorkArrangement.class);
+        } else if (item.getItemId() == R.id.published_work_arrangement) {
+            Toast.makeText(ManagerWorkArrangement.this, "Published work arrangement clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerWorkArrangement.class);
+        } else if (item.getItemId() == R.id.send_notifications) {
+            Toast.makeText(ManagerWorkArrangement.this, "Send notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerSendNotificationPage.class);
+        } else if (item.getItemId() == R.id.sent_notifications) {
+            Toast.makeText(ManagerWorkArrangement.this, "Sent notifications clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, ManagerSentNotificationsPage.class);
         } else if (item.getItemId() == R.id.m_log_out) {
-            intent = new Intent(this, Login.class);
+            Toast.makeText(ManagerWorkArrangement.this, "Log out clicked", Toast.LENGTH_SHORT).show();
+            intent = new Intent(ManagerWorkArrangement.this, Login.class);
         }
+
         if (intent != null) {
+            intent.putExtra("LOGIN_EMAIL", managerEmail);
             startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }
+

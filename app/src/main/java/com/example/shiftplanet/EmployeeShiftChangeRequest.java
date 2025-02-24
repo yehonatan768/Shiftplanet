@@ -52,7 +52,7 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the email
+
         String email = getIntent().getStringExtra("LOGIN_EMAIL");
 
         if (email != null) {
@@ -67,11 +67,10 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
         fetchEmployeeName();
 
 
-        // Setup date pickers
+
         DateEditText.setOnClickListener(v -> showDatePicker((date) -> DateEditText.setText(date)));
 
 
-        // Setup Submit Request button
         Button submitShiftChangeButton = findViewById(R.id.submit_shiftchange_button);
         submitShiftChangeButton.setOnClickListener(v -> {
             String Date = DateEditText.getText().toString().trim();
@@ -85,13 +84,13 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
             }
 
 
-            // המרת התאריכים למבני Date להשוואה
+
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
                 Date date = sdf.parse(Date);
 
 
-                // אם התאריכים תקינים, תוכל להמשיך לשלב הבא
+
                 db.collection("users").document(current.getUid()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
@@ -124,21 +123,21 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        // Setup DrawerLayout and Toolbar
+
         drawerLayout = findViewById(R.id.employee_shiftchange_page);
         navigationView = findViewById(R.id.employee_shiftchange_nav_view);
         toolbar = findViewById(R.id.employee_shiftchange_toolbar);
 
-        // Set Toolbar as the ActionBar
+
         setSupportActionBar(toolbar);
 
-        // Setup Drawer Toggle
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Setup NavigationView listener
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             handleNavigationItemSelected(menuItem);
             drawerLayout.closeDrawer(Gravity.LEFT);
@@ -150,7 +149,7 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
         db.collection("users").document(current.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        employeeName = documentSnapshot.getString("fullname"); // לוודא שזה השדה הנכון
+                        employeeName = documentSnapshot.getString("fullname");
                         Log.d(TAG, "Employee name retrieved: " + employeeName);
                     } else {
                         Log.e(TAG, "Employee document does not exist");
@@ -220,7 +219,10 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
-        if (item.getItemId() == R.id.e_my_profile) {
+        if (item.getItemId() == R.id.e_home_page) {
+            intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeHomePage.class);
+            intent.putExtra("LOGIN_EMAIL", employeeEmail);
+        } else if (item.getItemId() == R.id.e_my_profile) {
             intent = new Intent(EmployeeShiftChangeRequest.this, EmployeeProfile.class);
             intent.putExtra("LOGIN_EMAIL", employeeEmail);
         } else if (item.getItemId() == R.id.e_work_arrangement) {

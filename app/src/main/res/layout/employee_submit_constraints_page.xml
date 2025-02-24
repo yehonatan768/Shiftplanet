@@ -14,14 +14,13 @@
             android:layout_height="match_parent"
             android:background="@drawable/login_background" />
 
-        <!-- התוכן של עמוד הבקשות -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layoutDirection="ltr">
 
-            <!-- Toolbar -->
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/submit_constraints_toolbar"
                 android:layout_width="match_parent"
@@ -31,11 +30,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <!-- כותרת "Day" ו-"Shift" -->
 
 
 
-            <!-- Table Layout -->
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +66,6 @@
 
                 </TableRow>
 
-                <!-- שורה עם יום ראשון -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +98,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום ראשון -->
                     <CheckBox
                         android:id="@+id/sundayMorning"
                         android:layout_width="wrap_content"
@@ -120,7 +115,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום שני -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -153,7 +147,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום שני -->
                     <CheckBox
                         android:id="@+id/mondayMorning"
                         android:layout_width="wrap_content"
@@ -171,7 +164,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום שלישי -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -204,7 +196,7 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום שלישי -->
+
                     <CheckBox
                         android:id="@+id/tuesdayMorning"
                         android:layout_width="wrap_content"
@@ -222,7 +214,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום רביעי -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -255,7 +246,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום רביעי -->
                     <CheckBox
                         android:id="@+id/wednesdayMorning"
                         android:layout_width="wrap_content"
@@ -273,7 +263,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום חמישי -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -306,7 +295,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום חמישי -->
                     <CheckBox
                         android:id="@+id/thursdayMorning"
                         android:layout_width="wrap_content"
@@ -324,7 +312,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום שישי -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -357,7 +344,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום שישי -->
                     <CheckBox
                         android:id="@+id/fridayMorning"
                         android:layout_width="wrap_content"
@@ -375,7 +361,6 @@
                         android:textColor="@android:color/white" />
                 </TableRow>
 
-                <!-- שורה עם יום שבת -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -408,7 +393,6 @@
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
-                    <!-- CheckBox עבור יום שבת -->
                     <CheckBox
                         android:id="@+id/saturdayMorning"
                         android:layout_width="wrap_content"
@@ -427,7 +411,6 @@
                 </TableRow>
             </TableLayout>
 
-            <!-- Text Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -447,7 +430,6 @@
                     android:textColor="@android:color/white"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- כפתור שלח -->
             <Button
                 android:id="@+id/submit_constraints_btn"
                 android:layout_width="match_parent"
@@ -460,7 +442,6 @@
 
         </LinearLayout>
 
-        <!-- Navigation Drawer-->
         <com.google.android.material.navigation.NavigationView
             android:layout_width="290dp"
             android:layout_height="930dp"

@@ -10,7 +10,6 @@
     android:background="@drawable/shift_background"
     android:gravity="center">
 
-    <!-- Employee Name -->
     <TextView
         android:id="@+id/tv_employee_name"
         android:layout_width="wrap_content"
@@ -21,21 +20,18 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
         android:layout_marginVertical="4dp" />
 
-    <!-- Shift Time -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center">
 
-        <!-- Start Time (Button) -->
         <TextView
             android:id="@+id/btn_start_time"
             android:layout_width="wrap_content"
@@ -47,7 +43,6 @@
             android:textSize="12sp"
             android:background="?attr/selectableItemBackground" />
 
-        <!-- Dash (-) -->
         <TextView
             android:id="@+id/tv_dash"
             android:layout_width="wrap_content"
@@ -58,7 +53,6 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <!-- End Time (Button) -->
         <TextView
             android:id="@+id/btn_end_time"
             android:layout_width="wrap_content"
