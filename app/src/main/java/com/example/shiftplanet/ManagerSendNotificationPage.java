@@ -117,6 +117,8 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
         });
     }
 
+
+
     private void getNextNotificationNumber(OnNotificationNumberGeneratedListener listener) {
         db.collection("RequestCounters").document("NotificationsCounter")
                 .get()
@@ -182,5 +184,7 @@ public class ManagerSendNotificationPage extends AppCompatActivity {
             startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
+
+
     }
 }

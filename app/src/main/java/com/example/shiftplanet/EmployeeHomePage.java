@@ -128,6 +128,9 @@ public class EmployeeHomePage extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(EmployeeHomePage.this, "Failed to load employee details: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+
+
+
     private void fetchManagerNotifications(String managerEmail) {
         db.collection("Notifications")
                 .whereEqualTo("managerEmail", managerEmail)
@@ -146,6 +149,9 @@ public class EmployeeHomePage extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(EmployeeHomePage.this, "Failed to load notifications: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+
+
+
     private void populateRequests(List<Map<String, String>> notifications, LinearLayout updatesLayout, int backgroundColor) {
         updatesLayout.removeAllViews();
         if (notifications.isEmpty()) {
@@ -158,6 +164,7 @@ public class EmployeeHomePage extends AppCompatActivity {
             return;
         }
 
+
         for (Map<String, String> notification : notifications) {
             TextView notificationView = new TextView(this);
             String notificationId = notification.get("notificationId");
@@ -165,6 +172,7 @@ public class EmployeeHomePage extends AppCompatActivity {
             notificationView.setTextColor(getResources().getColor(android.R.color.white));
             notificationView.setTextSize(16);
             notificationView.setPadding(16, 16, 16, 16);
+
 
 
             notificationView.setOnClickListener(v -> {
@@ -179,6 +187,9 @@ public class EmployeeHomePage extends AppCompatActivity {
             updatesLayout.addView(notificationView);
         }
     }
+
+
+
 
     private void navigateToPage(String buttonName) {
         Intent intent = null;
@@ -201,6 +212,10 @@ public class EmployeeHomePage extends AppCompatActivity {
             startActivity(intent);
         }
     }
+
+
+
+
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() == R.id.e_home_page) {
@@ -247,3 +262,16 @@ public class EmployeeHomePage extends AppCompatActivity {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

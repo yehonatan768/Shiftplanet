@@ -201,6 +201,7 @@ public class ManagerRequestPage extends AppCompatActivity {
     }
 
 
+
     private LinearLayout createRequestLayout(int id, String employeeEmail, String requestType, int backgroundColor, int number) {
         LinearLayout requestLayout = new LinearLayout(this);
         requestLayout.setId(id);
@@ -236,8 +237,6 @@ public class ManagerRequestPage extends AppCompatActivity {
         requestTypeTextView.setTextColor(getResources().getColor(android.R.color.white));
         requestTypeTextView.setTextSize(16);
         requestTypeTextView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
-
-
         requestLayout.addView(requestTypeTextView);
 
 
@@ -259,6 +258,10 @@ public class ManagerRequestPage extends AppCompatActivity {
 
         return requestLayout;
     }
+
+
+
+
 
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
@@ -292,3 +295,10 @@ public class ManagerRequestPage extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 }
+
+
+
+
+
+
+

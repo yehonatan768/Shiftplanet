@@ -64,7 +64,6 @@ public class EmployeeRequestStatus extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
@@ -83,6 +82,12 @@ public class EmployeeRequestStatus extends AppCompatActivity {
         populateRequests(pendingRequests, pendingLayout, getResources().getColor(android.R.color.holo_blue_light));
         populateRequests(closedRequests, closedLayout, getResources().getColor(android.R.color.holo_red_light));
     }
+
+
+
+
+
+
     private void fetchRequests(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -108,6 +113,11 @@ public class EmployeeRequestStatus extends AppCompatActivity {
                     fetchClosedRequests(onComplete);
                 });
     }
+
+
+
+
+
     private void fetchClosedRequests(Runnable onComplete) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -132,6 +142,9 @@ public class EmployeeRequestStatus extends AppCompatActivity {
                     onComplete.run();
                 });
     }
+
+
+
 
 
     private void populateRequests(List<Map<String, String>> requests, LinearLayout parentLayout, int backgroundColor) {
@@ -258,3 +271,8 @@ public class EmployeeRequestStatus extends AppCompatActivity {
 
     }
 }
+
+
+
+
+

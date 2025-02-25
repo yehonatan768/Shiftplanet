@@ -57,6 +57,10 @@ public class ManagerProfile extends AppCompatActivity {
         phoneUpdateBtn = findViewById(R.id.updated_phone_btn);
 
 
+
+
+
+
         fullNameUpdateBtn.setOnClickListener(view -> {
             String newFullName = fullNameEditText.getText().toString().trim();
             if (newFullName.isEmpty()) {
@@ -76,6 +80,9 @@ public class ManagerProfile extends AppCompatActivity {
         });
 
 
+
+
+
         phoneUpdateBtn.setOnClickListener(view -> {
             String newPhone = phoneEditText.getText().toString().trim();
             if (newPhone.isEmpty()) {
@@ -93,6 +100,9 @@ public class ManagerProfile extends AppCompatActivity {
                         Toast.makeText(ManagerProfile.this, "error updating phone number", Toast.LENGTH_SHORT).show();
                     });
         });
+
+
+
 
         passwordUpdateBtn.setOnClickListener(view -> {
             String newPassword = passwordEditText.getText().toString().trim();
@@ -114,6 +124,9 @@ public class ManagerProfile extends AppCompatActivity {
                         }
                     });
         });
+
+
+
 
 
         emailUpdateBtn.setOnClickListener(view -> {
@@ -152,6 +165,9 @@ public class ManagerProfile extends AppCompatActivity {
     }
 
 
+
+
+
     private void handleNavigationItemSelected(MenuItem item) {
         Intent intent = null;
         if (item.getItemId() ==  R.id.m_home_page) {
@@ -182,6 +198,9 @@ public class ManagerProfile extends AppCompatActivity {
         finish();
     }
 
+
+
+
         private void initializeUI() {
         drawerLayout = findViewById(R.id.profile_manager);
         navigationView = findViewById(R.id.nav_view3);
@@ -200,4 +219,11 @@ public class ManagerProfile extends AppCompatActivity {
             return true;
         });
     }
+
+
 }
+
+
+
+
+
