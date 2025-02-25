@@ -193,11 +193,11 @@ public class EmployeeShiftChangeRequest extends AppCompatActivity {
     }
 
     private void getNextRequestNumber(OnRequestNumberGeneratedListener listener) {
-        db.collection("ShiftChangeCounterDB").document("shiftChangeCounter")
+        db.collection("RequestCounters").document("shiftChangeCounter")
                 .update("counter", FieldValue.increment(1))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        db.collection("ShiftChangeCounterDB").document("shiftChangeCounter")
+                        db.collection("RequestCounters").document("shiftChangeCounter")
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
